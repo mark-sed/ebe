@@ -6,6 +6,8 @@
  * 
  * @brief Syntactical analysis
  * 
+ * Scanner can parse text, numbers, floats (with exponent as well), symbols and delimiters.
+ * All types are saved as text anyway into IR.
  */
 
 #include <vector>

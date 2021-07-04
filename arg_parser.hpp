@@ -11,14 +11,20 @@
 #ifndef _ARG_PARSER_HPP_
 #define _ARG_PARSER_HPP_
 
-struct ArgOpts {
-    bool alpha_num;
-    bool alpha_sym;
-    bool group_delim;
-    bool group_symbol;
-    char float_delim;
-};
+namespace Args {
+    struct ArgOpts {
+        const char *file_in;
+        const char *file_out;
+        bool alpha_num;
+        bool alpha_sym;
+        bool group_delim;
+        bool group_symbol;
+        char float_delim;
+    };
 
-extern ArgOpts arg_opts; // Default arguments
+    void parse_args(int argc, char *argv[]);
+}
+
+extern Args::ArgOpts arg_opts; // Default arguments
 
 #endif//_ARG_PARSER_HPP_

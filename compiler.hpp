@@ -18,10 +18,13 @@ namespace Error {
         NO_ERROR = 0,
         UNKNOWN,
         INTERNAL,
-        FILE_ACCESS
+        FILE_ACCESS,
+        ARGUMENTS
     };
 
     const char *get_code_name(ErrorCode code);
+
+    [[noreturn]] void error(Error::ErrorCode code, const char *msg);
 }
 
 class Compiler {

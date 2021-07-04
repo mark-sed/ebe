@@ -52,7 +52,12 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
     long line_number = 1;
     for(auto const& line: *node.nodes){
         out << std::setfill('0') << std::setw(2) << line_number << ". ";
+        bool first = true;
         for(auto const &word: *line){
+            if(!first){
+                out << " -> ";
+            }
+            first = false;
             out << "(" << get_type_name(word.type) << ")";
             if((word.type == IR::Type::DELIMITER || word.type == IR::Type::SYMBOL) && 
                (!std::isprint(word.text[0]) || NOT_PRINT.find(word.text[0]) != NOT_PRINT.end())){
@@ -61,8 +66,7 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
                 }
             }else{
                 out << word.text;
-            } 
-            out << " -> ";
+            }
         }
         line_number++;
         out << std::endl;

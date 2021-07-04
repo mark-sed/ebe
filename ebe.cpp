@@ -13,6 +13,7 @@
 #include <iostream> 
 #include "ebe.hpp"
 #include "preprocessor.hpp"
+#include "arg_parser.hpp"
 #include "scanner.hpp"
 
 void compile(const char *f_in, const char *f_out) {
@@ -38,6 +39,7 @@ void compile(const char *f_in, const char *f_out) {
 }
 
 int main(int argc, char *argv[]){
-    compile(argv[1], argv[2]);
+    Args::parse_args(argc-1, &argv[1]);
+    compile(arg_opts.file_in, arg_opts.file_out);
     return 0;
 }

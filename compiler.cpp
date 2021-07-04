@@ -19,13 +19,20 @@ const char *Error::get_code_name(Error::ErrorCode c){
         "None",
         "Unknown",
         "Internal",
-        "File access"
+        "File access",
+        "Arguments"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
     if(c < names_size){
         return NAMES[c];
     }
     return "Unknown";
+}
+
+[[noreturn]] void Error::error(Error::ErrorCode code, const char *msg){
+    std::cerr << "ERROR (" << Error::get_code_name(code) << "): " 
+              << msg << "!" << std::endl;
+    std::exit(code);
 }
 
 [[noreturn]] void Compiler::error(Error::ErrorCode code, const char *file, 
