@@ -6,6 +6,7 @@
  * 
  * @brief Parser for program arguments
  * 
+ * For arguments which the program takes, check out HELP_TEXT variable content in source file.
  */
 
 #ifndef _ARG_PARSER_HPP_
@@ -18,7 +19,7 @@ namespace Args {
         bool alpha_num;
         bool alpha_sym;
         bool group_delim;
-        bool group_symbol;
+        bool group_sym;
         char float_delim;
     };
 

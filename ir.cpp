@@ -58,10 +58,12 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
                 out << " -> ";
             }
             first = false;
+            // Print word's type and value
             out << "(" << get_type_name(word.type) << ")";
             if((word.type == IR::Type::DELIMITER || word.type == IR::Type::SYMBOL) && 
                (!std::isprint(word.text[0]) || NOT_PRINT.find(word.text[0]) != NOT_PRINT.end())){
                 for(auto c: word.text){
+                    // For non printable or not visible charactets print hex value
                     out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
                 }
             }else{

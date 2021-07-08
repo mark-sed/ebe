@@ -13,8 +13,8 @@
 #ifndef _EBE_HPP_
 #define _EBE_HPP_
 
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 0
-#define VERSION_PATCH 2
+#define EBE_VERSION_MAJOR 0
+#define EBE_VERSION_MINOR 0
+#define EBE_VERSION_PATCH 2
 
 #endif//_EBE_HPP_ 

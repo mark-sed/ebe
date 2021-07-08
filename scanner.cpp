@@ -110,7 +110,7 @@ IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name
                     end_state = true;
                 break;
                 case State::SYMBOL:
-                    if(arg_opts.group_symbol && is_symbol(c)){
+                    if(arg_opts.group_sym && is_symbol(c)){
                         break;
                     }
                     type = IR::Type::SYMBOL;
