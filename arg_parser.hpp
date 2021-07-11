@@ -12,20 +12,35 @@
 #ifndef _ARG_PARSER_HPP_
 #define _ARG_PARSER_HPP_
 
+/**
+ * Namespace for all input argument related resources
+ */
 namespace Args {
+
+    /**
+     * Struct that holds all the compilation settings which can be changed by input arguments
+     */
     struct ArgOpts {
-        const char *file_in;
-        const char *file_out;
-        bool alpha_num;
-        bool alpha_sym;
-        bool group_delim;
-        bool group_sym;
-        char float_delim;
+        const char *file_in;   ///< Path to the input example file
+        const char *file_out;  ///< Path to the output example file
+        bool alpha_num;        ///< If alphabetical letters should be grouped with numbers when possible
+        bool alpha_sym;        ///< If alphabetical letters should be grouped with symbols when possible
+        bool group_delim;      ///< If multiple delimiters should be group together
+        bool group_sym;        ///< If multiple symbols should be group together
+        char float_delim;      ///< Delimiter for floating point numbers (42.1 vs 42,1)
+        char line_delim;       ///< Character determining the end of a line
     };
 
+    /**
+     * Function for parsing input arguments into arg_opts variable
+     * @param argc Amount of arguments
+     * @param argv Arguments
+     * @note This function modifies arg_opts global variable
+     */
     void parse_args(int argc, char *argv[]);
-}
 
-extern Args::ArgOpts arg_opts; // Default arguments
+    /** Variable that holds compile arguments */
+    extern ArgOpts arg_opts;
+}
 
 #endif//_ARG_PARSER_HPP_

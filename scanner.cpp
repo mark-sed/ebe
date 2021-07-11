@@ -20,18 +20,17 @@
 
 #include <iostream>
 
-Scanner::Scanner(std::vector<std::string> *in_text, std::vector<std::string> *out_text) : 
-                 Compiler("Scanner"), in_text{in_text}, out_text{out_text} {
+Scanner::Scanner() : Compiler("Scanner") {
     this->delimiters = std::set<char>{
-        ' ', '\f', '\r', '\t', '\v', // whitespace chars 
-        ',', '.', ':', ';'           // other characters that are usualy delimiters
+        ' ', '\f', '\r', '\t', '\v', '\n', // whitespace chars (new line is added for when line_delim is different)
+        ',', '.', ':', ';'                 // other characters that are usualy delimiters
     };
 }
 
 inline bool Scanner::is_alpha(char c){
     return std::isalpha(c) || 
-           (arg_opts.alpha_num && is_number(c)) ||
-           (arg_opts.alpha_sym && is_symbol(c));
+           (Args::arg_opts.alpha_num && is_number(c)) ||
+           (Args::arg_opts.alpha_sym && is_symbol(c));
 }
 
 inline bool Scanner::is_delimiter(char c){
@@ -47,7 +46,7 @@ inline bool Scanner::is_number(char c){
 }
 
 inline bool Scanner::is_float_delim(char c){
-    return c == arg_opts.float_delim;
+    return c == Args::arg_opts.float_delim;
 }
 
 inline bool Scanner::is_float_exp(char c){
@@ -58,6 +57,7 @@ IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name
     auto ir = new IR::Node();
 
     long line_number = 1;
+    State state = State::START;
     for(auto line_text: *text){
         auto line = new std::list<IR::Word>();
         // Parse words and delimiters
@@ -103,14 +103,14 @@ IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name
                     end_state = true;
                 break;
                 case State::DELIMITER:
-                    if(arg_opts.group_delim && is_delimiter(c)){
+                    if(Args::arg_opts.group_delim && is_delimiter(c)){
                         break;
                     }
                     type = IR::Type::DELIMITER;
                     end_state = true;
                 break;
                 case State::SYMBOL:
-                    if(arg_opts.group_sym && is_symbol(c)){
+                    if(Args::arg_opts.group_sym && is_symbol(c)){
                         break;
                     }
                     type = IR::Type::SYMBOL;
@@ -204,6 +204,10 @@ IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name
                 i--; // Character was read to determine change of state so load it back
                 state = State::START;
             }
+        }
+        // Parse empty line as EMPTY type
+        if(line->empty()){
+            line->push_back(IR::Word("", IR::Type::EMPTY));
         }
         line_number++;
         ir->push_back(line);

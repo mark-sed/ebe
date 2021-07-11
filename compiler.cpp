@@ -44,6 +44,7 @@ const char *Error::get_code_name(Error::ErrorCode c){
             std::cerr << ":" << column;
         }
     }
+    // FIXME: unit_name probably should not be printed to users
     std::cerr << ":[" << unit_name << "]: ERROR (" << Error::get_code_name(code) << "): " 
               << msg << "!" << std::endl;
     std::exit(code);

@@ -38,14 +38,15 @@ const char *HELP_TEXT = "Usage: ebe [options] file\n"\
 using namespace Args;
 
 /** A global variable that can be used anywhere to read user compilation options */
-ArgOpts arg_opts {
+ArgOpts Args::arg_opts {
     .file_in = nullptr,
     .file_out = nullptr,
     .alpha_num = false,
     .alpha_sym = false,
     .group_delim = false,
     .group_sym = false,
-    .float_delim = '.'
+    .float_delim = '.',
+    .line_delim = '\n'
 };
 
 /**
@@ -143,6 +144,11 @@ void Args::parse_args(int argc, char *argv[]){
     if(exists_option(argv, argv+argc, "--float-delim", "")){
         if(!(arg_opts.float_delim = get_option_value(argv, argv+argc, "--float-delim", "")[0])){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --float-delim");
+        }
+    }
+    if(exists_option(argv, argv+argc, "--line-delim", "")){
+        if(!(arg_opts.line_delim = get_option_value(argv, argv+argc, "--line-delim", "")[0])){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --line-delim");
         }
     }
 

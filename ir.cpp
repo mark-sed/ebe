@@ -16,17 +16,18 @@
 
 using namespace IR;
 
-const char *IR::get_type_name(Type t) {
+const char *IR::get_type_name(Type type) {
     const char *NAMES[] = {
         "text",
         "number",
         "float",
         "delim",
-        "symbol"
+        "symbol",
+        "empty"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
-    if(t < names_size){
-        return NAMES[t];
+    if(type < names_size){
+        return NAMES[type];
     }
     return "none";
 }
@@ -47,7 +48,7 @@ Node::~Node() {
 }
 
 std::ostream& operator<< (std::ostream &out, const Node& node){
-    static const std::set NOT_PRINT{' ', '\t', '\v', '\f'};
+    static const std::set NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
     // TODO: Add detail level (using args)
     long line_number = 1;
     for(auto const& line: *node.nodes){
@@ -72,6 +73,30 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
         }
         line_number++;
         out << std::endl;
+    }
+    return out;
+}
+
+std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node){
+    static const std::set NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
+    // TODO: Add detail level (using args)
+    bool first = true;
+    for(auto const &word: node){
+        if(!first){
+            out << " -> ";
+        }
+        first = false;
+        // Print word's type and value
+        out << "(" << get_type_name(word.type) << ")";
+        if((word.type == IR::Type::DELIMITER || word.type == IR::Type::SYMBOL) && 
+            (!std::isprint(word.text[0]) || NOT_PRINT.find(word.text[0]) != NOT_PRINT.end())){
+            for(auto c: word.text){
+                // For non printable or not visible charactets print hex value
+                out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
+            }
+        }else{
+            out << word.text;
+        }
     }
     return out;
 }

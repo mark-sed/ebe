@@ -17,12 +17,16 @@
 #include "ir.hpp"
 #include "compiler.hpp"
 
+/**
+ * Lexical analysis for example files
+ */
 class Scanner : public Compiler {
 private:
-    std::vector<std::string> *in_text;
-    std::vector<std::string> *out_text;
-    std::set<char> delimiters;
+    std::set<char> delimiters;  ///< Set of characters considered word delimiters
 
+    /**
+     * FSM states of the scanner
+     */
     enum class State {
         START,
         ALPHA,
@@ -36,16 +40,35 @@ private:
         EXP_SIGN,
         EXP_VAL,
         UNKNOWN,
-    } state = State::START;
+    };
 
+    /** @return True if character is alphabetical */
     bool is_alpha(char c);
+
+    /** @return True if character is a delimiter */
     bool is_delimiter(char c);
+
+    /** @return True if character is a symbol */
     bool is_symbol(char c);
+
+    /** @return True if character is a number */
     bool is_number(char c);
+
+    /** @return True if character is floating point delimiter */
     bool is_float_delim(char c);
+
+    /** @return True if character is floating point exponent (e/E) */
     bool is_float_exp(char c);
 public:
-    Scanner(std::vector<std::string> *in_text, std::vector<std::string> *out_text);
+    /** Constructor */
+    Scanner();
+
+    /**
+     * Does syntactical parsing of passed in text
+     * @param in_text Example file's text parsed into vector of lines by preprocessor
+     * @param file_name Exampel file's name for error information
+     * @return Text parsed into IR node
+     */
     IR::Node *process(std::vector<std::string> *text, const char *file_name);
 };
 
