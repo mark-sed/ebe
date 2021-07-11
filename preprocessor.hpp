@@ -21,8 +21,6 @@
  */
 class Preprocessor : public Compiler {
 private:
-    const char *ex_in;   ///< File name of the input example file
-    const char *ex_out;  ///< File name of the output example file
     char delim;          ///< Line delimiter 
 
     /**
@@ -34,23 +32,16 @@ private:
 public:
     /**
      * Constructor
-     * @param ex_in Path to the example input file
-     * @param ex_out Path to the example output file
      * @param delim Symbol determining the end of a line
      */
-    Preprocessor(const char *ex_in, const char *ex_out, char delim='\n');
+    Preprocessor(char delim='\n');
 
     /**
-     * Preprocessing for input example file
-     * @return processed input example file in vector form
+     * Preprocessing for example file
+     * @param file_name Path to the file
+     * @return Processed example file in vector form
      */
-    std::vector<std::string> *process_input();
-
-    /**
-     * Preprocessing for output example file
-     * @return processed output example file in vector form
-     */
-    std::vector<std::string> *process_output();
+    std::vector<std::string> *process(const char *file_name);
 };
 
 #endif//_PREPROCESSOR_HPP_

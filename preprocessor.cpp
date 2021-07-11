@@ -19,12 +19,11 @@
 
 #include <iostream>
 
-Preprocessor::Preprocessor(const char *ex_in, const char *ex_out, char delim) : 
-                           Compiler("Preprocessor"), ex_in{ex_in}, ex_out{ex_out} {
-    this->delim = delim;
+Preprocessor::Preprocessor(char delim) : Compiler("Preprocessor"), delim{delim} {
+
 }
 
-std::vector<std::string> *Preprocessor::read_file(const char *file_name){
+std::vector<std::string> *Preprocessor::process(const char *file_name){
     std::string l;
     auto lines = new std::vector<std::string>();
     if(file_name){
@@ -44,12 +43,4 @@ std::vector<std::string> *Preprocessor::read_file(const char *file_name){
         }
     }
     return lines;
-}
-
-std::vector<std::string> *Preprocessor::process_input(){
-    return read_file(this->ex_in);
-}
-
-std::vector<std::string> *Preprocessor::process_output(){
-    return read_file(this->ex_out);
 }

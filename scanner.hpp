@@ -66,7 +66,7 @@ public:
     /**
      * Does syntactical parsing of passed in text
      * @param in_text Example file's text parsed into vector of lines by preprocessor
-     * @param file_name Exampel file's name for error information
+     * @param file_name Example file's name for error information
      * @return Text parsed into IR node
      */
     IR::Node *process(std::vector<std::string> *text, const char *file_name);

@@ -21,9 +21,9 @@
  */
 void compile(const char *f_in, const char *f_out) {
     // Preprocessing
-    auto preproc = new Preprocessor(f_in, f_out, Args::arg_opts.line_delim);
-    auto in_text = preproc->process_input();
-    auto out_text = preproc->process_output();
+    auto preproc = new Preprocessor(Args::arg_opts.line_delim);
+    auto in_text = preproc->process(f_in);
+    auto out_text = preproc->process(f_out);
     //for(auto a: *in_text)
     //    std::cout << a;
 
