@@ -45,7 +45,9 @@ void compile(const char *f_in, const char *f_out) {
 
 // Main
 int main(int argc, char *argv[]){
+    // Parse arguments
     Args::parse_args(argc-1, &argv[1]);
+    // Start compilation of example input files
     compile(Args::arg_opts.file_in, Args::arg_opts.file_out);
     return 0;
 }

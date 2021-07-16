@@ -1,0 +1,13 @@
+#!Header comment placeholder
+
+MODE word  # This is by default
+	NOP
+    DEL
+LOOP  # Loop this pass (also comment hehe)
+
+MODE line
+NOP
+NOP
+CONCAT  1
+DEL
+SWAP    1
