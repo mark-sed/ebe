@@ -47,6 +47,55 @@ Node::~Node() {
     delete nodes;
 }
 
+void Node::push_back(unsigned long line, Word value){
+    if(line-1 >= this->nodes->size()){
+        this->nodes->push_back(new std::list<Word>());
+    }
+    auto index_line = this->nodes->begin();
+    std::advance(index_line, line);
+    (*index_line)->push_back(value);
+}
+
+void Node::push_back(std::list<Word> *line){
+    this->nodes->push_back(line);
+}
+
+Pass::Pass(const char *pass_name) : pass_name{pass_name} {
+
+}
+
+void Pass::push_back(Inst::Instruction *inst){
+    this->pipeline->push_back(inst);
+}
+
+void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
+    this->pipeline = pipeline;
+}
+
+PassWords::PassWords() : Pass("Words") {
+
+}
+
+PassLines::PassLines() : Pass("Lines") {
+
+}
+
+PassDocuments::PassDocuments() : Pass("Documents") {
+
+}
+
+EbelNode::EbelNode() {
+    this->nodes = new std::list<Pass *>();
+}
+
+EbelNode::~EbelNode(){
+    for(auto const &pass: *this->nodes){
+        delete pass;
+    }
+    // Instructons won't be deleted here, they are singletons
+    delete nodes;
+}
+
 std::ostream& operator<< (std::ostream &out, const Node& node){
     static const std::set NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
     // TODO: Add detail level (using args)
@@ -99,17 +148,4 @@ std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node){
         }
     }
     return out;
-}
-
-void Node::push_back(unsigned long line, Word value){
-    if(line-1 >= this->nodes->size()){
-        this->nodes->push_back(new std::list<Word>());
-    }
-    auto index_line = this->nodes->begin();
-    std::advance(index_line, line);
-    (*index_line)->push_back(value);
-}
-
-void Node::push_back(std::list<Word> *line){
-    this->nodes->push_back(line);
 }

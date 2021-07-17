@@ -6,6 +6,7 @@
  * 
  * @brief Syntactical analysis
  * 
+ * Handles scanning of input example files and ebel code as well
  */
 
 #ifndef _SCANNER_HPP_
@@ -70,6 +71,23 @@ public:
      * @return Text parsed into IR node
      */
     IR::Node *process(std::vector<std::string> *text, const char *file_name);
+};
+
+/**
+ * Scanner for ebel code
+ */
+class EbelScanner : public Compiler {
+private:
+    /** FSM states of the scanner */
+    enum class State {
+        START,
+        COMMENT,
+        INST,
+        SPACE,
+        ARG
+    };
+
+    
 };
 
 #endif//_SCANNER_HPP_

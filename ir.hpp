@@ -13,8 +13,10 @@
 #define _IR_HPP_
 
 #include <list>
+#include <vector>
 #include <string>
 #include <ostream>
+#include "instruction.hpp"
 
 /**
  * Namespace for intermediate representation (IR) resources
@@ -86,6 +88,71 @@ namespace IR {
         void push_back(std::list<Word> *line);
 
         //friend std::ostream& operator<< (std::ostream &out, const Node& node);
+    };
+
+    /**
+     * Abstract class for all passes
+     */
+    class Pass {
+    public:
+        const char *pass_name;                       ///< Name of the pass (needed for error printing)
+        std::vector<Inst::Instruction *> *pipeline;  ///< Pipeline of instructions
+    protected:
+        /** 
+         * Constructor
+         * @param pass_name Name of the pass that inherits this class
+         */
+        Pass(const char *pass_name);
+
+        /**
+         * Pushes a new instruction into the pipeline
+         * @param inst Instruction to be pushed
+         */
+        void push_back(Inst::Instruction *inst);
+
+        /**
+         * Sets the pipeline
+         * @param pipeline New pipeline
+         */
+        void set_pipeline(std::vector<Inst::Instruction *> *pipeline);
+    };
+
+    /**
+     * Pass by word
+     */
+    class PassWords : public Pass {
+    public:
+        /** Constructor */
+        PassWords();
+    };
+
+    /**
+     * Pass by lines
+     */
+    class PassLines : public Pass {
+        /** Constructor */
+        PassLines();
+    };
+
+    /**
+     * Pass by documents
+     */
+    class PassDocuments : public Pass {
+        /** Constructor */
+        PassDocuments();
+    };
+
+    /**
+     * Root node for ebel program holding all passes
+     */
+    class EbelNode {
+    public:
+        std::list<Pass *> *nodes;  ///< Passes holding instructions
+
+        /** Constructor */
+        EbelNode();
+        /** Destructor */
+        ~EbelNode();
     };
 }
 
