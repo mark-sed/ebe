@@ -61,7 +61,7 @@ void Node::push_back(std::list<Word> *line){
 }
 
 Pass::Pass(const char *pass_name) : pass_name{pass_name} {
-
+    this->pipeline = new std::vector<Inst::Instruction *>();
 }
 
 void Pass::push_back(Inst::Instruction *inst){
@@ -94,6 +94,10 @@ EbelNode::~EbelNode(){
     }
     // Instructons won't be deleted here, they are singletons
     delete nodes;
+}
+
+void EbelNode::push_back(Pass *pass){
+    this->nodes->push_back(pass);
 }
 
 std::ostream& operator<< (std::ostream &out, const Node& node){
@@ -146,6 +150,25 @@ std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node){
         }else{
             out << word.text;
         }
+    }
+    return out;
+}
+
+std::ostream& operator<< (std::ostream &out, const IR::Pass& pass){
+    const char * INDENT = "  ";
+    out << pass.pass_name << " pass:" << std::endl;
+    for(auto inst: *pass.pipeline){
+        out << INDENT << inst->get_name() << " ";
+        inst->format_args(out);
+        out << std::endl;
+    }
+    return out;
+}
+
+
+std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node){
+    for(auto const &pass: *node.nodes){
+        out << *pass;
     }
     return out;
 }

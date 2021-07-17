@@ -20,7 +20,8 @@ const char *Error::get_code_name(Error::ErrorCode c){
         "Unknown",
         "Internal",
         "File access",
-        "Arguments"
+        "Arguments",
+        "Syntactic"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
     if(c < names_size){
@@ -37,7 +38,9 @@ const char *Error::get_code_name(Error::ErrorCode c){
 
 [[noreturn]] void Compiler::error(Error::ErrorCode code, const char *file, 
                                   long line, long column, const char *msg){
-    std::cerr << file;
+    if(file)
+        // Dont print name if it is nullptr
+        std::cerr << file;
     if(line >= 0){
         std::cerr << ":" << line;
         if(column >= 0) {

@@ -27,7 +27,8 @@ namespace Error {
         UNKNOWN,       ///< Unknown error (shouldn't be really used)
         INTERNAL,      ///< Internal compiler error (such as unable to allocate memory)
         FILE_ACCESS,   ///< Problem opening/writing/working with users files (not internal config files)
-        ARGUMENTS      ///< Problem with user arguments
+        ARGUMENTS,     ///< Problem with user arguments
+        SYNTACTIC      ///< Syntactical error
     };
 
     /**

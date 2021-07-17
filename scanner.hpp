@@ -15,6 +15,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <cstddef>
 #include "ir.hpp"
 #include "compiler.hpp"
 
@@ -66,7 +67,7 @@ public:
 
     /**
      * Does syntactical parsing of passed in text
-     * @param in_text Example file's text parsed into vector of lines by preprocessor
+     * @param text Example file's text parsed into vector of lines by preprocessor
      * @param file_name Example file's name for error information
      * @return Text parsed into IR node
      */
@@ -87,7 +88,66 @@ private:
         ARG
     };
 
+    /** @return True if the character is a whitespace character */
+    bool is_whitespace(char c);
+
+    /** @return True if the character is a start of an instruction */
+    bool is_inst_start(char c);
+
+    /** @return True if the character is eol character */
+    bool is_eol(char c);
+
+    /** @return True if the character is comment start character */
+    bool is_comment(char c);
+public:
+    /** Constructor */
+    EbelScanner();
+
+    /**
+     * Does syntactical parsing of passed in ebel code
+     * @param text Ebel code text parsed into vector of lines by preprocessor
+     * @param file_name Ebel file's name for error information
+     * @return Code parsed into IR ebel node
+     */
+    IR::EbelNode *process(std::vector<std::string> *text, const char *file_name);
+};
+
+class ConstraintChecker : public Compiler {
+private:
+    std::vector<std::string> * const args;
+    std::string * const inst_name;
+    unsigned long line_number;
+    unsigned long column;
+    const char * const file_name;
+
+    void fail(std::string msg); 
+public:
+    /**
+     * Constructor
+     * @param args Arguments
+     * @param inst_name Instruction name
+     * @param line_number Current line number in code
+     * @param column Current column in code
+     * @param file_name Name of parsed file
+     */
+    ConstraintChecker(std::vector<std::string> * const args, 
+                      std::string * const inst_name, 
+                      unsigned long line_number,
+                      unsigned long column,
+                      const char * const file_name);
     
+    /**
+     * Checks amount of arguments
+     * @param expected Expected amount
+     */
+    void arg_size(size_t expected);
+
+    /**
+     * Checks argument value
+     * @param expected Set of allowed values
+     * @param case_sensitive If the letter case is important (false by default)
+     */
+    void arg_value(size_t index, std::vector<std::string> expected, bool case_sensitive=false);
 };
 
 #endif//_SCANNER_HPP_

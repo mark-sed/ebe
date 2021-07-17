@@ -15,6 +15,7 @@
 #include "preprocessor.hpp"
 #include "arg_parser.hpp"
 #include "scanner.hpp"
+#include "ir.hpp"
 
 /**
  * Initializer and handler for compilation
@@ -43,11 +44,32 @@ void compile(const char *f_in, const char *f_out) {
     delete preproc;
 }
 
+void interpret(const char *ebel_f, const char *input_f, const char *output_f){
+    // Preprocessing
+    auto ebel_preproc = new EbelPreprocessor();
+    auto ebel_text = ebel_preproc->process(ebel_f);
+    //for(auto a: *ebel_text)
+    //    std::cout << a;
+
+    // Syntactical check
+    auto ebel_scanner = new EbelScanner();
+    auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
+
+    std::cout << *ebel_ir;
+
+    // Cleanup
+    delete ebel_ir;
+    delete ebel_scanner;
+    delete ebel_text;
+    delete ebel_preproc;
+}
+
 // Main
 int main(int argc, char *argv[]){
     // Parse arguments
     Args::parse_args(argc-1, &argv[1]);
     // Start compilation of example input files
-    compile(Args::arg_opts.file_in, Args::arg_opts.file_out);
+    //compile(Args::arg_opts.file_in, Args::arg_opts.file_out);
+    interpret(argv[1], argv[2], argv[3]);
     return 0;
 }

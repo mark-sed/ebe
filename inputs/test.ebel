@@ -1,11 +1,11 @@
 #!Header comment placeholder
 
-MODE word  # This is by default
+PASS words  # This is by default
 	NOP
     DEL
 LOOP  # Loop this pass (also comment hehe)
 
-MODE line
+PASS lines
 NOP
 NOP
 CONCAT  1

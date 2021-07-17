@@ -44,4 +44,20 @@ public:
     std::vector<std::string> *process(const char *file_name);
 };
 
+/**
+ * Preprocessor for ebel source files
+ */
+class EbelPreprocessor : public Compiler {
+public:
+    /** Constructor **/
+    EbelPreprocessor();
+
+    /**
+     * Preprocessing for ebel file
+     * @param file_name Path to the file
+     * @return Processed ebel file in vector form
+     */
+    std::vector<std::string> *process(const char *file_name);
+};
+
 #endif//_PREPROCESSOR_HPP_

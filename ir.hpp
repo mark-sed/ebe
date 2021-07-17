@@ -103,7 +103,7 @@ namespace IR {
          * @param pass_name Name of the pass that inherits this class
          */
         Pass(const char *pass_name);
-
+    public:
         /**
          * Pushes a new instruction into the pipeline
          * @param inst Instruction to be pushed
@@ -130,6 +130,7 @@ namespace IR {
      * Pass by lines
      */
     class PassLines : public Pass {
+    public:
         /** Constructor */
         PassLines();
     };
@@ -138,6 +139,7 @@ namespace IR {
      * Pass by documents
      */
     class PassDocuments : public Pass {
+    public:
         /** Constructor */
         PassDocuments();
     };
@@ -153,6 +155,12 @@ namespace IR {
         EbelNode();
         /** Destructor */
         ~EbelNode();
+
+        /**
+         * Pushes new pass into the nodes
+         * @param pass Pass to be pushed
+         */
+        void push_back(Pass *pass);
     };
 }
 
@@ -165,5 +173,15 @@ std::ostream& operator<< (std::ostream &out, const IR::Node& node);
  * Overloaded operator<< to print easily lists for debugging
  */
 std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node);
+
+/**
+ * Overloaded operator<< to print easily passes for debugging
+ */
+std::ostream& operator<< (std::ostream &out, const IR::Pass& pass);
+
+/**
+ * Overloaded operator<< to print easily IR for debugging
+ */
+std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node);
 
 #endif//_IR_HPP_
