@@ -25,7 +25,7 @@ const char * const NOP::NAME = "NOP";
 const char * const PASS::NAME = "PASS";
 const char * const SWAP::NAME = "SWAP";
 
-Inst::PassName Inst::get_pass_name(std::string name){
+/*Inst::PassName Inst::get_pass_name(std::string name){
     auto up_name = Utils::to_upper(name);
     if(up_name == "WORDS"){
         return PassName::WORDS;
@@ -37,7 +37,7 @@ Inst::PassName Inst::get_pass_name(std::string name){
         return PassName::DOCUMENTS;
     }
     Error::error(Error::ErrorCode::INTERNAL, "Unknown pass name conversion");
-}
+}*/
 
 inline void Instruction::format_args(std::ostream &out){
     

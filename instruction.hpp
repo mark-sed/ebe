@@ -19,20 +19,23 @@
  */
 namespace Inst {
 
-    enum PassName {
-        WORDS = 0,
-        LINES,
-        DOCUMENTS
-    };
-
-    PassName get_pass_name(std::string name);
-
     /**
      * Abstract class for all instructions
      */
     class Instruction {
     public:
+        /** Destructor */ 
+        virtual ~Instruction(){};
+
+        /**
+         * Returns name of the instruction
+         */
         virtual const char * const get_name() = 0;
+
+        /**
+         * Outputs arguments separated by space into out
+         * @param out Stream to output to
+         */
         virtual void format_args(std::ostream &out);
     };
 
@@ -70,12 +73,10 @@ namespace Inst {
     };
 
     class PASS : public Instruction {
-    private:
-        //PassName arg1;
+    // IR instruction, does no need to be in nodes, so no need for constructor
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        //PASS(PassName arg1) : arg1{arg1} {}
     };
 
     class SWAP : public Instruction {

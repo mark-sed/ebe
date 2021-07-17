@@ -104,6 +104,8 @@ namespace IR {
          */
         Pass(const char *pass_name);
     public:
+        /** Destructor */
+        ~Pass();
         /**
          * Pushes a new instruction into the pipeline
          * @param inst Instruction to be pushed

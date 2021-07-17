@@ -367,18 +367,16 @@ IR::EbelNode *EbelScanner::process(std::vector<std::string> *text, const char *f
                         // Push previous pass
                         ir->push_back(curr_pass);
                     }
-                    switch(Inst::get_pass_name(args[0])){
-                        case Inst::PassName::WORDS:
-                            curr_pass = new IR::PassWords();
-                        break;
-                        case Inst::PassName::LINES:
-                            curr_pass = new IR::PassLines();
-                        break;
-                        case Inst::PassName::DOCUMENTS:
-                            curr_pass = new IR::PassDocuments();
-                        default:
-                            error(Error::ErrorCode::INTERNAL, file_name, line_number, static_cast<unsigned long>(i+1), 
-                                  "Incorrect pass name conversion");
+                    auto arg1_up = Utils::to_upper(args[0]);
+                    if(arg1_up == "WORDS"){
+                        curr_pass = new IR::PassWords();
+                    }else if(arg1_up == "LINES"){
+                        curr_pass = new IR::PassLines();
+                    }else if(arg1_up == "DOCUMENTS"){
+                        curr_pass = new IR::PassDocuments();
+                    }else{
+                        error(Error::ErrorCode::INTERNAL, file_name, line_number, static_cast<unsigned long>(i+1), 
+                              "Incorrect pass name conversion");
                     }
                 }
                 // SWAP

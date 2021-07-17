@@ -64,6 +64,13 @@ Pass::Pass(const char *pass_name) : pass_name{pass_name} {
     this->pipeline = new std::vector<Inst::Instruction *>();
 }
 
+Pass::~Pass(){
+    for(auto const &inst: *this->pipeline){
+        delete inst;
+    }
+    delete pipeline;
+}
+
 void Pass::push_back(Inst::Instruction *inst){
     this->pipeline->push_back(inst);
 }
