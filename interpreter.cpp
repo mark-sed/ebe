@@ -10,3 +10,29 @@
  */
 
 #include "interpreter.hpp"
+#include "ir.hpp"
+#include <iostream>
+
+Interpreter::Interpreter(IR::EbelNode *ebel) : Compiler("Interpreter"), ebel{ebel} {
+
+}
+
+void Interpreter::parse(IR::Node *text) {
+    IR::Node *output = new IR::Node;
+
+    // Iterate through passes
+    for(auto pass: (*this->ebel->nodes)){
+        pass->process(text);
+    }
+
+    /*
+    // Iterate through lines of text
+    for(auto &line: *text->nodes){
+        // Iterate words in line
+        size_t column = 0;
+        for(auto &word: *line){
+            this->ebel
+            column++;
+        }
+    }*/
+}

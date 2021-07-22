@@ -62,7 +62,7 @@ IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name
     long line_number = 1;
     State state = State::START;
     for(auto line_text: *text){
-        auto line = new std::list<IR::Word>();
+        auto line = new std::list<IR::Word *>();
         // Parse words and delimiters
         state = State::START; // Reset FSM
         size_t start_i = 0;
@@ -202,7 +202,7 @@ IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name
             }
             // Add word to IR
             if(end_state){
-                line->push_back(IR::Word(line_text.substr(start_i, i-start_i), type));
+                line->push_back(new IR::Word(line_text.substr(start_i, i-start_i), type));
                 end_state = false;
                 i--; // Character was read to determine change of state so load it back
                 state = State::START;
@@ -210,7 +210,7 @@ IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name
         }
         // Parse empty line as EMPTY type
         if(line->empty()){
-            line->push_back(IR::Word("", IR::Type::EMPTY));
+            line->push_back(new IR::Word("", IR::Type::EMPTY));
         }
         line_number++;
         ir->push_back(line);
@@ -382,6 +382,7 @@ IR::EbelNode *EbelScanner::process(std::vector<std::string> *text, const char *f
                 // SWAP
                 else if(parsed_inst == Inst::SWAP::NAME){
                     cc_args_size = 1;
+                    // FIXME: Check if argument is >0
                     unsigned int arg1 = Cast::to<unsigned int>(args[0]);
                     curr_pass->push_back(new Inst::SWAP(arg1));
                 }

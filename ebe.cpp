@@ -16,6 +16,7 @@
 #include "arg_parser.hpp"
 #include "scanner.hpp"
 #include "ir.hpp"
+#include "interpreter.hpp"
 
 /**
  * Initializer and handler for compilation
@@ -57,7 +58,26 @@ void interpret(const char *ebel_f, const char *input_f, const char *output_f){
 
     std::cout << *ebel_ir;
 
+    // Preprocessing input file
+    auto text_preproc = new Preprocessor();
+    auto text_vect = text_preproc->process(input_f);
+
+    // Syntactical check/parse of input file
+    auto text_scanner = new Scanner();
+    auto text_ir = text_scanner->process(text_vect, input_f);
+
+    // Interpret
+    auto interpreter = new Interpreter(ebel_ir);
+    interpreter->parse(text_ir);
+
+    std::cout << "\n-------OUT---------\n";
+    std::cout << *text_ir << std::endl;
+
     // Cleanup
+    delete text_ir;
+    delete text_scanner;
+    delete text_vect;
+    delete text_preproc;
     delete ebel_ir;
     delete ebel_scanner;
     delete ebel_text;

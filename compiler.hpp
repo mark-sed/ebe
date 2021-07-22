@@ -28,7 +28,9 @@ namespace Error {
         INTERNAL,      ///< Internal compiler error (such as unable to allocate memory)
         FILE_ACCESS,   ///< Problem opening/writing/working with users files (not internal config files)
         ARGUMENTS,     ///< Problem with user arguments
-        SYNTACTIC      ///< Syntactical error
+        SYNTACTIC,     ///< Syntactical error
+        SEMANTIC,      ///< Semantical error
+        UNIMPLEMENTED  ///< Problems with instruction
     };
 
     /**
@@ -45,6 +47,8 @@ namespace Error {
      * @param msg Info message to be printed for the user
      */
     [[noreturn]] void error(Error::ErrorCode code, const char *msg);
+
+    void warning(const char *msg);
 }
 
 /**

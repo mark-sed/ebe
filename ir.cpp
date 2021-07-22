@@ -12,7 +12,10 @@
 #include <list>
 #include <set>
 #include <iomanip>
+#include <iterator>
 #include "ir.hpp"
+#include "instruction.hpp"
+#include "compiler.hpp"
 
 using namespace IR;
 
@@ -37,30 +40,31 @@ Word::Word(std::string text, Type type) : text{text}, type{type} {
 }
 
 Node::Node() {
-    this->nodes = new std::list<std::list<Word> *>();
+    this->nodes = new std::list<std::list<Word *> *>();
 }
 
 Node::~Node() {
     for(auto const &line: *this->nodes){
+        // FIXME: add delete for words
         delete line;
     }
     delete nodes;
 }
 
-void Node::push_back(unsigned long line, Word value){
+void Node::push_back(unsigned long line, Word *value){
     if(line-1 >= this->nodes->size()){
-        this->nodes->push_back(new std::list<Word>());
+        this->nodes->push_back(new std::list<Word *>());
     }
     auto index_line = this->nodes->begin();
     std::advance(index_line, line);
     (*index_line)->push_back(value);
 }
 
-void Node::push_back(std::list<Word> *line){
+void Node::push_back(std::list<Word *> *line){
     this->nodes->push_back(line);
 }
 
-Pass::Pass(const char *pass_name) : pass_name{pass_name} {
+Pass::Pass(const char *pass_name) : pass_name{pass_name}, env{} {
     this->pipeline = new std::vector<Inst::Instruction *>();
 }
 
@@ -83,11 +87,37 @@ PassWords::PassWords() : Pass("Words") {
 
 }
 
+void PassWords::process(IR::Node *text) {
+    if(this->pipeline->empty()){
+        return;
+    }
+    // Iterate through lines of text
+    for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
+        size_t column = 0;
+        for(auto word = (*line)->begin(); word != (*line)->end(); ++word, ++column){
+            if(!this->env.loop && column >= this->pipeline->size()){
+                break;
+            }
+            Inst::Instruction *inst = (*this->pipeline)[column];
+            inst->exec(word, *line, this->env);
+            
+        }
+    }
+}
+
 PassLines::PassLines() : Pass("Lines") {
 
 }
 
+void PassLines::process(IR::Node *text) {
+    
+}
+
 PassDocuments::PassDocuments() : Pass("Documents") {
+    //Error::warning("Document pass is not yet implemented");
+}
+
+void PassDocuments::process(IR::Node *text) {
 
 }
 
@@ -114,21 +144,21 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
     for(auto const& line: *node.nodes){
         out << std::setfill('0') << std::setw(2) << line_number << ". ";
         bool first = true;
-        for(auto const &word: *line){
+        for(auto const *word: *line){
             if(!first){
                 out << " -> ";
             }
             first = false;
             // Print word's type and value
-            out << "(" << get_type_name(word.type) << ")";
-            if((word.type == IR::Type::DELIMITER || word.type == IR::Type::SYMBOL) && 
-               (!std::isprint(word.text[0]) || NOT_PRINT.find(word.text[0]) != NOT_PRINT.end())){
-                for(auto c: word.text){
+            out << "(" << get_type_name(word->type) << ")";
+            if((word->type == IR::Type::DELIMITER || word->type == IR::Type::SYMBOL) && 
+               (!std::isprint(word->text[0]) || NOT_PRINT.find(word->text[0]) != NOT_PRINT.end())){
+                for(auto c: word->text){
                     // For non printable or not visible charactets print hex value
                     out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
                 }
             }else{
-                out << word.text;
+                out << word->text;
             }
         }
         line_number++;
@@ -137,25 +167,25 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
     return out;
 }
 
-std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node){
+std::ostream& operator<< (std::ostream &out, const std::list<IR::Word *>& node){
     static const std::set NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
     // TODO: Add detail level (using args)
     bool first = true;
-    for(auto const &word: node){
+    for(auto const *word: node){
         if(!first){
             out << " -> ";
         }
         first = false;
         // Print word's type and value
-        out << "(" << get_type_name(word.type) << ")";
-        if((word.type == IR::Type::DELIMITER || word.type == IR::Type::SYMBOL) && 
-            (!std::isprint(word.text[0]) || NOT_PRINT.find(word.text[0]) != NOT_PRINT.end())){
-            for(auto c: word.text){
+        out << "(" << get_type_name(word->type) << ")";
+        if((word->type == IR::Type::DELIMITER || word->type == IR::Type::SYMBOL) && 
+            (!std::isprint(word->text[0]) || NOT_PRINT.find(word->text[0]) != NOT_PRINT.end())){
+            for(auto c: word->text){
                 // For non printable or not visible charactets print hex value
                 out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
             }
         }else{
-            out << word.text;
+            out << word->text;
         }
     }
     return out;

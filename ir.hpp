@@ -18,6 +18,11 @@
 #include <ostream>
 #include "instruction.hpp"
 
+// Forward declarations
+namespace Inst {
+    class Instruction;
+}
+
 /**
  * Namespace for intermediate representation (IR) resources
  */
@@ -65,7 +70,7 @@ namespace IR {
      */
     class Node {
     public:
-        std::list<std::list<Word> *> *nodes;  ///< All IR nodes
+        std::list<std::list<Word *> *> *nodes;  ///< All IR nodes
 
         /** Constructor */
         Node();
@@ -78,16 +83,24 @@ namespace IR {
          * @param value Word to be pushed into the line
          * @note push_back(line) method is prefered to this one because of the better time complexity
          */
-        void push_back(unsigned long line, Word value);
+        void push_back(unsigned long line, Word *value);
 
         /**
          * Pushes new line into the nodes
          * @param line Line to be pushed
          * @note This method is prefered to push_back(line, value) because of the better time complexity
          */
-        void push_back(std::list<Word> *line);
+        void push_back(std::list<Word *> *line);
 
         //friend std::ostream& operator<< (std::ostream &out, const Node& node);
+    };
+
+    /**
+     * Holds current pass settings from instructions
+     */
+    struct PassEnvironment {
+        bool loop;
+        PassEnvironment() : loop{false} {};
     };
 
     /**
@@ -97,6 +110,7 @@ namespace IR {
     public:
         const char *pass_name;                       ///< Name of the pass (needed for error printing)
         std::vector<Inst::Instruction *> *pipeline;  ///< Pipeline of instructions
+        PassEnvironment env;
     protected:
         /** 
          * Constructor
@@ -117,6 +131,12 @@ namespace IR {
          * @param pipeline New pipeline
          */
         void set_pipeline(std::vector<Inst::Instruction *> *pipeline);
+
+        /**
+         * Processes text through pipeline
+         * @param text Text to be processed
+         */
+        virtual void process(IR::Node *text) = 0;
     };
 
     /**
@@ -126,6 +146,8 @@ namespace IR {
     public:
         /** Constructor */
         PassWords();
+
+        void process(IR::Node *text) override;
     };
 
     /**
@@ -135,6 +157,8 @@ namespace IR {
     public:
         /** Constructor */
         PassLines();
+
+        void process(IR::Node *text) override;
     };
 
     /**
@@ -144,6 +168,8 @@ namespace IR {
     public:
         /** Constructor */
         PassDocuments();
+
+        void process(IR::Node *text) override;
     };
 
     /**

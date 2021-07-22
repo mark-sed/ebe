@@ -13,6 +13,15 @@
 #define _INSTRUCTION_HPP_
 
 #include <vector>
+#include <list>
+#include <iterator>
+#include "ir.hpp"
+
+// Forward declarations
+namespace IR{
+    class Word;
+    struct PassEnvironment;
+}
 
 /** 
  * Namespace for instructions to not have class prefix 
@@ -37,6 +46,14 @@ namespace Inst {
          * @param out Stream to output to
          */
         virtual void format_args(std::ostream &out);
+
+        /**
+         * Instruction execution for PassWords
+         * @param word Iterator pointing to the input word in a line
+         * @param line The whole line
+         * @param env Pass environment
+         */
+        virtual void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) = 0;
     };
 
     // Sort instructions alphabetically
@@ -49,6 +66,7 @@ namespace Inst {
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
         CONCAT(unsigned int arg1) : arg1{arg1} {}
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
     };
 
     class DEL : public Instruction {
@@ -56,6 +74,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         DEL(){}
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
     };
 
     class LOOP : public Instruction {
@@ -63,6 +82,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         LOOP(){}
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
     };
 
     class NOP : public Instruction {
@@ -70,6 +90,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         NOP(){}
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
     };
 
     class PASS : public Instruction {
@@ -77,6 +98,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override {}
     };
 
     class SWAP : public Instruction {
@@ -87,6 +109,7 @@ namespace Inst {
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out);
         SWAP(unsigned int arg1) : arg1{arg1} {}
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
     };
 
 };

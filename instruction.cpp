@@ -11,9 +11,11 @@
 
 #include <string>
 #include <ostream>
+#include <algorithm>
 #include "instruction.hpp"
 #include "utils.hpp"
 #include "compiler.hpp"
+#include "ir.hpp"
 
 using namespace Inst;
 
@@ -41,6 +43,32 @@ const char * const SWAP::NAME = "SWAP";
 
 inline void Instruction::format_args(std::ostream &out){
     
+}
+
+void Instruction::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) {
+    
+}
+
+void CONCAT::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    
+}
+
+void DEL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    
+}
+
+void LOOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    
+}
+
+void NOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    
+}
+
+void SWAP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    auto src = word;
+    std::advance(word, this->arg1);
+    std::iter_swap(src, word);
 }
 
 inline void CONCAT::format_args(std::ostream &out){

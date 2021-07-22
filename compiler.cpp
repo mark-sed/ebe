@@ -21,7 +21,9 @@ const char *Error::get_code_name(Error::ErrorCode c){
         "Internal",
         "File access",
         "Arguments",
-        "Syntactic"
+        "Syntactic",
+        "Semantic",
+        "Unimplemented"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
     if(c < names_size){
@@ -34,6 +36,10 @@ const char *Error::get_code_name(Error::ErrorCode c){
     std::cerr << "ERROR (" << Error::get_code_name(code) << "): " 
               << msg << "!" << std::endl;
     std::exit(code);
+}
+
+inline void Error::warning(const char *msg){
+    std::cerr << "WARNING: " << msg << std::endl;
 }
 
 [[noreturn]] void Compiler::error(Error::ErrorCode code, const char *file, 
