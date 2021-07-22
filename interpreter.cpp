@@ -24,15 +24,4 @@ void Interpreter::parse(IR::Node *text) {
     for(auto pass: (*this->ebel->nodes)){
         pass->process(text);
     }
-
-    /*
-    // Iterate through lines of text
-    for(auto &line: *text->nodes){
-        // Iterate words in line
-        size_t column = 0;
-        for(auto &word: *line){
-            this->ebel
-            column++;
-        }
-    }*/
 }

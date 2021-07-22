@@ -17,6 +17,8 @@
 #include "compiler.hpp"
 #include "ir.hpp"
 
+#include <iostream>
+
 using namespace Inst;
 
 // TODO: Convert to macro extracting class name
@@ -54,7 +56,8 @@ void CONCAT::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *
 }
 
 void DEL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
-    
+    // FIXME: Erase makes sigsegv 
+    //line->erase(word);
 }
 
 void LOOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
@@ -66,6 +69,7 @@ void NOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *lin
 }
 
 void SWAP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    // FIXME: Check if advanced iterator is correct
     auto src = word;
     std::advance(word, this->arg1);
     std::iter_swap(src, word);

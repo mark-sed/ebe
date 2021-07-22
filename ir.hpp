@@ -92,7 +92,10 @@ namespace IR {
          */
         void push_back(std::list<Word *> *line);
 
-        //friend std::ostream& operator<< (std::ostream &out, const Node& node);
+        /**
+         * Converts IR to the output format for user
+         */
+        std::string output();
     };
 
     /**

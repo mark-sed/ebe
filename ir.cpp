@@ -12,8 +12,11 @@
 #include <list>
 #include <set>
 #include <iomanip>
+#include <sstream>
+#include <string>
 #include <iterator>
 #include "ir.hpp"
+#include "arg_parser.hpp"
 #include "instruction.hpp"
 #include "compiler.hpp"
 
@@ -62,6 +65,17 @@ void Node::push_back(unsigned long line, Word *value){
 
 void Node::push_back(std::list<Word *> *line){
     this->nodes->push_back(line);
+}
+
+std::string Node::output(){
+    std::stringstream out;
+    for(auto const& line: *(this->nodes)){
+        for(auto const *word: *line){
+            out << word->text;
+        }
+        out << Args::arg_opts.line_delim;
+    }
+    return out.str();
 }
 
 Pass::Pass(const char *pass_name) : pass_name{pass_name}, env{} {

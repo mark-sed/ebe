@@ -56,7 +56,7 @@ void interpret(const char *ebel_f, const char *input_f, const char *output_f){
     auto ebel_scanner = new EbelScanner();
     auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
 
-    std::cout << *ebel_ir;
+    //std::cout << *ebel_ir;
 
     // Preprocessing input file
     auto text_preproc = new Preprocessor();
@@ -65,13 +65,15 @@ void interpret(const char *ebel_f, const char *input_f, const char *output_f){
     // Syntactical check/parse of input file
     auto text_scanner = new Scanner();
     auto text_ir = text_scanner->process(text_vect, input_f);
+    std::cout << "\n-------IN---------\n";
+    std::cout << text_ir->output();
 
     // Interpret
     auto interpreter = new Interpreter(ebel_ir);
     interpreter->parse(text_ir);
 
     std::cout << "\n-------OUT---------\n";
-    std::cout << *text_ir << std::endl;
+    std::cout << text_ir->output();
 
     // Cleanup
     delete text_ir;
