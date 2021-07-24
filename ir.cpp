@@ -48,7 +48,9 @@ Node::Node() {
 
 Node::~Node() {
     for(auto const &line: *this->nodes){
-        // FIXME: add delete for words
+        for(auto const &word: *line){
+            delete word;
+        }
         delete line;
     }
     delete nodes;
@@ -100,21 +102,32 @@ void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
 PassWords::PassWords() : Pass("Words") {
 
 }
-
 void PassWords::process(IR::Node *text) {
+    // FIXME: On a first loop make all instructions be executed and when looping just till the loop - change loop to iterator to the loop inst?
     if(this->pipeline->empty()){
         return;
     }
     // Iterate through lines of text
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
         size_t column = 0;
-        for(auto word = (*line)->begin(); word != (*line)->end(); ++word, ++column){
+        env.loop = false;
+        for(auto word = (*line)->begin(); word != (*line)->end(); ++word){
+            // Break when not looping and there are no more instructions for the line
             if(!this->env.loop && column >= this->pipeline->size()){
                 break;
             }
             Inst::Instruction *inst = (*this->pipeline)[column];
             inst->exec(word, *line, this->env);
-            
+            if(env.repeat_instruction){
+                --word;
+                env.repeat_instruction = false;
+            }
+            // Column value control
+            ++column;
+            if(this->env.loop && column >= this->pipeline->size()){
+                // In a loop
+                column = 0;
+            }
         }
     }
 }

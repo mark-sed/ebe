@@ -57,11 +57,15 @@ void CONCAT::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *
 
 void DEL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
     // FIXME: Erase makes sigsegv 
-    //line->erase(word);
+    delete *word;
+    word = line->erase(word);
+    // Word was deleted, make sure to not skip word
+    env.repeat_instruction = true;
 }
 
 void LOOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
-    
+    env.loop = true;
+    env.repeat_instruction = true;
 }
 
 void NOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
@@ -69,7 +73,11 @@ void NOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *lin
 }
 
 void SWAP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
-    // FIXME: Check if advanced iterator is correct
+    // Check if advanced iterator is correct otherwise dont do anything
+    if(std::distance(word, line->end()) <= this->arg1){
+        // TODO: Add log
+        return;
+    }
     auto src = word;
     std::advance(word, this->arg1);
     std::iter_swap(src, word);

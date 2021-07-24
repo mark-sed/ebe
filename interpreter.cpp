@@ -18,8 +18,6 @@ Interpreter::Interpreter(IR::EbelNode *ebel) : Compiler("Interpreter"), ebel{ebe
 }
 
 void Interpreter::parse(IR::Node *text) {
-    IR::Node *output = new IR::Node;
-
     // Iterate through passes
     for(auto pass: (*this->ebel->nodes)){
         pass->process(text);

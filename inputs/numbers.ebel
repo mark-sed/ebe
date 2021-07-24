@@ -1,3 +1,4 @@
-DEL
 NOP
-SWAP 1
+NOP
+DEL
+LOOP

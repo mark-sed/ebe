@@ -103,7 +103,8 @@ namespace IR {
      */
     struct PassEnvironment {
         bool loop;
-        PassEnvironment() : loop{false} {};
+        bool repeat_instruction;
+        PassEnvironment() : loop{false}, repeat_instruction{false} {};
     };
 
     /**
@@ -122,7 +123,7 @@ namespace IR {
         Pass(const char *pass_name);
     public:
         /** Destructor */
-        ~Pass();
+        virtual ~Pass();
         /**
          * Pushes a new instruction into the pipeline
          * @param inst Instruction to be pushed
