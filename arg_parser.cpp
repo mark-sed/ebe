@@ -21,26 +21,31 @@
 #include "ebe.hpp"
 
 /** Text to be displayed to user when --help option is used */
-const char *HELP_TEXT = "Usage: ebe [options] file\n"\
-"Options:\n"\
-"  --help -h                   Prints this text.\n"\
-"  --version                   Prints compiler's version information.\n"\
-"  -alpha-num                  Compiler will group text with numbers if they're not separated.\n"\
-"  -alpha-sym                  Compiler will group text with symbols if they're not separated.\n"\
-"  -group-delim                Multiple delimiters after each other will be parsed as one delimiter.\n"\
-"  -group-sym                  Multiple symbols after each other will be parsed as one symbol.\n"\
-"  --float-delim <character>   Character used in your locale as a floating point dot (by default this is `.`).\n"\
-"  -in <file> --input <file>   File from which will be read input example text.\n"\
-"  -out <file> --output <file> File from which will be read output example text.\n"\
-"  -o <file>                   File to which will be output program saved.";
+const char *HELP_TEXT = "Usage: ebe [options] file\n"
+"Options:\n"
+"  --help -h                   Prints this text.\n"
+"  --version                   Prints compiler's version information.\n"
+"  -alpha-num                  Compiler will group text with numbers if they're not separated.\n"
+"  -alpha-sym                  Compiler will group text with symbols if they're not separated.\n"
+"  -group-delim                Multiple delimiters after each other will be parsed as one delimiter.\n"
+"  -group-sym                  Multiple symbols after each other will be parsed as one symbol.\n"
+"  --float-delim <character>   Character used in your locale as a floating point dot (by default this is `.`).\n"
+"  -in <file> --input <file>   File from which will be read input example text.\n"
+"  -out <file> --output <file> File from which will be read output example text.\n"
+"  -o <file>                   File to which will be output program saved.\n"
+"  -i <file>                   Ebel code to be interpreted over all other argument files.\n"
+;
 // TODO: Add delimiter definition option
 
 using namespace Args;
 
 /** A global variable that can be used anywhere to read user compilation options */
 ArgOpts Args::arg_opts {
+    .interpret_mode = false,
     .file_in = nullptr,
     .file_out = nullptr,
+    .ebel_file = nullptr,
+    .int_files{},
     .alpha_num = false,
     .alpha_sym = false,
     .group_delim = false,
@@ -104,7 +109,6 @@ void Args::parse_args(int argc, char *argv[]){
     static const std::set<std::string> NO_VAL_OPTS{"-alpha-num", "-alpha-sym", "-group-delim", "-group-sym"};
     // TODO: Check for unknown switches and notify
     // TODO: If -in is not specified but -out is, then read -out from stdin
-    // TODO: Implement -o
     if(argc == 0){
         print_help();
     }
@@ -116,16 +120,37 @@ void Args::parse_args(int argc, char *argv[]){
     if(exists_option(argv, argv+argc, "--version", "")){
         print_version();
     }
+
+    // Check if interpreting
+    if(exists_option(argv, argv+argc, "-i", "")){
+        arg_opts.interpret_mode = true;
+        if(!(arg_opts.ebel_file = get_option_value(argv, argv+argc, "-i", ""))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for ebel program file");
+        }
+    }
+
     // Input file
     if(exists_option(argv, argv+argc, "-in", "--input")){
+        if(arg_opts.interpret_mode){
+            Error::error(Error::ErrorCode::ARGUMENTS, "-in/--input option is not supported in interpret mode");
+        }
         if(!(arg_opts.file_in = get_option_value(argv, argv+argc, "-in", "--input"))){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for example input file");
         }
     }
     // Output file
     if(exists_option(argv, argv+argc, "-out", "--output")){
+        if(arg_opts.interpret_mode){
+            Error::error(Error::ErrorCode::ARGUMENTS, "-out/--output option is not supported in interpret mode");
+        }
         if(!(arg_opts.file_out = get_option_value(argv, argv+argc, "-out", "--output"))){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for example output file");
+        }
+    }
+    // Output ebel file
+    if(exists_option(argv, argv+argc, "-o", "")){
+        if(!(arg_opts.ebel_file = get_option_value(argv, argv+argc, "-o", ""))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for output program file");
         }
     }
     // Parsing options
@@ -153,7 +178,34 @@ void Args::parse_args(int argc, char *argv[]){
     }
 
     // Check if needed switches are set
-    if(!arg_opts.file_in){
+    if(!arg_opts.interpret_mode){
+        if(!arg_opts.file_in){
+            bool was_switch = false;
+            for(int i = 0; i < argc; i++){
+                if(argv[i][0] == '-'){
+                    if(NO_VAL_OPTS.find(std::string(argv[i])) == NO_VAL_OPTS.end()){
+                        // Check for options without values
+                        was_switch = true;
+                    }
+                    else{
+                        was_switch = false;
+                    }
+                }
+                else if(!was_switch){
+                    arg_opts.file_in = argv[i];
+                }
+                else{
+                    was_switch = false;
+                }
+            }
+            if(!arg_opts.file_in && !arg_opts.file_out){
+                // If none of the files was passed in, print error
+                Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for example input file");
+            }
+        }
+    }
+    else{
+        // In interpret mode every non option argument is taken as an input file for interpreting
         bool was_switch = false;
         for(int i = 0; i < argc; i++){
             if(argv[i][0] == '-'){
@@ -166,15 +218,15 @@ void Args::parse_args(int argc, char *argv[]){
                 }
             }
             else if(!was_switch){
-                arg_opts.file_in = argv[i];
+                arg_opts.int_files.push_back(argv[i]);
             }
             else{
                 was_switch = false;
             }
         }
-        if(!arg_opts.file_in && !arg_opts.file_out){
-            // If none of the files was passed in, print error
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for example input file");
+        // If there is no file, read stdin
+        if(arg_opts.int_files.empty()){
+            Error::error(Error::ErrorCode::UNIMPLEMENTED, "Reading input from stdin is not yet implemented, please use a file");
         }
     }
 }

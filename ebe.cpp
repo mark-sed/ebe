@@ -11,6 +11,7 @@
  */
 
 #include <iostream> 
+#include <vector>
 #include "ebe.hpp"
 #include "preprocessor.hpp"
 #include "arg_parser.hpp"
@@ -45,7 +46,10 @@ void compile(const char *f_in, const char *f_out) {
     delete preproc;
 }
 
-void interpret(const char *ebel_f, const char *input_f, const char *output_f){
+void interpret(const char *ebel_f, std::vector<const char *> input_files){
+    //TODO: Make this work for all files in input_files
+    auto input_f = input_files[0];
+    
     // Preprocessing
     auto ebel_preproc = new EbelPreprocessor();
     auto ebel_text = ebel_preproc->process(ebel_f);
@@ -88,10 +92,14 @@ void interpret(const char *ebel_f, const char *input_f, const char *output_f){
 
 // Main
 int main(int argc, char *argv[]){
-    // Parse arguments
+    // Parse arguments (no need to make sure there are args because help is printed if argc is low)
     Args::parse_args(argc-1, &argv[1]);
     // Start compilation of example input files
-    //compile(Args::arg_opts.file_in, Args::arg_opts.file_out);
-    interpret(argv[1], argv[2], argv[3]);
+    if(Args::arg_opts.interpret_mode){
+        interpret(Args::arg_opts.ebel_file, Args::arg_opts.int_files);
+    }
+    else{
+        compile(Args::arg_opts.file_in, Args::arg_opts.file_out);
+    }
     return 0;
 }
