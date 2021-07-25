@@ -69,14 +69,11 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     // Syntactical check/parse of input file
     auto text_scanner = new Scanner();
     auto text_ir = text_scanner->process(text_vect, input_f);
-    std::cout << "\n-------IN---------\n";
-    std::cout << text_ir->output();
 
     // Interpret
     auto interpreter = new Interpreter(ebel_ir);
     interpreter->parse(text_ir);
 
-    std::cout << "\n-------OUT---------\n";
     std::cout << text_ir->output();
 
     // Cleanup
