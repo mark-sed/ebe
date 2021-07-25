@@ -20,6 +20,8 @@
 #include "instruction.hpp"
 #include "compiler.hpp"
 
+#include <iostream>
+
 using namespace IR;
 
 const char *IR::get_type_name(Type type) {
@@ -102,31 +104,37 @@ void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
 PassWords::PassWords() : Pass("Words") {
 
 }
+
 void PassWords::process(IR::Node *text) {
-    // FIXME: On a first loop make all instructions be executed and when looping just till the loop - change loop to iterator to the loop inst?
+    // TODO: Consider having similarities in one function
     if(this->pipeline->empty()){
         return;
     }
     // Iterate through lines of text
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
         size_t column = 0;
-        env.loop = false;
+        env.loop_inst = nullptr;
         for(auto word = (*line)->begin(); word != (*line)->end(); ++word){
             // Break when not looping and there are no more instructions for the line
-            if(!this->env.loop && column >= this->pipeline->size()){
+            if(!this->env.loop_inst && column >= this->pipeline->size()){
                 break;
             }
-            Inst::Instruction *inst = (*this->pipeline)[column];
-            inst->exec(word, *line, this->env);
-            if(env.repeat_instruction){
-                --word;
-                env.repeat_instruction = false;
+            else if(this->env.loop_inst && column >= this->pipeline->size()){
+                // This control has to be here in case loop is the last instruction
+                column = 0;
             }
-            // Column value control
+            Inst::Instruction *inst = (*this->pipeline)[column];
+            // To make sure loops are not executed on the first pass the loop control is before instruction execution
             ++column;
-            if(this->env.loop && column >= this->pipeline->size()){
+            if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
                 // In a loop
                 column = 0;
+            }
+            // Instruction execution
+            inst->exec(word, *line, this->env);
+            if(env.reprocess_obj){
+                --word;
+                env.reprocess_obj = false;
             }
         }
     }
@@ -137,6 +145,35 @@ PassLines::PassLines() : Pass("Lines") {
 }
 
 void PassLines::process(IR::Node *text) {
+    if(this->pipeline->empty()){
+        return;
+    }
+    size_t column = 0;
+    env.loop_inst = nullptr;
+    // Iterate through lines of text
+    for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
+        // Break when not looping and there are no more instructions for the line
+        if(!this->env.loop_inst && column >= this->pipeline->size()){
+            break;
+        }
+        else if(this->env.loop_inst && column >= this->pipeline->size()){
+            // This control has to be here in case loop is the last instruction
+            column = 0;
+        }
+        Inst::Instruction *inst = (*this->pipeline)[column];
+        // To make sure loops are not executed on the first pass the loop control is before instruction execution
+        ++column;
+        if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
+            // In a loop
+            column = 0;
+        }
+        // Instruction execution
+        inst->exec(line, text->nodes, this->env);
+        if(env.reprocess_obj){
+            --line;
+            env.reprocess_obj = false;
+        }
+    }
     
 }
 

@@ -29,50 +29,81 @@ const char * const NOP::NAME = "NOP";
 const char * const PASS::NAME = "PASS";
 const char * const SWAP::NAME = "SWAP";
 
-/*Inst::PassName Inst::get_pass_name(std::string name){
-    auto up_name = Utils::to_upper(name);
-    if(up_name == "WORDS"){
-        return PassName::WORDS;
-    }
-    if(up_name == "LINES"){
-        return PassName::LINES;
-    }
-    if(up_name == "DOCUMENTS"){
-        return PassName::DOCUMENTS;
-    }
-    Error::error(Error::ErrorCode::INTERNAL, "Unknown pass name conversion");
-}*/
-
 inline void Instruction::format_args(std::ostream &out){
     
 }
 
-void Instruction::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) {
-    
+inline void CONCAT::format_args(std::ostream &out){
+    out << this->arg1;
 }
 
+inline void SWAP::format_args(std::ostream &out){
+    out << this->arg1;
+}
+
+// Instruction interpretation
+
 void CONCAT::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
-    
+    // Words pass
+}
+
+void CONCAT::exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
+    // Lines pass
+    if(std::distance(line, doc->end()) <= this->arg1){
+        // TODO: Add log
+        return;
+    }
+    auto src = line;
+    std::advance(src, this->arg1);
+    (*line)->insert((*line)->end(), (*src)->begin(), (*src)->end());
+    doc->erase(src);
 }
 
 void DEL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
-    // FIXME: Erase makes sigsegv 
+    // Words pass
     delete *word;
     word = line->erase(word);
     // Word was deleted, make sure to not skip word
-    env.repeat_instruction = true;
+    env.reprocess_obj = true;
+}
+
+void DEL::exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
+    // Lines pass
+    for(auto word: **line){
+        delete word;
+    }
+    delete *line;
+    line = doc->erase(line);
+    env.reprocess_obj = true;
 }
 
 void LOOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
-    env.loop = true;
-    env.repeat_instruction = true;
+    // Words pass
+    env.loop_inst = this;
+    // This is not an instruction tied to a word so process word in next instruction
+    env.reprocess_obj = true;
+}
+
+void LOOP::exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
+    // Lines pass
+    env.loop_inst = this;
+    env.reprocess_obj = true;
 }
 
 void NOP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
-    
+    // Words pass
+}
+
+void NOP::exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
+    // Lines pass
 }
 
 void SWAP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    // Words pass
     // Check if advanced iterator is correct otherwise dont do anything
     if(std::distance(word, line->end()) <= this->arg1){
         // TODO: Add log
@@ -83,10 +114,14 @@ void SWAP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *li
     std::iter_swap(src, word);
 }
 
-inline void CONCAT::format_args(std::ostream &out){
-    out << this->arg1;
-}
-
-inline void SWAP::format_args(std::ostream &out){
-    out << this->arg1;
+void SWAP::exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
+    // Lines pass
+    if(std::distance(line, doc->end()) <= this->arg1){
+        // TODO: Add log
+        return;
+    }
+    auto src = line;
+    std::advance(line, this->arg1);
+    std::iter_swap(src, line);
 }

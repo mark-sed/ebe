@@ -54,6 +54,15 @@ namespace Inst {
          * @param env Pass environment
          */
         virtual void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) = 0;
+
+        /**
+         * Instruction execution for PassLines
+         * @param line Iterator pointing to the current line
+         * @param doc The whole document
+         * @param env Pass environment
+         */
+        virtual void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                          std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) = 0;
     };
 
     // Sort instructions alphabetically
@@ -67,6 +76,8 @@ namespace Inst {
         void format_args(std::ostream &out) override;
         CONCAT(unsigned int arg1) : arg1{arg1} {}
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
     };
 
     class DEL : public Instruction {
@@ -75,6 +86,8 @@ namespace Inst {
         const char * const get_name() override {return NAME;}
         DEL(){}
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
     };
 
     class LOOP : public Instruction {
@@ -83,6 +96,8 @@ namespace Inst {
         const char * const get_name() override {return NAME;}
         LOOP(){}
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
     };
 
     class NOP : public Instruction {
@@ -91,6 +106,8 @@ namespace Inst {
         const char * const get_name() override {return NAME;}
         NOP(){}
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
     };
 
     class PASS : public Instruction {
@@ -99,6 +116,8 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override {}
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override {}
     };
 
     class SWAP : public Instruction {
@@ -110,6 +129,8 @@ namespace Inst {
         void format_args(std::ostream &out);
         SWAP(unsigned int arg1) : arg1{arg1} {}
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
     };
 
 };

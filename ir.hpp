@@ -102,9 +102,9 @@ namespace IR {
      * Holds current pass settings from instructions
      */
     struct PassEnvironment {
-        bool loop;
-        bool repeat_instruction;
-        PassEnvironment() : loop{false}, repeat_instruction{false} {};
+        Inst::Instruction *loop_inst;  ///< Pointer to loop instruction for end of loop detection 
+        bool reprocess_obj;            ///< To make sure control instructions don't process an object
+        PassEnvironment() : loop_inst{nullptr}, reprocess_obj{false} {};
     };
 
     /**
