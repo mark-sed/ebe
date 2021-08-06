@@ -7,5 +7,11 @@ EXT=
 OUT_NAME=ebe
 PATHS=libs
 
-build: $(SRC)
+all: $(SRC)
 	$(CC) $(FLAGS) -I $(PATHS) -o $(OUT_NAME)$(EXT) $(FILES) $^ $(LIBS)
+
+check:
+	echo "Test are not yet implemented"
+
+install:
+	echo "Install is not yet implemented, use ./ebe"
