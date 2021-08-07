@@ -201,8 +201,12 @@ void EbelNode::push_back(Pass *pass){
     this->nodes->push_back(pass);
 }
 
+bool operator==(IR::Word &lhs, IR::Word &rhs){
+    return lhs.text == rhs.text;
+}
+
 std::ostream& operator<< (std::ostream &out, const Node& node){
-    static const std::set NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
+    static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
     // TODO: Add detail level (using args)
     long line_number = 1;
     for(auto const& line: *node.nodes){
@@ -232,7 +236,7 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
 }
 
 std::ostream& operator<< (std::ostream &out, const std::list<IR::Word *>& node){
-    static const std::set NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
+    static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
     // TODO: Add detail level (using args)
     bool first = true;
     for(auto const *word: node){

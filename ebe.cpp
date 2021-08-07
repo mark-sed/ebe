@@ -18,6 +18,7 @@
 #include "scanner.hpp"
 #include "ir.hpp"
 #include "interpreter.hpp"
+#include "engine_jenn.hpp"
 
 /**
  * Initializer and handler for compilation
@@ -35,9 +36,18 @@ void compile(const char *f_in, const char *f_out) {
     auto ir_in = scanner->process(in_text, f_in);
     auto ir_out = scanner->process(out_text, f_out);
 
-    std::cout << *ir_in;
+    std::cout << *ir_in << "---" << std::endl << *ir_out << std::endl;
+
+    // Evolution
+    auto engine = new EngineJenn(ir_in, ir_out);
+    float precision = -0.01f;
+    auto program = engine->generate(&precision);
+
+    std::cout << "Found program with " << (precision*100) << "% precision." << std::endl;
 
     // Cleanup
+    delete program;
+    delete engine;
     delete ir_in;
     delete ir_out;
     delete in_text;

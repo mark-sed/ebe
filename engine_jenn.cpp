@@ -10,7 +10,27 @@
  */
 
 #include "engine_jenn.hpp"
+#include "ir.hpp"
+#include "engine.hpp"
 
-EngineJenn::EngineJenn() : Engine("Jenn") {
+EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, "Jenn") {
+    // Create params
+    auto params = new GPEngineParams{
+        
+    };
+    set_params(params);
+}
+
+EngineJenn::~EngineJenn(){
+    delete params;
+}
+
+IR::EbelNode *EngineJenn::generate(float *precision){
+    auto program = new IR::EbelNode();
     
+    //auto compare_val = compare();
+    if(precision){
+        //*precision = compare_val; 
+    }
+    return program;
 }

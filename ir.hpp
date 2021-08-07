@@ -197,6 +197,11 @@ namespace IR {
 }
 
 /**
+ * Overloaded operator== for 2 Words used in IR comparison
+ */ 
+bool operator==(IR::Word &lhs, IR::Word &rhs);
+
+/**
  * Overloaded operator<< to print easily IR for debugging
  */
 std::ostream& operator<< (std::ostream &out, const IR::Node& node);

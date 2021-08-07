@@ -17,12 +17,16 @@
 /**
  * First implemented simple GP engine
  */
-class EngineJenn : public Engine {
+class EngineJenn : public GPEngine {
 public:
     /**
      * Constructor
      */
-    EngineJenn();
+    EngineJenn(IR::Node *text_in, IR::Node *text_out);
+    /** Destructor */
+    ~EngineJenn();
+
+    IR::EbelNode *generate(float *precision = nullptr) override;
 };
 
 #endif//_ENGINE_JENN_HPP_
