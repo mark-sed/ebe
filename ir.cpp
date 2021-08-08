@@ -193,7 +193,6 @@ EbelNode::~EbelNode(){
     for(auto const &pass: *this->nodes){
         delete pass;
     }
-    // Instructons won't be deleted here, they are singletons
     delete nodes;
 }
 

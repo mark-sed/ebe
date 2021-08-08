@@ -12,8 +12,15 @@
 #ifndef _ENGINE_HPP_
 #define _ENGINE_HPP_
 
+#include <stddef.h>
 #include "ir.hpp"
 #include "compiler.hpp"
+#include "gp.hpp"
+
+// Forward declarations
+namespace GP {
+    class Population;
+}
 
 /**
  * Main abstract class that all engines should inherit
@@ -52,7 +59,9 @@ public:
  * Struct used for configuring GP engine's evolution parameters
  */
 struct GPEngineParams {
-
+    size_t population_size;
+    size_t pheno_min_start_size;
+    size_t pheno_max_start_size;
 };
 
 /** Default GP engine params used in case params are not set by an engine */
@@ -64,6 +73,7 @@ extern GPEngineParams default_gpparams;
 class GPEngine : public Engine {
 protected:
     GPEngineParams *params;
+    GP::Population *population;
 
     /**
      * Constructor

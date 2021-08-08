@@ -19,7 +19,9 @@
 #include <iostream>
 
 GPEngineParams default_gpparams {
-
+    .population_size = 100,
+    .pheno_min_start_size = 3,
+    .pheno_max_start_size = 8
 };
 
 Engine::Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : Compiler("Engine"),
@@ -30,7 +32,6 @@ Engine::Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) :
 }
 
 float Engine::compare(IR::Node *ir1, IR::Node *ir2){
-    // TODO: Consider handeling somehow pits (1 incorrect DEL)
     // Count how many words are the same (in the same position)
     // Also count the size because size() is not constant complexity
     size_t matched = 0;
@@ -99,8 +100,6 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
         }
         return 0.0f;
     }
-
-    //std::cout << "Matched: " << matched << ", size1: " << ir1_size << ", size2: " << ir2_size << std::endl;
 
     return static_cast<float>(matched) / max_size;
 }

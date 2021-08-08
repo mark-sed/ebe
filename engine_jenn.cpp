@@ -12,16 +12,18 @@
 #include "engine_jenn.hpp"
 #include "ir.hpp"
 #include "engine.hpp"
+#include "gp.hpp"
 
 EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, "Jenn") {
     // Create params
-    auto params = new GPEngineParams{
-        
-    };
+    // TODO: Set the params for the best possible but also following ones specified by the user
+    auto params = new GPEngineParams(default_gpparams);
     set_params(params);
+    this->population = new GP::Population(params);
 }
 
 EngineJenn::~EngineJenn(){
+    delete population;
     delete params;
 }
 
