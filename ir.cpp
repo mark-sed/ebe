@@ -19,6 +19,7 @@
 #include "arg_parser.hpp"
 #include "instruction.hpp"
 #include "compiler.hpp"
+#include "rng.hpp"
 
 #include <iostream>
 
@@ -189,6 +190,19 @@ EbelNode::EbelNode() {
     this->nodes = new std::list<Pass *>();
 }
 
+EbelNode::EbelNode(GPEngineParams *params){
+    // Generating randomly filled ebel node for GP engine
+    this->nodes = new std::list<Pass *>();
+    // FIXME: Work with pass chances
+    auto pass = new PassWords();
+    // FIXME: Get random size_t not int
+    auto instrs = RNG::rand_int(params->pheno_min_pass_size, params->pheno_max_pass_size);
+    for(size_t i = 0; i < static_cast<size_t>(instrs); i++){
+        pass->push_back(Inst::rand_instruction());
+    }
+    this->nodes->push_back(pass);
+}
+
 EbelNode::~EbelNode(){
     for(auto const &pass: *this->nodes){
         delete pass;
@@ -204,14 +218,43 @@ bool operator==(IR::Word &lhs, IR::Word &rhs){
     return lhs.text == rhs.text;
 }
 
-std::ostream& operator<< (std::ostream &out, const Node& node){
-    static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
-    // TODO: Add detail level (using args)
-    long line_number = 1;
-    for(auto const& line: *node.nodes){
-        out << std::setfill('0') << std::setw(2) << line_number << ". ";
+
+namespace IR {
+    std::ostream& operator<< (std::ostream &out, const Node& node){
+        static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
+        // TODO: Add detail level (using args)
+        long line_number = 1;
+        for(auto const& line: *node.nodes){
+            out << std::setfill('0') << std::setw(2) << line_number << ". ";
+            bool first = true;
+            for(auto const *word: *line){
+                if(!first){
+                    out << " -> ";
+                }
+                first = false;
+                // Print word's type and value
+                out << "(" << get_type_name(word->type) << ")";
+                if((word->type == IR::Type::DELIMITER || word->type == IR::Type::SYMBOL) && 
+                (!std::isprint(word->text[0]) || NOT_PRINT.find(word->text[0]) != NOT_PRINT.end())){
+                    for(auto c: word->text){
+                        // For non printable or not visible charactets print hex value
+                        out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
+                    }
+                }else{
+                    out << word->text;
+                }
+            }
+            line_number++;
+            out << std::endl;
+        }
+        return out;
+    }
+
+    std::ostream& operator<< (std::ostream &out, const std::list<IR::Word *>& node){
+        static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
+        // TODO: Add detail level (using args)
         bool first = true;
-        for(auto const *word: *line){
+        for(auto const *word: node){
             if(!first){
                 out << " -> ";
             }
@@ -219,7 +262,7 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
             // Print word's type and value
             out << "(" << get_type_name(word->type) << ")";
             if((word->type == IR::Type::DELIMITER || word->type == IR::Type::SYMBOL) && 
-               (!std::isprint(word->text[0]) || NOT_PRINT.find(word->text[0]) != NOT_PRINT.end())){
+                (!std::isprint(word->text[0]) || NOT_PRINT.find(word->text[0]) != NOT_PRINT.end())){
                 for(auto c: word->text){
                     // For non printable or not visible charactets print hex value
                     out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
@@ -228,51 +271,24 @@ std::ostream& operator<< (std::ostream &out, const Node& node){
                 out << word->text;
             }
         }
-        line_number++;
-        out << std::endl;
+        return out;
     }
-    return out;
-}
 
-std::ostream& operator<< (std::ostream &out, const std::list<IR::Word *>& node){
-    static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
-    // TODO: Add detail level (using args)
-    bool first = true;
-    for(auto const *word: node){
-        if(!first){
-            out << " -> ";
+    std::ostream& operator<< (std::ostream &out, const IR::Pass& pass){
+        const char * INDENT = "  ";
+        out << pass.pass_name << " pass:" << std::endl;
+        for(auto inst: *pass.pipeline){
+            out << INDENT << inst->get_name() << " ";
+            inst->format_args(out);
+            out << std::endl;
         }
-        first = false;
-        // Print word's type and value
-        out << "(" << get_type_name(word->type) << ")";
-        if((word->type == IR::Type::DELIMITER || word->type == IR::Type::SYMBOL) && 
-            (!std::isprint(word->text[0]) || NOT_PRINT.find(word->text[0]) != NOT_PRINT.end())){
-            for(auto c: word->text){
-                // For non printable or not visible charactets print hex value
-                out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
-            }
-        }else{
-            out << word->text;
+        return out;
+    }
+
+    std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node){
+        for(auto const &pass: *node.nodes){
+            out << *pass;
         }
+        return out;
     }
-    return out;
-}
-
-std::ostream& operator<< (std::ostream &out, const IR::Pass& pass){
-    const char * INDENT = "  ";
-    out << pass.pass_name << " pass:" << std::endl;
-    for(auto inst: *pass.pipeline){
-        out << INDENT << inst->get_name() << " ";
-        inst->format_args(out);
-        out << std::endl;
-    }
-    return out;
-}
-
-
-std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node){
-    for(auto const &pass: *node.nodes){
-        out << *pass;
-    }
-    return out;
 }

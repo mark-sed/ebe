@@ -10,13 +10,20 @@
  */
 
 #include <list>
+#include <iostream>
+#include <limits>
 #include "gp.hpp"
+#include "ir.hpp"
 #include "engine.hpp"
 
 using namespace GP;
 
 Population::Population(struct GPEngineParams *params) : params(params) {
-    this->candidates = new std::list<IR::EbelNode *>(params->population_size);
+    this->candidates = new std::list<IR::EbelNode *>();
+    for(size_t i = 0; i < params->population_size; i++){
+        this->candidates->push_back(new IR::EbelNode(params));
+        this->fitness->push_back(-1*std::numeric_limits<float>::infinity());
+    }
 }
 
 Population::~Population(){
@@ -24,4 +31,16 @@ Population::~Population(){
         delete pheno;
     }
     delete this->candidates;
+}
+
+namespace GP {
+    std::ostream& operator<< (std::ostream &out, const GP::Population& popul){
+        size_t i = 0;
+        for(const auto& c: *popul.candidates){
+            // TODO: Add fitness
+            out << "# Phenotype " << i++ << " with fitness of << " << ":" << std::endl;
+            out << *c << std::endl;
+        }
+        return out;
+    }
 }

@@ -14,10 +14,16 @@
 
 #include <list>
 #include <stddef.h>
+#include <ostream>
 #include "ir.hpp"
 #include "engine.hpp"
 
 struct GPEngineParams;
+
+namespace IR {
+    class EbelNode;
+    class Node;
+}
 
 /** All genetic programming related resourced */
 namespace GP {
@@ -28,8 +34,10 @@ namespace GP {
     class Population {
     private:
         GPEngineParams *params;
-        std::list<IR::EbelNode *> *candidates;
+        friend std::ostream& operator<< (std::ostream &out, const GP::Population& popul);
     public:
+        std::list<IR::EbelNode *> *candidates;
+        std::list<float> *fitness;
         /**
          * Constructor, creates new population
          * @param params GP engine parameters
@@ -39,5 +47,6 @@ namespace GP {
         ~Population();
     };
 }
+
 
 #endif//_GP_HPP_

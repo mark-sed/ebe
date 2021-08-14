@@ -21,6 +21,7 @@ namespace Args {
 
     /**
      * Struct that holds all the compilation settings which can be changed by input arguments
+     * TODO: make evolutions and iterations be taken from the user and if not, then from the engine itself (some might need less some more iterations)
      */
     struct ArgOpts {
         bool interpret_mode;   ///< Interpret mode
@@ -34,6 +35,8 @@ namespace Args {
         bool group_sym;        ///< If multiple symbols should be group together
         char float_delim;      ///< Delimiter for floating point numbers (42.1 vs 42,1)
         char line_delim;       ///< Character determining the end of a line
+        size_t evolutions;     ///< How many evolutions at most should be done
+        size_t iterations;     ///< How many iterations are in one evolution
     };
 
     /**

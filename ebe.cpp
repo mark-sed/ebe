@@ -19,6 +19,7 @@
 #include "ir.hpp"
 #include "interpreter.hpp"
 #include "engine_jenn.hpp"
+#include "rng.hpp"
 
 /**
  * Initializer and handler for compilation
@@ -41,12 +42,13 @@ void compile(const char *f_in, const char *f_out) {
     // Evolution
     auto engine = new EngineJenn(ir_in, ir_out);
     float precision = -0.01f;
-    auto program = engine->generate(&precision);
-
-    std::cout << "Found program with " << (precision*100) << "% precision." << std::endl;
+    for(size_t e = 0; e < Args::arg_opts.evolutions; ++e){
+        auto program = engine->generate(&precision);
+        std::cout << "Found program with " << (precision*100) << "% precision." << std::endl;
+        delete program;
+    }
 
     // Cleanup
-    delete program;
     delete engine;
     delete ir_in;
     delete ir_out;
@@ -101,6 +103,9 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
 int main(int argc, char *argv[]){
     // Parse arguments (no need to make sure there are args because help is printed if argc is low)
     Args::parse_args(argc-1, &argv[1]);
+    // Inits
+    RNG::init();
+
     // Start compilation of example input files
     if(Args::arg_opts.interpret_mode){
         interpret(Args::arg_opts.ebel_file, Args::arg_opts.int_files);

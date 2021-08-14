@@ -65,6 +65,13 @@ namespace Inst {
                           std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) = 0;
     };
 
+    /**
+     * TODO: Take in chances for instructions
+     * Generates a random instruction
+     * @return A random instruction
+     */ 
+    Instruction *rand_instruction();
+
     // Sort instructions alphabetically
 
     class CONCAT : public Instruction {

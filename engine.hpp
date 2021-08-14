@@ -21,6 +21,10 @@
 namespace GP {
     class Population;
 }
+namespace IR {
+    class Node;
+    class EbelNode;
+}
 
 /**
  * Main abstract class that all engines should inherit
@@ -59,9 +63,15 @@ public:
  * Struct used for configuring GP engine's evolution parameters
  */
 struct GPEngineParams {
-    size_t population_size;
-    size_t pheno_min_start_size;
-    size_t pheno_max_start_size;
+    // TODO: Maybe have this struct nested with more structs and then read it from a json if needed? or perhaps save it to ebel
+    size_t population_size;          ///< How many phenotypes should be in a population
+    size_t pheno_min_pass_size;      ///< Minimal amount of instructions in one phenotype's pass
+    size_t pheno_max_pass_size;      ///< Maximal amount of instructions in one phenotype's pass
+    size_t pheno_min_passes;         ///< Minimal amount of passes in one phenotype
+    size_t pheno_max_passes;         ///< Maximal amount of passes in one phenotype
+    float init_pass_words_chance;    ///< Chance of generating words pass on init
+    float init_pass_lines_chance;    ///< Chance of generating lines pass on init
+    float init_pass_pages_chance;    ///< Chance of generating pages pass on init
 };
 
 /** Default GP engine params used in case params are not set by an engine */
@@ -81,6 +91,13 @@ protected:
      */
     GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_name);
     virtual ~GPEngine() {}
+
+
+    /**
+     * Evaluates all the candidates and saves their fitness to fitness list
+     * @return Returns a node with 1.0f if present otherwise nullptr
+     */ 
+    IR::EbelNode *evaluate();
 public:
 
     /* Getter and setters */

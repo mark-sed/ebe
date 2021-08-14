@@ -17,11 +17,19 @@
 #include <string>
 #include <ostream>
 #include "instruction.hpp"
+#include "engine.hpp"
+#include "gp.hpp"
 
 // Forward declarations
 namespace Inst {
     class Instruction;
 }
+
+namespace GP {
+    class Population;
+}
+
+struct GPEngineParams;
 
 /**
  * Namespace for intermediate representation (IR) resources
@@ -52,6 +60,8 @@ namespace IR {
      * Word - text object of any type
      */
     class Word {
+    private:
+        friend std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node);
     public:
         std::string text;  ///< Text represantation of the word (as was in the file)
         Type type;         ///< Type parsed type of the word
@@ -69,6 +79,8 @@ namespace IR {
      * This is not a node holding specific value, but it holds all the other nodes
      */
     class Node {
+    private:
+        friend std::ostream& operator<< (std::ostream &out, const IR::Node& node);
     public:
         std::list<std::list<Word *> *> *nodes;  ///< All IR nodes
 
@@ -115,6 +127,8 @@ namespace IR {
         const char *pass_name;                       ///< Name of the pass (needed for error printing)
         std::vector<Inst::Instruction *> *pipeline;  ///< Pipeline of instructions
         PassEnvironment env;
+    private:
+        friend std::ostream& operator<< (std::ostream &out, const IR::Pass& pass);
     protected:
         /** 
          * Constructor
@@ -180,11 +194,20 @@ namespace IR {
      * Root node for ebel program holding all passes
      */
     class EbelNode {
+    private:
+        friend std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node);
     public:
         std::list<Pass *> *nodes;  ///< Passes holding instructions
 
         /** Constructor */
         EbelNode();
+
+        /**
+         * Constructor for generating random node
+         * @param params Genetic engine parameters to know how many instructions to create
+         */ 
+        EbelNode(GPEngineParams *params);
+
         /** Destructor */
         ~EbelNode();
 
@@ -193,6 +216,8 @@ namespace IR {
          * @param pass Pass to be pushed
          */
         void push_back(Pass *pass);
+
+        friend std::ostream& operator<< (std::ostream &out, const GP::Population& popul);
     };
 }
 
@@ -204,21 +229,21 @@ bool operator==(IR::Word &lhs, IR::Word &rhs);
 /**
  * Overloaded operator<< to print easily IR for debugging
  */
-std::ostream& operator<< (std::ostream &out, const IR::Node& node);
+//std::ostream& operator<< (std::ostream &out, const IR::Node& node);
 
 /**
  * Overloaded operator<< to print easily lists for debugging
  */
-std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node);
+//std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node);
 
 /**
  * Overloaded operator<< to print easily passes for debugging
  */
-std::ostream& operator<< (std::ostream &out, const IR::Pass& pass);
+//std::ostream& operator<< (std::ostream &out, const IR::Pass& pass);
 
 /**
  * Overloaded operator<< to print easily IR for debugging
  */
-std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node);
+//std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node);
 
 #endif//_IR_HPP_

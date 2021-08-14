@@ -16,6 +16,7 @@
 #include "utils.hpp"
 #include "compiler.hpp"
 #include "ir.hpp"
+#include "rng.hpp"
 
 #include <iostream>
 
@@ -39,6 +40,19 @@ inline void CONCAT::format_args(std::ostream &out){
 
 inline void SWAP::format_args(std::ostream &out){
     out << this->arg1;
+}
+
+Instruction *Inst::rand_instruction(){
+    // TODO: Make arguments be generated better and with passed in values
+    switch(RNG::rand_int(0, 5)){
+        case 0: return new CONCAT(RNG::rand_int(1, 5));
+        case 1: return new DEL();
+        case 2: return new LOOP();
+        case 3: return new NOP();
+        case 4: return new PASS();
+        case 5: return new SWAP(RNG::rand_int(1, 5));
+    }
+    return new NOP();
 }
 
 // Instruction interpretation

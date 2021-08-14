@@ -19,9 +19,14 @@
 #include <iostream>
 
 GPEngineParams default_gpparams {
-    .population_size = 100,
-    .pheno_min_start_size = 3,
-    .pheno_max_start_size = 8
+    .population_size = 10,
+    .pheno_min_pass_size = 1,
+    .pheno_max_pass_size = 5,
+    .pheno_min_passes = 1,
+    .pheno_max_passes = 1,
+    .init_pass_words_chance = 1.0f,
+    .init_pass_lines_chance = 0.0f,
+    .init_pass_pages_chance = 0.0f,
 };
 
 Engine::Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : Compiler("Engine"),
@@ -107,4 +112,10 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
 GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : 
                    Engine(text_in, text_out, engine_name) {
     params = &default_gpparams;
+}
+
+IR::EbelNode *GPEngine::evaluate() {
+    for(auto const *pheno: *this->population->candidates){
+        
+    }
 }
