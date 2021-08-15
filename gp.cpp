@@ -20,6 +20,7 @@ using namespace GP;
 
 Population::Population(struct GPEngineParams *params) : params(params) {
     this->candidates = new std::list<IR::EbelNode *>();
+    this->fitness = new std::list<float>();
     for(size_t i = 0; i < params->population_size; i++){
         this->candidates->push_back(new IR::EbelNode(params));
         this->fitness->push_back(-1*std::numeric_limits<float>::infinity());

@@ -351,7 +351,10 @@ IR::EbelNode *EbelScanner::process(std::vector<std::string> *text, const char *f
                 // LOOP
                 else if(parsed_inst == Inst::LOOP::NAME){
                     // FIXME: Check that LOOP is in correct place and maybe convert it into boolean in Pass?
-                    curr_pass->push_back(new Inst::LOOP());
+                    // Check if there are instructions to loop, otherwise skip loop
+                    if(!curr_pass->empty()){
+                        curr_pass->push_back(new Inst::LOOP());
+                    }
                 }
                 // NOP
                 else if(parsed_inst == Inst::NOP::NAME){
@@ -392,7 +395,10 @@ IR::EbelNode *EbelScanner::process(std::vector<std::string> *text, const char *f
         }
         line_number++;
     }
-    ir->push_back(curr_pass);
+    if(curr_pass){
+        // Pass might be nullptr in case of empty file
+        ir->push_back(curr_pass);
+    }
     return ir;
 }   
 

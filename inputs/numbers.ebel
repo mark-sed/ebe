@@ -1,3 +1,4 @@
-DEL
-NOP
+PASS words
+PASS words
+LOOP
 LOOP

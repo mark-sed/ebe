@@ -15,6 +15,7 @@
 #include "engine.hpp"
 #include "compiler.hpp"
 #include "ir.hpp"
+#include "interpreter.hpp"
 
 #include <iostream>
 
@@ -115,7 +116,15 @@ GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_nam
 }
 
 IR::EbelNode *GPEngine::evaluate() {
-    for(auto const *pheno: *this->population->candidates){
-        
+    int a = 0;
+    for(auto &pheno: *this->population->candidates){
+        std::cout << *pheno << std::endl;
+        auto interpreter = new Interpreter(pheno);
+        IR::Node text_copy = *this->text_in;
+        interpreter->parse(&text_copy);
+        std::cout << "Before: " << *this->text_in << "\nAfter: " << text_copy << std::endl;
+        if(a++ == 2)
+            break;
     }
+    return new IR::EbelNode();
 }

@@ -45,6 +45,17 @@ Word::Word(std::string text, Type type) : text{text}, type{type} {
 
 }
 
+Word::Word(const Word &other){
+    this->text = other.text;
+    this->type = other.type;
+}
+
+Word& Word::operator=(const Word &other){
+    this->text = other.text;
+    this->type = other.type;
+    return *this;
+}
+
 Node::Node() {
     this->nodes = new std::list<std::list<Word *> *>();
 }
@@ -57,6 +68,28 @@ Node::~Node() {
         delete line;
     }
     delete nodes;
+}
+
+Node::Node(const Node &other){
+    this->nodes = new std::list<std::list<Word *> *>();
+    for(const auto &line: *(other.nodes)){
+        auto line_list = new std::list<Word *>();
+        for(const auto &word: *line){
+            line_list->push_back(new Word(*word));
+        }
+        nodes->push_back(line_list);
+    }
+}
+
+Node& Node::operator=(const Node &other){
+    for(const auto &line: *(other.nodes)){
+        auto line_list = new std::list<Word *>();
+        for(const auto &word: *line){
+            line_list->push_back(new Word(*word));
+        }
+        nodes->push_back(line_list);
+    }
+    return *this;
 }
 
 void Node::push_back(unsigned long line, Word *value){
@@ -198,7 +231,14 @@ EbelNode::EbelNode(GPEngineParams *params){
     // FIXME: Get random size_t not int
     auto instrs = RNG::rand_int(params->pheno_min_pass_size, params->pheno_max_pass_size);
     for(size_t i = 0; i < static_cast<size_t>(instrs); i++){
-        pass->push_back(Inst::rand_instruction());
+        auto inst = Inst::rand_instruction();
+        // Make sure the program does not start with loop
+        // TODO: Add this to some checker so that when there are more constraints all are satisfied
+        while(i == 0 && inst->get_name() == Inst::LOOP::NAME){
+            delete inst;
+            inst = Inst::rand_instruction();
+        }
+        pass->push_back(inst);
     }
     this->nodes->push_back(pass);
 }

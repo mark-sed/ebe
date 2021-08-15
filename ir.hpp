@@ -31,6 +31,8 @@ namespace GP {
 
 struct GPEngineParams;
 
+#include <iostream>
+
 /**
  * Namespace for intermediate representation (IR) resources
  */
@@ -72,6 +74,11 @@ namespace IR {
          * @param type Words parsed type
          */
         Word(std::string text, Type type);
+        /** Copy constructor */
+        Word(const Word &other);
+
+        /** Copy operator */
+        Word& operator=(const Word &other);
     };
 
     /**
@@ -86,8 +93,13 @@ namespace IR {
 
         /** Constructor */
         Node();
+        /** Copy constructor */
+        Node(const Node &other);
         /** Destructor */
         ~Node();
+
+        /** Copy operator */
+        Node& operator=(const Node &other);
 
         /**
          * Pushes new word into specific line
@@ -149,6 +161,11 @@ namespace IR {
          * @param pipeline New pipeline
          */
         void set_pipeline(std::vector<Inst::Instruction *> *pipeline);
+
+        /** Check for emptyness of pipeline */
+        bool empty() {
+            return pipeline->empty();
+        }
 
         /**
          * Processes text through pipeline
