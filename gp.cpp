@@ -18,12 +18,14 @@
 
 using namespace GP;
 
+Phenotype::Phenotype(IR::EbelNode *program) : program{program}, fitness{-1*std::numeric_limits<float>::infinity()} {
+
+}
+
 Population::Population(struct GPEngineParams *params) : params(params) {
-    this->candidates = new std::list<IR::EbelNode *>();
-    this->fitness = new std::list<float>();
+    this->candidates = new std::list<Phenotype *>();
     for(size_t i = 0; i < params->population_size; i++){
-        this->candidates->push_back(new IR::EbelNode(params));
-        this->fitness->push_back(-1*std::numeric_limits<float>::infinity());
+        this->candidates->push_back(new Phenotype(new IR::EbelNode(params)));
     }
 }
 
@@ -38,10 +40,15 @@ namespace GP {
     std::ostream& operator<< (std::ostream &out, const GP::Population& popul){
         size_t i = 0;
         for(const auto& c: *popul.candidates){
-            // TODO: Add fitness
-            out << "# Phenotype " << i++ << " with fitness of << " << ":" << std::endl;
+            out << "# Phenotype " << i++ << " ";
             out << *c << std::endl;
         }
+        return out;
+    }
+
+    std::ostream& operator<< (std::ostream &out, const GP::Phenotype& pheno){
+        out << "fitness " << pheno.fitness << ":" << std::endl;
+        out << *(pheno.program) << std::endl;
         return out;
     }
 }

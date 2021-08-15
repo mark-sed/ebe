@@ -20,6 +20,7 @@
 // Forward declarations
 namespace GP {
     class Population;
+    class Phenotype;
 }
 namespace IR {
     class Node;
@@ -72,6 +73,7 @@ struct GPEngineParams {
     float init_pass_words_chance;    ///< Chance of generating words pass on init
     float init_pass_lines_chance;    ///< Chance of generating lines pass on init
     float init_pass_pages_chance;    ///< Chance of generating pages pass on init
+    float mutation_chance;           ///< Chance of mutation to happen
 };
 
 /** Default GP engine params used in case params are not set by an engine */
@@ -97,7 +99,7 @@ protected:
      * Evaluates all the candidates and saves their fitness to fitness list
      * @return Returns a node with 1.0f if present otherwise nullptr
      */ 
-    IR::EbelNode *evaluate();
+    GP::Phenotype *evaluate();
 public:
 
     /* Getter and setters */

@@ -43,8 +43,14 @@ void compile(const char *f_in, const char *f_out) {
     auto engine = new EngineJenn(ir_in, ir_out);
     float precision = -0.01f;
     for(size_t e = 0; e < Args::arg_opts.evolutions; ++e){
+        // FIXME: this calls generate on already evolved population, reset() is needed or new
         auto program = engine->generate(&precision);
         std::cout << "Found program with " << (precision*100) << "% precision." << std::endl;
+        if(precision >= 1.0f){
+            std::cout << "Perfectly fitting program found: " << std::endl << *program;
+            delete program;
+            break;
+        }
         delete program;
     }
 

@@ -44,12 +44,13 @@ inline void SWAP::format_args(std::ostream &out){
 
 Instruction *Inst::rand_instruction(){
     // TODO: Make arguments be generated better and with passed in values
-    switch(RNG::rand_int(0, 4)){
-        case 0: return new CONCAT(RNG::rand_int(1, 5));
+    // FIXME: return instructions only for specified pass
+    switch(RNG::rand_int(0, 3)){
+        case 0: return new SWAP(RNG::rand_int(1, 5));
         case 1: return new DEL();
         case 2: return new LOOP();
         case 3: return new NOP();
-        case 4: return new SWAP(RNG::rand_int(1, 5));
+        //case 4: return new CONCAT(RNG::rand_int(1, 5));
     }
     return new NOP();
 }

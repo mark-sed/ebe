@@ -14,6 +14,7 @@
 #include "engine.hpp"
 #include "gp.hpp"
 #include "arg_parser.hpp"
+#include "rng.hpp"
 
 #include <iostream>
 
@@ -26,17 +27,36 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
     this->population = new GP::Population(params);
 }
 
-EngineJenn::~EngineJenn(){
+EngineJenn::~EngineJenn() {
     delete population;
     delete params;
 }
 
-IR::EbelNode *EngineJenn::generate(float *precision){
+void EngineJenn::mutate(GP::Phenotype *pheno) {
+    // TODO: Implement
+}
+
+IR::EbelNode *EngineJenn::generate(float *precision) {
     // Iterations in an evolution
     for(size_t iter = 0; iter < Args::arg_opts.iterations; ++iter){
         // Eval population
-        this->evaluate();
+        auto perfect_pheno = this->evaluate();
+        if(perfect_pheno){
+            // 100 % precision found, return
+            if(precision){
+                *precision = perfect_pheno->fitness; 
+            }
+            return perfect_pheno->program;
+        }
+        // Mutate and crossover
+        for(auto &pheno: *this->population->candidates){
+            // Try mutate the phenotype
+            if(RNG::roll(params->mutation_chance)){
+                mutate(pheno);
+            }
+        }
     }
+    std::cout << *population;
     if(precision){
         //*precision = compare_val; 
     }

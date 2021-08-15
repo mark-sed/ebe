@@ -28,6 +28,16 @@ namespace IR {
 /** All genetic programming related resourced */
 namespace GP {
 
+    class Phenotype {
+    private:
+        friend std::ostream& operator<< (std::ostream &out, const GP::Phenotype& pheno);
+    public:
+        IR::EbelNode *program;
+        float fitness;
+
+        Phenotype(IR::EbelNode *program);
+    };
+
     /**
      * Population of phenotypes
      */ 
@@ -36,8 +46,7 @@ namespace GP {
         GPEngineParams *params;
         friend std::ostream& operator<< (std::ostream &out, const GP::Population& popul);
     public:
-        std::list<IR::EbelNode *> *candidates;
-        std::list<float> *fitness;
+        std::list<Phenotype *> *candidates;
         /**
          * Constructor, creates new population
          * @param params GP engine parameters
@@ -47,6 +56,5 @@ namespace GP {
         ~Population();
     };
 }
-
 
 #endif//_GP_HPP_

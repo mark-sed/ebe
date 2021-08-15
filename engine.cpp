@@ -28,6 +28,7 @@ GPEngineParams default_gpparams {
     .init_pass_words_chance = 1.0f,
     .init_pass_lines_chance = 0.0f,
     .init_pass_pages_chance = 0.0f,
+    .mutation_chance = 0.10f
 };
 
 Engine::Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : Compiler("Engine"),
@@ -115,16 +116,19 @@ GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_nam
     params = &default_gpparams;
 }
 
-IR::EbelNode *GPEngine::evaluate() {
-    int a = 0;
+GP::Phenotype *GPEngine::evaluate() {
+    GP::Phenotype *perfect_program = nullptr;
     for(auto &pheno: *this->population->candidates){
-        std::cout << *pheno << std::endl;
-        auto interpreter = new Interpreter(pheno);
+        auto interpreter = new Interpreter(pheno->program);
         IR::Node text_copy = *this->text_in;
         interpreter->parse(&text_copy);
-        std::cout << "Before: " << *this->text_in << "\nAfter: " << text_copy << std::endl;
-        if(a++ == 2)
-            break;
+        float fit = compare(text_out, &text_copy);
+        // Set the fitness
+        pheno->fitness = fit;
+        if(fit >= 1.0f){
+            // Program which does what it's supposed to do
+            perfect_program = pheno;
+        }
     }
-    return new IR::EbelNode();
+    return perfect_program;
 }

@@ -37,8 +37,23 @@ namespace RNG {
      * @param max Maximal integer value
      * @return Random number in range from min to max
      */ 
-    inline int rand_int(int min=0, int max=RAND_MAX-1){
+    inline int rand_int(int min=0, int max=RAND_MAX-1) {
         return (std::rand() % (max - min + 1)) + min;
+    }
+
+    /**
+     * Generates random float
+     * @param min Minimal float value
+     * @param max Maximal float value
+     * @return Random number in range from min to max
+     */ 
+    inline float rand_float(float min=0.0f, float max=1.0f) {
+        float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+        return (r * (max - min)) + min;
+    }
+
+    inline bool roll(float chance) {
+        return rand_float() <= chance;
     }
 }
 
