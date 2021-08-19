@@ -14,6 +14,11 @@
 
 #include <ctime>
 #include <cstdlib>
+#include <list>
+#include <vector>
+#include <unordered_set>
+#include "ir.hpp"
+#include "instruction.hpp"
 
 namespace RNG {
     /**
@@ -52,9 +57,34 @@ namespace RNG {
         return (r * (max - min)) + min;
     }
 
+    /**
+     * Bool randomizer based on chance
+     * @param chance Chance for roll to succeed
+     * @return true if roll succeeded otherwise false
+     */ 
     inline bool roll(float chance) {
         return rand_float() <= chance;
     }
+
+    /**
+     * Template function for lists that picks random element in it and returns it
+     * @param l List to pick from
+     * @param exclude Set of elements to exclude from picking, if nullptr then none are excluded
+     * @return Random element from list l
+     */ 
+    //template<typename T>
+    //auto rand_list_elem(std::list<T*> *l, std::unordered_set<T*> *exclude);
+    std::list<IR::Pass *>::iterator rand_list_elem(std::list<IR::Pass *> *l, std::unordered_set<IR::Pass *> *exclude);
+
+    /**
+     * Template function for vectors that picks random element in it and returns it
+     * @param v Vector to pick from
+     * @param exclude Set of elements to exclude from picking, if nullptr then none are excluded
+     * @return Random element from vector v
+     */ 
+    //template<typename T>
+    //T *rand_vect_elem(std::vector<T*> *v, std::unordered_set<T*> *exclude);
+    std::vector<Inst::Instruction *>::iterator rand_vect_elem(std::vector<Inst::Instruction *> *v, std::unordered_set<Inst::Instruction *> *exclude);
 }
 
 #endif//_RNG_HPP_

@@ -141,6 +141,7 @@ PassWords::PassWords() : Pass("Words") {
 
 void PassWords::process(IR::Node *text) {
     // TODO: Consider having similarities in one function
+    // FIXME: just LOOP program should not loop infin.
     if(this->pipeline->empty()){
         return;
     }

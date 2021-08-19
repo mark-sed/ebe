@@ -12,15 +12,18 @@
 #include <stddef.h>
 #include <iterator>
 #include <algorithm>
+#include <list>
+#include <unordered_set>
 #include "engine.hpp"
 #include "compiler.hpp"
 #include "ir.hpp"
+#include "rng.hpp"
 #include "interpreter.hpp"
 
 #include <iostream>
 
 GPEngineParams default_gpparams {
-    .population_size = 10,
+    .population_size = 5,
     .pheno_min_pass_size = 1,
     .pheno_max_pass_size = 5,
     .pheno_min_passes = 1,
@@ -28,7 +31,10 @@ GPEngineParams default_gpparams {
     .init_pass_words_chance = 1.0f,
     .init_pass_lines_chance = 0.0f,
     .init_pass_pages_chance = 0.0f,
-    .mutation_chance = 0.10f
+    .mutation_chance = 1.10f,
+    .crossover_chance = 1.0f,          
+    .no_crossover_when_mutated = true,
+    .elitism = true
 };
 
 Engine::Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : Compiler("Engine"),
@@ -109,6 +115,24 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
     }
 
     return static_cast<float>(matched) / max_size;
+}
+
+void GPEngine::sort_population() {
+    this->population->candidates->sort([](auto a, auto b){ return a->fitness > b->fitness; });
+}
+
+void GPEngine::mutate(GP::Phenotype *pheno) {
+    // TODO: Add option to specify pass
+    auto rand_pass = RNG::rand_list_elem(pheno->program->nodes, nullptr);
+    auto rand_inst = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
+    auto old_inst = *rand_inst;
+    delete old_inst;
+    // FIXME: Use exclude list or some other format when rand_instruction is properly coded
+    *rand_inst = Inst::rand_instruction();
+}
+
+void GPEngine::crossover(GP::Phenotype *pheno) {
+
 }
 
 GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : 

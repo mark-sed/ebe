@@ -78,7 +78,7 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     auto ebel_scanner = new EbelScanner();
     auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
 
-    std::cout << *ebel_ir;
+    //std::cout << *ebel_ir;
 
     // Preprocessing input file
     auto text_preproc = new Preprocessor();

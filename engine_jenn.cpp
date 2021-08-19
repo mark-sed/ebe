@@ -32,10 +32,6 @@ EngineJenn::~EngineJenn() {
     delete params;
 }
 
-void EngineJenn::mutate(GP::Phenotype *pheno) {
-    // TODO: Implement
-}
-
 IR::EbelNode *EngineJenn::generate(float *precision) {
     // Iterations in an evolution
     for(size_t iter = 0; iter < Args::arg_opts.iterations; ++iter){
@@ -48,11 +44,24 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
             }
             return perfect_pheno->program;
         }
+        // Sort population based on fitness
+        this->sort_population();
         // Mutate and crossover
         for(auto &pheno: *this->population->candidates){
+            if(pheno == *this->population->candidates->begin() && params->elitism){
+                // In case of elitism no modification should be done to the phenotype
+                continue;
+            }
             // Try mutate the phenotype
-            if(RNG::roll(params->mutation_chance)){
+            auto mutate_roll = RNG::roll(params->mutation_chance);
+            auto crossover_roll = RNG::roll(params->crossover_chance); // This might be used, depending on params
+            if(mutate_roll){
                 mutate(pheno);
+            }
+            // Crossover
+            if((mutate_roll && !params->no_crossover_when_mutated && crossover_roll)
+              || (!mutate_roll && crossover_roll)) {
+                crossover(pheno);
             }
         }
     }

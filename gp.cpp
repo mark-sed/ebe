@@ -11,14 +11,13 @@
 
 #include <list>
 #include <iostream>
-#include <limits>
 #include "gp.hpp"
 #include "ir.hpp"
 #include "engine.hpp"
 
 using namespace GP;
 
-Phenotype::Phenotype(IR::EbelNode *program) : program{program}, fitness{-1*std::numeric_limits<float>::infinity()} {
+Phenotype::Phenotype(IR::EbelNode *program, float fitness) : program{program}, fitness{fitness} {
 
 }
 

@@ -15,9 +15,11 @@
 #include <list>
 #include <stddef.h>
 #include <ostream>
+#include <limits>
 #include "ir.hpp"
 #include "engine.hpp"
 
+// Forward declarations
 struct GPEngineParams;
 
 namespace IR {
@@ -28,14 +30,21 @@ namespace IR {
 /** All genetic programming related resourced */
 namespace GP {
 
+    /**
+     * Candidate game representation holding its program and additional attributes
+     */ 
     class Phenotype {
     private:
         friend std::ostream& operator<< (std::ostream &out, const GP::Phenotype& pheno);
     public:
-        IR::EbelNode *program;
-        float fitness;
+        IR::EbelNode *program;  ///< Phenotype's program
+        float fitness;          ///< Fitness value
 
-        Phenotype(IR::EbelNode *program);
+        /** Constructor 
+         * @param program Phenotype's program
+         * @param fitness Phenotype's fitness (default value is -inf) 
+         */
+        Phenotype(IR::EbelNode *program, float fitnesss=-1*std::numeric_limits<float>::infinity());
     };
 
     /**
@@ -43,10 +52,10 @@ namespace GP {
      */ 
     class Population {
     private:
-        GPEngineParams *params;
+        GPEngineParams *params; ///< Evolution parameters
         friend std::ostream& operator<< (std::ostream &out, const GP::Population& popul);
     public:
-        std::list<Phenotype *> *candidates;
+        std::list<Phenotype *> *candidates;  ///< Candidate programs
         /**
          * Constructor, creates new population
          * @param params GP engine parameters

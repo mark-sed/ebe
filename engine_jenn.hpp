@@ -18,8 +18,6 @@
  * First implemented simple GP engine
  */
 class EngineJenn : public GPEngine {
-private:
-    void mutate(GP::Phenotype *pheno);
 public:
     /**
      * Constructor
