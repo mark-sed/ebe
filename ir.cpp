@@ -145,10 +145,13 @@ void PassWords::process(IR::Node *text) {
     if(this->pipeline->empty()){
         return;
     }
+    // TODO: Add logs of whats being interpreted
+    //LOG3();
     // Iterate through lines of text
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
         size_t column = 0;
         env.loop_inst = nullptr;
+        bool checked_executable_loop = false;  // Used to detect inf loops
         for(auto word = (*line)->begin(); word != (*line)->end(); ++word){
             // Break when not looping and there are no more instructions for the line
             if(!this->env.loop_inst && column >= this->pipeline->size()){
@@ -162,6 +165,20 @@ void PassWords::process(IR::Node *text) {
             // To make sure loops are not executed on the first pass the loop control is before instruction execution
             ++column;
             if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
+                // If it was not yet checked, make sure there are actual non-pragma instructions in the loop
+                if(!checked_executable_loop){
+                    bool found = false;
+                    // Loop through previous instruction and check if any of them is non-pragma
+                    for(auto i = pipeline->begin(); *i != this->env.loop_inst; ++i){
+                        if(!(*i)->pragma){
+                            found = true;
+                            checked_executable_loop = true;
+                        }
+                    }
+                    if(!found){
+                        break;
+                    }
+                }
                 // In a loop
                 column = 0;
             }
@@ -185,6 +202,7 @@ void PassLines::process(IR::Node *text) {
     }
     size_t column = 0;
     env.loop_inst = nullptr;
+    bool checked_executable_loop = false;
     // Iterate through lines of text
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
         // Break when not looping and there are no more instructions for the line
@@ -199,6 +217,20 @@ void PassLines::process(IR::Node *text) {
         // To make sure loops are not executed on the first pass the loop control is before instruction execution
         ++column;
         if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
+            // If it was not yet checked, make sure there are actual non-pragma instructions in the loop
+            if(!checked_executable_loop){
+                bool found = false;
+                // Loop through previous instruction and check if any of them is non-pragma
+                for(auto i = pipeline->begin(); *i != this->env.loop_inst; ++i){
+                    if(!(*i)->pragma){
+                        found = true;
+                        checked_executable_loop = true;
+                    }
+                }
+                if(!found){
+                    break;
+                }
+            }
             // In a loop
             column = 0;
         }

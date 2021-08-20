@@ -33,6 +33,8 @@ namespace Inst {
      */
     class Instruction {
     public:
+        bool pragma;  ///< If true, then the instruction does not process and is used for the interpreter/compiler
+
         /** Destructor */ 
         virtual ~Instruction(){};
 
@@ -81,7 +83,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
-        CONCAT(unsigned int arg1) : arg1{arg1} {}
+        CONCAT(unsigned int arg1) : arg1{arg1} { pragma = false; }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
@@ -91,7 +93,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        DEL(){}
+        DEL(){ pragma = false; }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
@@ -101,7 +103,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        LOOP(){}
+        LOOP(){ pragma = true; }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
@@ -111,17 +113,17 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        NOP(){}
+        NOP(){ pragma = false; }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
     };
 
     class PASS : public Instruction {
-    // IR instruction, does no need to be in nodes, so no need for constructor
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
+        PASS() { pragma = true; }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override {}
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override {}
@@ -134,7 +136,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out);
-        SWAP(unsigned int arg1) : arg1{arg1} {}
+        SWAP(unsigned int arg1) : arg1{arg1} { pragma = false; }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
