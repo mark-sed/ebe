@@ -38,6 +38,8 @@ namespace Inst {
         /** Destructor */ 
         virtual ~Instruction(){};
 
+        virtual Instruction *copy() const = 0;
+
         /**
          * Returns name of the instruction
          */
@@ -84,6 +86,9 @@ namespace Inst {
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
         CONCAT(unsigned int arg1) : arg1{arg1} { pragma = false; }
+        virtual CONCAT *copy() const override {
+            return new CONCAT(arg1);
+        }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
@@ -94,6 +99,9 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         DEL(){ pragma = false; }
+        virtual DEL *copy() const override {
+            return new DEL();
+        }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
@@ -104,6 +112,9 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         LOOP(){ pragma = true; }
+        virtual LOOP *copy() const override {
+            return new LOOP();
+        }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
@@ -114,16 +125,24 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         NOP(){ pragma = false; }
+        virtual NOP *copy() const override {
+            return new NOP();
+        }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
     };
 
     class PASS : public Instruction {
+    private:
+        const char *arg1;
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        PASS() { pragma = true; }
+        PASS(const char *arg1) { pragma = true; }
+        virtual PASS *copy() const override {
+            return new PASS(arg1);
+        }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override {}
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override {}
@@ -137,6 +156,9 @@ namespace Inst {
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out);
         SWAP(unsigned int arg1) : arg1{arg1} { pragma = false; }
+        virtual SWAP *copy() const override {
+            return new SWAP(arg1);
+        }
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;

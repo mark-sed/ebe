@@ -52,8 +52,8 @@ ArgOpts Args::arg_opts {
     .group_sym = false,
     .float_delim = '.',
     .line_delim = '\n',
-    .evolutions = 1,
-    .iterations = 20
+    .evolutions = 5,
+    .iterations = 200
 };
 
 /**

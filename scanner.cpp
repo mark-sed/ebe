@@ -350,7 +350,7 @@ IR::EbelNode *EbelScanner::process(std::vector<std::string> *text, const char *f
                 }
                 // LOOP
                 else if(parsed_inst == Inst::LOOP::NAME){
-                    // FIXME: Check that LOOP is in correct place and maybe convert it into boolean in Pass?
+                    // FIXME: Check that LOOP is in correct place
                     // Check if there are instructions to loop, otherwise skip loop
                     if(!curr_pass->empty()){
                         curr_pass->push_back(new Inst::LOOP());

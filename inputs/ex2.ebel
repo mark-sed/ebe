@@ -1,0 +1,92 @@
+DEL 
+  DEL 
+  LOOP 
+  LOOP 
+  DEL 
+  DEL 
+  DEL 
+  DEL 
+  DEL 
+  LOOP 
+  DEL 
+  NOP 
+  SWAP 4
+  NOP 
+  NOP 
+  DEL 
+  SWAP 1
+  LOOP 
+  SWAP 1
+  LOOP 
+  DEL 
+  SWAP 3
+  SWAP 1
+  LOOP 
+  DEL 
+  LOOP 
+  DEL 
+  DEL 
+  LOOP 
+  NOP 
+  LOOP 
+  DEL 
+  SWAP 1
+  NOP 
+  NOP 
+  SWAP 2
+  DEL 
+  DEL 
+  DEL 
+  NOP 
+  LOOP 
+  LOOP 
+  LOOP 
+  DEL 
+  NOP 
+  NOP 
+  SWAP 2
+  DEL 
+  DEL 
+  DEL 
+  NOP 
+  NOP 
+  SWAP 2
+  SWAP 2
+  LOOP 
+  LOOP 
+  LOOP 
+  DEL 
+  DEL 
+  LOOP 
+  LOOP 
+  NOP 
+  LOOP 
+  NOP 
+  NOP 
+  NOP 
+  DEL 
+  NOP 
+  DEL 
+  SWAP 3
+  NOP 
+  SWAP 1
+  DEL 
+  SWAP 2
+  SWAP 5
+  DEL 
+  SWAP 2
+  LOOP 
+  SWAP 5
+  NOP 
+  NOP 
+  NOP 
+  NOP 
+  LOOP 
+  LOOP 
+  NOP 
+  DEL 
+  DEL 
+  NOP 
+  SWAP 4
+  SWAP 2
+  LOOP

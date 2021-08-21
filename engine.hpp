@@ -75,6 +75,8 @@ struct GPEngineParams {
     float init_pass_pages_chance;    ///< Chance of generating pages pass on init
     float mutation_chance;           ///< Chance of mutation to happen
     float crossover_chance;          ///< Chance of crossover to happen
+    float crossover_insert_chance;   ///< Chance for crossover to be insert type
+    float crossover_switch_chance;   ///< Chance for crossover to be switch type
     bool no_crossover_when_mutated;  ///< If mutation happens then crossover cannot happen
     bool elitism;                    ///< Elitism in evolution (makes sure that best phenotype does not change)
 };
@@ -107,19 +109,27 @@ protected:
      * Sorts population based on phenotype's fitness.
      * Sort is descending from the best fitness to the worst.
      */ 
-    void sort_population();
+    virtual void sort_population();
 
     /**
      * Mutates phenotype based on set params
      * @param pheno Phenotype to mutate
      */ 
-    void mutate(GP::Phenotype *pheno);
+    virtual void mutate(GP::Phenotype *pheno);
     
     /**
      * Crosses over a phenotype with other/s phenotype/s from population based on set params
+     * Using insert from one phenotype to other
      * @param pheno Phenotype to be crossed over
      */ 
-    void crossover(GP::Phenotype *pheno);
+    virtual void crossover_insert(GP::Phenotype *pheno);
+
+    /**
+     * Crosses over a phenotype with other/s phenotype/s from population based on set params
+     * Switching one section of phenotype with other
+     * @param pheno Phenotype to be crossed over
+     */ 
+    virtual void crossover_switch(GP::Phenotype *pheno);
 public:
 
     /* Getter and setters */

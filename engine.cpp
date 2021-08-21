@@ -23,16 +23,18 @@
 #include <iostream>
 
 GPEngineParams default_gpparams {
-    .population_size = 5,
+    .population_size = 100,
     .pheno_min_pass_size = 1,
-    .pheno_max_pass_size = 5,
+    .pheno_max_pass_size = 3,
     .pheno_min_passes = 1,
     .pheno_max_passes = 1,
     .init_pass_words_chance = 1.0f,
     .init_pass_lines_chance = 0.0f,
     .init_pass_pages_chance = 0.0f,
-    .mutation_chance = 1.10f,
-    .crossover_chance = 1.0f,          
+    .mutation_chance = 0.15f,
+    .crossover_chance = 1.0f,    
+    .crossover_insert_chance = 0.05f,
+    .crossover_switch_chance = 0.6f,      
     .no_crossover_when_mutated = true,
     .elitism = true
 };
@@ -123,6 +125,8 @@ void GPEngine::sort_population() {
 
 void GPEngine::mutate(GP::Phenotype *pheno) {
     // TODO: Add option to specify pass
+    // TODO: Add option to mutate arguments in instructions that take them
+    // TODO: Add logs
     auto rand_pass = RNG::rand_list_elem(pheno->program->nodes, nullptr);
     auto rand_inst = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
     auto old_inst = *rand_inst;
@@ -131,8 +135,53 @@ void GPEngine::mutate(GP::Phenotype *pheno) {
     *rand_inst = Inst::rand_instruction();
 }
 
-void GPEngine::crossover(GP::Phenotype *pheno) {
+void GPEngine::crossover_insert(GP::Phenotype *pheno) {
+    // TODO: Add option to replace part of the pipeline not just insert
+    std::unordered_set<GP::Phenotype *> excl{pheno};
+    auto rand_pheno = RNG::rand_list_elem(population->candidates, &excl);
+    auto rand_pass = RNG::rand_list_elem((*rand_pheno)->program->nodes, nullptr);
+    auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
+    auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
+    auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
+    ++rand_pos_og; // Increment iterator because insert inserts before the instruction
+    // Get how many instructions to insert
+    auto amount = RNG::rand_int(1, std::distance(rand_pos, (*rand_pass)->pipeline->end()));
+    //std::cout << "DIST: " << std::distance(rand_pos, (*rand_pass)->pipeline->end()) << "  RND: " << amount << std::endl;
+    // TODO: Add logs for crossing
+    //std::cout << "CROSSING: \n" << *pheno << **rand_pheno << "---------\n";
+    //std::cout << "BEFORE: \n" << *pheno << std::endl;
+    for(int i = 0; i < amount; ++i){
+        // Create copy of instruction
+        auto inst_copy = (*rand_pos)->copy();
+        rand_pos_og = (*rand_pass_og)->pipeline->insert(rand_pos_og, inst_copy);
+        ++rand_pos;
+    }
+    //std::cout << "AFTER: \n" << *pheno << std::endl; 
+    //std::cout << "-----------\n\n";
+}
 
+void GPEngine::crossover_switch(GP::Phenotype *pheno) {
+    std::unordered_set<GP::Phenotype *> excl{pheno};
+    auto rand_pheno = RNG::rand_list_elem(population->candidates, &excl);
+    auto rand_pass = RNG::rand_list_elem((*rand_pheno)->program->nodes, nullptr);
+    auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
+    auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
+    auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
+    // Get how many instructions to insert
+    auto min_len = std::min(std::distance(rand_pos, (*rand_pass)->pipeline->end()), std::distance(rand_pos_og, (*rand_pass_og)->pipeline->end()));
+    auto amount = RNG::rand_int(1, min_len);
+    //std::cout << "DIST: " << std::distance(rand_pos, (*rand_pass)->pipeline->end()) << "  RND: " << amount << std::endl;
+    // TODO: Add logs for crossing
+    //std::cout << "CROSSING: \n" << *pheno << **rand_pheno << "---------\n";
+    //std::cout << "BEFORE: \n" << *pheno << std::endl << **rand_pheno << "\n";
+    for(int i = 0; i < amount; ++i){
+        // Create copy of instruction
+        std::swap(*rand_pos, *rand_pos_og);
+        ++rand_pos;
+        ++rand_pos_og;
+    }
+    //std::cout << "AFTER: \n" << *pheno << std::endl << **rand_pheno << "\n"; 
+    //std::cout << "-----------\n\n";
 }
 
 GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : 

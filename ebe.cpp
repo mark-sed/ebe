@@ -37,21 +37,47 @@ void compile(const char *f_in, const char *f_out) {
     auto ir_in = scanner->process(in_text, f_in);
     auto ir_out = scanner->process(out_text, f_out);
 
-    std::cout << *ir_in << "---" << std::endl << *ir_out << std::endl;
+    //std::cout << *ir_in << "---" << std::endl << *ir_out << std::endl;
 
     // Evolution
     auto engine = new EngineJenn(ir_in, ir_out);
     float precision = -0.01f;
+    float best_precision = -0.01f;
+    IR::EbelNode *best_program = nullptr;
     for(size_t e = 0; e < Args::arg_opts.evolutions; ++e){
-        // FIXME: this calls generate on already evolved population, reset() is needed or new
+        auto engine = new EngineJenn(ir_in, ir_out);
         auto program = engine->generate(&precision);
-        std::cout << "Found program with " << (precision*100) << "% precision." << std::endl;
+        //std::cout << "Found program with " << (precision*100) << "% precision." << std::endl;
         if(precision >= 1.0f){
-            std::cout << "Perfectly fitting program found: " << std::endl << *program;
-            delete program;
+            // Found perfect program, end now
+            std::cout << "Perfectly fitting program found." << std::endl;
+            if(best_program){
+                delete best_program;
+            }
+            best_program = program;
+            best_precision = precision;
+            delete engine;
             break;
         }
-        delete program;
+        //std::cout << *program << std::endl;
+        // Save program if it is the best one so far
+        if(!best_program || best_precision < precision){
+            if(best_program){
+                delete best_program;
+            }
+            best_program = program;
+            best_precision = precision;
+        }else{
+            delete program;
+        }
+        delete engine;
+    }
+
+    if(best_program){
+        // Print the best program
+        std::cout << std::endl << "Best compiled program with " << (best_precision*100) << "% presision: " << std::endl;
+        std::cout << *best_program;
+        delete best_program;
     }
 
     // Cleanup

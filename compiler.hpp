@@ -13,6 +13,8 @@
 #ifndef _COMPILER_HPP_
 #define _COMPILER_HPP_
 
+#include <iostream>
+
 /**
  * Namespace holding resources for error and warning handling
  */
@@ -48,7 +50,9 @@ namespace Error {
      */
     [[noreturn]] void error(Error::ErrorCode code, const char *msg);
 
-    void warning(const char *msg);
+    inline void warning(const char *msg) {
+        std::cerr << "WARNING: " << msg << std::endl;
+    }
 }
 
 /**

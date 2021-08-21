@@ -38,9 +38,6 @@ const char *Error::get_code_name(Error::ErrorCode c){
     std::exit(code);
 }
 
-inline void Error::warning(const char *msg){
-    std::cerr << "WARNING: " << msg << std::endl;
-}
 
 [[noreturn]] void Compiler::error(Error::ErrorCode code, const char *file, 
                                   long line, long column, const char *msg){

@@ -12,6 +12,7 @@
 #include <iterator>
 #include "rng.hpp"
 #include "ir.hpp"
+#include "gp.hpp"
 #include "instruction.hpp"
 
 #include <iostream>
@@ -32,7 +33,17 @@ auto RNG::rand_list_elem(std::list<T*> *l, std::unordered_set<T*> *exclude) {
 }*/
 
 //template<>
-std::list<IR::Pass *>::iterator RNG::rand_list_elem(std::list<IR::Pass *> *l, std::unordered_set<IR::Pass *> *exclude) {
+std::list<IR::Pass *>::iterator RNG::rand_list_elem(std::list<IR::Pass *> *l, const std::unordered_set<IR::Pass *> *exclude) {
+    auto it = l->begin();
+    do{
+        it = l->begin();
+        auto r = rand_int(0, l->size()-1);
+        std::advance(it, r);
+    }while(exclude != nullptr && exclude->find(*it) != exclude->end());
+    return it;
+}
+
+std::list<GP::Phenotype *>::iterator RNG::rand_list_elem(std::list<GP::Phenotype *> *l, const std::unordered_set<GP::Phenotype *> *exclude) {
     auto it = l->begin();
     do{
         it = l->begin();
@@ -57,7 +68,7 @@ T *RNG::rand_vect_elem(std::vector<T*> *v, std::unordered_set<T*> *exclude) {
 }*/
 
 //template<>
-std::vector<Inst::Instruction *>::iterator RNG::rand_vect_elem(std::vector<Inst::Instruction *> *v, std::unordered_set<Inst::Instruction *> *exclude) {
+std::vector<Inst::Instruction *>::iterator RNG::rand_vect_elem(std::vector<Inst::Instruction *> *v, const std::unordered_set<Inst::Instruction *> *exclude) {
     if(v->size() == 0){
         return v->begin();
     }

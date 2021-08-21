@@ -61,13 +61,20 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
             // Crossover
             if((mutate_roll && !params->no_crossover_when_mutated && crossover_roll)
               || (!mutate_roll && crossover_roll)) {
-                crossover(pheno);
+                if(RNG::roll(params->crossover_insert_chance)){
+                    crossover_insert(pheno);
+                }
+                else if(RNG::roll(params->crossover_switch_chance)){
+                    crossover_switch(pheno);
+                }
             }
         }
     }
-    std::cout << *population;
+    //std::cout << *population;
+    this->evaluate();
     if(precision){
-        //*precision = compare_val; 
+        // 
+        *precision = this->population->candidates->front()->fitness; 
     }
-    return new IR::EbelNode();
+    return this->population->candidates->front()->program;
 }

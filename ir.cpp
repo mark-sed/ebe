@@ -245,7 +245,7 @@ void PassLines::process(IR::Node *text) {
 }
 
 PassDocuments::PassDocuments() : Pass("Documents") {
-    //Error::warning("Document pass is not yet implemented");
+    Error::warning("Document pass is not yet implemented");
 }
 
 void PassDocuments::process(IR::Node *text) {
