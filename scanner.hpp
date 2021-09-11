@@ -7,6 +7,7 @@
  * @brief Syntactical analysis
  * 
  * Handles scanning of input example files and ebel code as well
+ * Each file type can have its own scanner which extends base Scanner class
  */
 
 #ifndef _SCANNER_HPP_
@@ -19,13 +20,28 @@
 #include "ir.hpp"
 #include "compiler.hpp"
 
+class Scanner : public Compiler {
+public:
+    /** Constructor */
+    Scanner(const char *scanner_name);
+    virtual ~Scanner() {}
+
+    /**
+     * Does syntactical parsing of passed in text
+     * @param text Example file's text parsed into vector of lines by preprocessor
+     * @param file_name Example file's name for error information
+     * @return Text parsed into IR node
+     */
+    virtual IR::Node *process(std::vector<std::string> *text, const char *file_name) = 0;
+};
+
 /**
  * Lexical analysis for example files
  */
-class Scanner : public Compiler {
+class TextScanner : public Scanner {
 private:
     std::set<char> delimiters;  ///< Set of characters considered word delimiters
-
+    
     /**
      * FSM states of the scanner
      */
@@ -43,6 +59,12 @@ private:
         EXP_VAL,
         UNKNOWN,
     };
+public:
+    /** Constructor */
+    TextScanner();
+    ~TextScanner();
+
+    IR::Node *process(std::vector<std::string> *text, const char *file_name) override;
 
     /** @return True if character is alphabetical */
     bool is_alpha(char c);
@@ -61,17 +83,6 @@ private:
 
     /** @return True if character is floating point exponent (e/E) */
     bool is_float_exp(char c);
-public:
-    /** Constructor */
-    Scanner();
-
-    /**
-     * Does syntactical parsing of passed in text
-     * @param text Example file's text parsed into vector of lines by preprocessor
-     * @param file_name Example file's name for error information
-     * @return Text parsed into IR node
-     */
-    IR::Node *process(std::vector<std::string> *text, const char *file_name);
 };
 
 /**

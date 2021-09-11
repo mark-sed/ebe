@@ -23,40 +23,48 @@
 
 #include <iostream>
 
-Scanner::Scanner() : Compiler("Example scanner") {
+Scanner::Scanner(const char *scanner_name) : Compiler(scanner_name) {
+
+}
+
+TextScanner::TextScanner() : Scanner("Text scanner") {
     this->delimiters = std::set<char>{
         ' ', '\f', '\r', '\t', '\v', '\n', // whitespace chars (new line is added for when line_delim is different)
         ',', '.', ':', ';'                 // other characters that are usualy delimiters
     };
 }
 
-inline bool Scanner::is_alpha(char c){
+TextScanner::~TextScanner() {
+    
+}
+
+inline bool TextScanner::is_alpha(char c){
     return std::isalpha(c) || 
            (Args::arg_opts.alpha_num && is_number(c)) ||
            (Args::arg_opts.alpha_sym && is_symbol(c));
 }
 
-inline bool Scanner::is_delimiter(char c){
+inline bool TextScanner::is_delimiter(char c){
     return this->delimiters.find(c) != this->delimiters.end();
 }
 
-inline bool Scanner::is_symbol(char c){
+inline bool TextScanner::is_symbol(char c){
     return std::ispunct(c) && !is_delimiter(c);
 }
 
-inline bool Scanner::is_number(char c){
+inline bool TextScanner::is_number(char c){
     return std::isdigit(c);
 }
 
-inline bool Scanner::is_float_delim(char c){
+inline bool TextScanner::is_float_delim(char c){
     return c == Args::arg_opts.float_delim;
 }
 
-inline bool Scanner::is_float_exp(char c){
+inline bool TextScanner::is_float_exp(char c){
     return c == 'e' || c == 'E';
 }
 
-IR::Node *Scanner::process(std::vector<std::string> *text, const char *file_name) {
+IR::Node *TextScanner::process(std::vector<std::string> *text, const char *file_name) {
     auto ir = new IR::Node();
 
     long line_number = 1;

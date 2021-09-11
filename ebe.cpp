@@ -33,7 +33,7 @@ void compile(const char *f_in, const char *f_out) {
     //    std::cout << a;
 
     // Syntactical check
-    auto scanner = new Scanner();
+    auto scanner = new TextScanner();
     auto ir_in = scanner->process(in_text, f_in);
     auto ir_out = scanner->process(out_text, f_out);
 
@@ -111,7 +111,7 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     auto text_vect = text_preproc->process(input_f);
 
     // Syntactical check/parse of input file
-    auto text_scanner = new Scanner();
+    auto text_scanner = new TextScanner();
     auto text_ir = text_scanner->process(text_vect, input_f);
 
     // Interpret
