@@ -131,7 +131,7 @@ private:
     unsigned long column;
     const char * const file_name;
 
-    void fail(std::string msg); 
+    [[noreturn]] void fail(std::string msg); 
 public:
     /**
      * Constructor

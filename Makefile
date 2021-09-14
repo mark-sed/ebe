@@ -8,7 +8,7 @@ OUT_NAME=ebe
 PATHS=libs
 
 all: $(SRC)
-	$(CC) $(FLAGS) -I $(PATHS) -o $(OUT_NAME)$(EXT) $(FILES) $^ $(LIBS)
+	$(CC) $(FLAGS) $(MACROS) -I $(PATHS) -o $(OUT_NAME)$(EXT) $(FILES) $^ $(LIBS)
 
 check:
 	echo "Test are not yet implemented"

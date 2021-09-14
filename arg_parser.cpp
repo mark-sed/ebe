@@ -19,6 +19,8 @@
 #include "arg_parser.hpp"
 #include "compiler.hpp"
 #include "ebe.hpp"
+#include "logging.hpp"
+#include "utils.hpp"
 
 /** Text to be displayed to user when --help option is used */
 const char *HELP_TEXT = "Usage: ebe [options] file\n"
@@ -41,6 +43,7 @@ using namespace Args;
 
 /** A global variable that can be used anywhere to read user compilation options */
 ArgOpts Args::arg_opts {
+    .logging_level = 0,
     .interpret_mode = false,
     .file_in = nullptr,
     .file_out = nullptr,
@@ -59,7 +62,7 @@ ArgOpts Args::arg_opts {
 /**
  * Prints help text and exits with success
  */
-[[noreturn]] void print_help(){
+[[noreturn]] static void print_help(){
     std::cout << HELP_TEXT << std::endl;
     std::exit(0);
 }
@@ -67,7 +70,7 @@ ArgOpts Args::arg_opts {
 /**
  * Prints version text and exits with success
  */
-[[noreturn]] void print_version(){
+[[noreturn]] static void print_version(){
     std::cout << "ebe " << EBE_VERSION_MAJOR << "." << EBE_VERSION_MINOR << "." << EBE_VERSION_PATCH << std::endl;
     std::exit(0);
 }
@@ -81,7 +84,7 @@ ArgOpts Args::arg_opts {
  * @param opt_long Longer version of the option or alternative version, if it is empty then it is ignored
  * @return the option value
  */
-char *get_option_value(char **begin, char **end, const std::string &opt, const std::string &opt_long){
+static char *get_option_value(char **begin, char **end, const std::string &opt, const std::string &opt_long){
     char **it = std::find(begin, end, opt);
     if(it != end && ++it != end){
         return *it;
@@ -103,8 +106,21 @@ char *get_option_value(char **begin, char **end, const std::string &opt, const s
  * @param opt_long Longer version of the option or alternative version, if it is empty then it is ignored
  * @return if the option is present
  */
-bool exists_option(char **begin, char **end, const std::string &opt, const std::string &opt_long){
+static bool exists_option(char **begin, char **end, const std::string &opt, const std::string &opt_long){
     return std::find(begin, end, opt) != end || std::find(begin, end, opt_long) != end;
+}
+
+static void parse_v(char **argv, int argc, const char *opt, const char *opt2) {
+    const char *file_funcs;
+    if(!(file_funcs = get_option_value(argv, argv+argc, opt, opt2))){
+        Error::error(Error::ErrorCode::ARGUMENTS, "Missing functions for debug prints");
+    }
+    if(std::string(file_funcs) == std::string("all")){
+        Logger::get().set_log_everything(true);
+    } else {
+        // Parse file functions to add to the logger
+        Logger::get().set_enabled(Utils::split_csv(std::string(file_funcs)));
+    }
 }
 
 void Args::parse_args(int argc, char *argv[]){
@@ -177,6 +193,28 @@ void Args::parse_args(int argc, char *argv[]){
         if(!(arg_opts.line_delim = get_option_value(argv, argv+argc, "--line-delim", "")[0])){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --line-delim");
         }
+    }
+
+    // Verbosity logging level
+    if(exists_option(argv, argv+argc, "-v", "-v1")){
+        arg_opts.logging_level = 1;
+        parse_v(argv, argc, "-v", "-v1");
+    }
+    else if(exists_option(argv, argv+argc, "-vv", "-v2")){
+        arg_opts.logging_level = 2;
+        parse_v(argv, argc, "-vv", "-v2");
+    }
+    else if(exists_option(argv, argv+argc, "-vvv", "-v3")){
+        arg_opts.logging_level = 3;
+        parse_v(argv, argc, "-vvv", "-v3");
+    }
+    else if(exists_option(argv, argv+argc, "-vvvv", "-v4")){
+        arg_opts.logging_level = 4;
+        parse_v(argv, argc, "-vvvv", "-v4");
+    }
+    else if(exists_option(argv, argv+argc, "-vvvvv", "-v5")){
+        arg_opts.logging_level = 5;
+        parse_v(argv, argc, "-vvvvv", "-v5");
     }
 
     // Check if needed switches are set

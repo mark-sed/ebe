@@ -13,6 +13,7 @@
 #define _UTILS_HPP_
 
 #include <string>
+#include <set>
 
 /** Utils namespace */
 namespace Utils {
@@ -29,6 +30,13 @@ namespace Utils {
      * @param text Values to be converted
      */
     void to_upper(std::vector<std::string> *text);
+
+    /**
+     * Parses csv values
+     * @param values String of csv values
+     * @return Set of these value
+     */
+    std::set<std::string> split_csv(std::string csv, char delim=','); 
 }
 
 namespace Cast {

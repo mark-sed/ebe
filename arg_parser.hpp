@@ -24,6 +24,7 @@ namespace Args {
      * TODO: make evolutions and iterations be taken from the user and if not, then from the engine itself (some might need less some more iterations)
      */
     struct ArgOpts {
+        unsigned logging_level;///< Verbosity of logging
         bool interpret_mode;   ///< Interpret mode
         const char *file_in;   ///< Path to the input example file
         const char *file_out;  ///< Path to the output example file

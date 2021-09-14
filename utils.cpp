@@ -10,6 +10,7 @@
  */
 
 #include <algorithm>
+#include <sstream>
 #include "utils.hpp"
 #include "compiler.hpp"
 
@@ -26,6 +27,16 @@ void Utils::to_upper(std::vector<std::string> *text){
     for(auto &v: *text){
         std::transform(v.begin(), v.end(), v.begin(), ::toupper);
     }
+}
+
+std::set<std::string> Utils::split_csv(std::string csv, char delim) {
+    std::set<std::string> splitted;
+    std::string value;
+    std::stringstream csv_stream(csv);
+    while(std::getline(csv_stream, value, delim)){
+        splitted.insert(value);
+    }
+    return splitted;
 }
 
 template<typename T>

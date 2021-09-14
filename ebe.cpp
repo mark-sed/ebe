@@ -20,11 +20,13 @@
 #include "interpreter.hpp"
 #include "engine_jenn.hpp"
 #include "rng.hpp"
+#include "logging.hpp"
 
 /**
  * Initializer and handler for compilation
  */
 void compile(const char *f_in, const char *f_out) {
+    LOGMAX("Compilation started");
     // Preprocessing
     auto preproc = new Preprocessor(Args::arg_opts.line_delim);
     auto in_text = preproc->process(f_in);
@@ -88,9 +90,11 @@ void compile(const char *f_in, const char *f_out) {
     delete out_text;
     delete scanner;
     delete preproc;
+    LOGMAX("Compilation done");
 }
 
 void interpret(const char *ebel_f, std::vector<const char *> input_files){
+    LOGMAX("Interpetation started");
     //TODO: Make this work for all files in input_files
     auto input_f = input_files[0];
     
@@ -129,6 +133,7 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     delete ebel_scanner;
     delete ebel_text;
     delete ebel_preproc;
+    LOGMAX("Interpretation done");
 }
 
 // Main
@@ -136,6 +141,7 @@ int main(int argc, char *argv[]){
     // Parse arguments (no need to make sure there are args because help is printed if argc is low)
     Args::parse_args(argc-1, &argv[1]);
     // Inits
+    Logger::get().set_logging_level(Args::arg_opts.logging_level);
     RNG::init();
 
     // Start compilation of example input files
