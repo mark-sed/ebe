@@ -100,27 +100,38 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     
     // Preprocessing
     auto ebel_preproc = new EbelPreprocessor();
+    LOGMAX("Ebel preprocessor started");
     auto ebel_text = ebel_preproc->process(ebel_f);
-    //for(auto a: *ebel_text)
-    //    std::cout << a;
+    LOG_CONT_SANITIZE(2, "Preprocessed ebel code:", *ebel_text);
+    LOGMAX("Ebel preprocessor finished");
 
     // Syntactical check
     auto ebel_scanner = new EbelScanner();
+    LOGMAX("Ebel scanner started");
     auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
-
-    //std::cout << *ebel_ir;
+    LOG2("Ebel IR:\n" << *ebel_ir);
+    LOGMAX("Ebel scanner finished");
 
     // Preprocessing input file
     auto text_preproc = new Preprocessor();
+    LOGMAX("Text preprocessor started");
     auto text_vect = text_preproc->process(input_f);
+    LOG_CONT_SANITIZE(2, "Processed text:", *text_vect);
+    LOGMAX("Text preprocessor finished");
 
     // Syntactical check/parse of input file
     auto text_scanner = new TextScanner();
+    LOGMAX("Text scanner started");
     auto text_ir = text_scanner->process(text_vect, input_f);
+    LOG1("Text IR:\n" << *text_ir);
+    LOGMAX("Text scanner finished");
 
     // Interpret
     auto interpreter = new Interpreter(ebel_ir);
+    LOGMAX("Interpreter started");
     interpreter->parse(text_ir);
+    LOGMAX("Interpreter finished");
+    LOG1("Interpreted text IR:\n" << *text_ir);
 
     std::cout << text_ir->output();
 

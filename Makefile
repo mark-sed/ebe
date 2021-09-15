@@ -6,6 +6,7 @@ LIBS=
 EXT=
 OUT_NAME=ebe
 PATHS=libs
+MACROS=
 
 all: $(SRC)
 	$(CC) $(FLAGS) $(MACROS) -I $(PATHS) -o $(OUT_NAME)$(EXT) $(FILES) $^ $(LIBS)

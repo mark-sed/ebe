@@ -37,6 +37,12 @@ namespace Utils {
      * @return Set of these value
      */
     std::set<std::string> split_csv(std::string csv, char delim=','); 
+
+    /**
+     * Sanitizes text by removing escape characters with their written out form
+     * @param text Text to sanitize
+     */ 
+    std::string sanitize(const std::string &text);
 }
 
 namespace Cast {

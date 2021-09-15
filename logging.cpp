@@ -12,14 +12,22 @@
 #include <iostream>
 #include "logging.hpp"
 
-Logger::Logger() : disable(false), log_everything(false), logging_level{0} {
+BaseLogger::BaseLogger() : disable(false), log_everything(false), logging_level{0} {
+
+}
+
+BaseLogger::~BaseLogger() {
+    for(auto s: streams){
+        s->flush();
+    }
+}
+
+Logger::Logger() : BaseLogger() {
     streams.push_back(&std::cerr);
 }
 
 Logger::~Logger() {
-    for(auto s: streams){
-        s->flush();
-    }
+    
 }
 
 Logger &Logger::get() {
@@ -31,9 +39,6 @@ void Logger::debug(unsigned level, const std::string &file_func, const std::stri
     if(disable || level > logging_level){
         return;
     }
-    /*for(auto t: enabled){
-        std::cout << t << "  '" << file_func.c_str() <<"'"<< std::endl;
-    }*/
     // Check if function has logging enabled
     if(!log_everything){
         if(enabled.find(file_func) == enabled.end()){
@@ -44,4 +49,12 @@ void Logger::debug(unsigned level, const std::string &file_func, const std::stri
     for(auto s: streams){
         (*s) << file_func << ": " << message << std::endl;
     }
+}
+
+Analytics::Analytics() : BaseLogger() {
+
+}
+
+Analytics::~Analytics() {
+
 }

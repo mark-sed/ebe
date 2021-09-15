@@ -1,11 +1,12 @@
-NOP 
-NOP 
-  DEL 
-  DEL 
-  DEL 
-  DEL 
-  DEL 
-  DEL 
-  LOOP 
-  LOOP 
-  SWAP 4
+PASS words
+	NOP
+	NOP
+	DEL 
+	DEL 
+	DEL 
+	DEL 
+	DEL 
+	DEL 
+	LOOP 
+	LOOP 
+	SWAP 4

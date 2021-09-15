@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <regex>
 #include "utils.hpp"
 #include "compiler.hpp"
 
@@ -37,6 +38,34 @@ std::set<std::string> Utils::split_csv(std::string csv, char delim) {
         splitted.insert(value);
     }
     return splitted;
+}
+
+std::string Utils::sanitize(const std::string &text) {
+    const std::string ESC_CHARS("\t\n\v\a\b\f\r\\");
+    std::string sanitized;
+    for (std::string::size_type i = 0; i < text.size(); i++) {
+        if (ESC_CHARS.find(text[i]) == std::string::npos){
+            sanitized.push_back(text[i]);
+        }
+        else{
+            sanitized.push_back('\\');
+            switch(text[i]){
+                case '\n': sanitized.push_back('n');
+                break;
+                case '\t': sanitized.push_back('t');
+                break;
+                case '\r': sanitized.push_back('r');
+                break;
+                case '\v': sanitized.push_back('v');
+                break;
+                case '\\': sanitized.push_back('\\');
+                break;
+                default: sanitized += std::to_string(static_cast<int>(text[i]));
+                break;
+            }
+        }
+    }
+    return sanitized;
 }
 
 template<typename T>
