@@ -40,7 +40,7 @@ namespace GP {
         size_t i = 0;
         for(const auto& c: *popul.candidates){
             out << "# Phenotype " << i++ << " ";
-            out << *c << std::endl;
+            out << *c;
         }
         return out;
     }

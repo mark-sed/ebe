@@ -29,27 +29,30 @@ void compile(const char *f_in, const char *f_out) {
     LOGMAX("Compilation started");
     // Preprocessing
     auto preproc = new Preprocessor(Args::arg_opts.line_delim);
+    LOGMAX("Text preprocessor started");
     auto in_text = preproc->process(f_in);
+    LOG_CONT_SANITIZE(2, "Processed IN text:", *in_text);
     auto out_text = preproc->process(f_out);
-    //for(auto a: *in_text)
-    //    std::cout << a;
+    LOG_CONT_SANITIZE(2, "Processed OUT text:", *out_text);
+    LOGMAX("Text preprocessor finished");
 
     // Syntactical check
     auto scanner = new TextScanner();
+    LOGMAX("Text scanner started");
     auto ir_in = scanner->process(in_text, f_in);
+    LOG1("Text IN IR:\n" << *ir_in);
     auto ir_out = scanner->process(out_text, f_out);
-
-    //std::cout << *ir_in << "---" << std::endl << *ir_out << std::endl;
+    LOG1("Text OUT IR:\n" << *ir_out);
+    LOGMAX("Text scanner finished");
 
     // Evolution
-    auto engine = new EngineJenn(ir_in, ir_out);
     float precision = -0.01f;
     float best_precision = -0.01f;
     IR::EbelNode *best_program = nullptr;
     for(size_t e = 0; e < Args::arg_opts.evolutions; ++e){
         auto engine = new EngineJenn(ir_in, ir_out);
+        LOGMAX("Started " << e << ". evolution with engine " << engine->engine_name);
         auto program = engine->generate(&precision);
-        //std::cout << "Found program with " << (precision*100) << "% precision." << std::endl;
         if(precision >= 1.0f){
             // Found perfect program, end now
             std::cout << "Perfectly fitting program found." << std::endl;
@@ -58,10 +61,11 @@ void compile(const char *f_in, const char *f_out) {
             }
             best_program = program;
             best_precision = precision;
+            LOG3("Perfectly fitting program found, evolution ended");
             delete engine;
             break;
         }
-        //std::cout << *program << std::endl;
+        LOG4(e << ". evolution finished. Best phenotype (with " << (precision*100) << "% precision):\n" << *program);
         // Save program if it is the best one so far
         if(!best_program || best_precision < precision){
             if(best_program){
@@ -77,13 +81,13 @@ void compile(const char *f_in, const char *f_out) {
 
     if(best_program){
         // Print the best program
-        std::cout << std::endl << "Best compiled program with " << (best_precision*100) << "% presision: " << std::endl;
+        std::cout << std::endl << "Best compiled program with " << (best_precision*100) << "% precision: " << std::endl;
         std::cout << *best_program;
+        LOG1("Best compiled program with " << (best_precision*100) << "% precision:\n" << *best_program);
         delete best_program;
     }
 
     // Cleanup
-    delete engine;
     delete ir_in;
     delete ir_out;
     delete in_text;

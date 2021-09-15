@@ -19,6 +19,7 @@
 #include "ir.hpp"
 #include "rng.hpp"
 #include "interpreter.hpp"
+#include "logging.hpp"
 
 #include <iostream>
 
@@ -38,6 +39,25 @@ GPEngineParams default_gpparams {
     .no_crossover_when_mutated = true,
     .elitism = true
 };
+
+std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
+    out << "GPEngineParams:" << std::endl
+        << TAB1"population_size = " << param.population_size << std::endl
+        << TAB1"pheno_min_pass_size = " << param.pheno_min_pass_size << std::endl
+        << TAB1"pheno_max_pass_size = " << param.pheno_max_pass_size << std::endl
+        << TAB1"pheno_min_passes = " << param.pheno_min_passes << std::endl
+        << TAB1"pheno_max_passes = " << param.pheno_max_passes << std::endl
+        << TAB1"init_pass_words_chance = " << param.init_pass_words_chance << std::endl
+        << TAB1"init_pass_lines_chance = " << param.init_pass_lines_chance << std::endl
+        << TAB1"init_pass_pages_chance = " << param.init_pass_pages_chance << std::endl
+        << TAB1"mutation_chance = " << param.mutation_chance << std::endl
+        << TAB1"crossover_chance = " << param.crossover_chance << std::endl
+        << TAB1"crossover_insert_chance = " << param.crossover_insert_chance << std::endl
+        << TAB1"crossover_switch_chance = " << param.crossover_switch_chance << std::endl
+        << TAB1"no_crossover_when_mutated = " << param.no_crossover_when_mutated << std::endl
+        << TAB1"elitism = " << param.elitism << std::endl;
+    return out;
+}
 
 Engine::Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : Compiler("Engine"),
                                                                                  engine_name(engine_name),

@@ -79,6 +79,8 @@ struct GPEngineParams {
     float crossover_switch_chance;   ///< Chance for crossover to be switch type
     bool no_crossover_when_mutated;  ///< If mutation happens then crossover cannot happen
     bool elitism;                    ///< Elitism in evolution (makes sure that best phenotype does not change)
+
+    friend std::ostream& operator<< (std::ostream &out, const GPEngineParams& param);
 };
 
 /** Default GP engine params used in case params are not set by an engine */
