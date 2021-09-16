@@ -71,7 +71,7 @@ ArgOpts Args::arg_opts {
  * Prints version text and exits with success
  */
 [[noreturn]] static void print_version(){
-    std::cout << "ebe " << EBE_VERSION_MAJOR << "." << EBE_VERSION_MINOR << "." << EBE_VERSION_PATCH << std::endl;
+    std::cout << "Ebe " << EBE_VERSION_MAJOR << "." << EBE_VERSION_MINOR << "." << EBE_VERSION_PATCH << std::endl;
     std::exit(0);
 }
 

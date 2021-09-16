@@ -2,14 +2,14 @@
 
 [Ebe wiki](https://github.com/mark-sed/ebe/wiki)
 
-**Ebe** [_eebee_] is a compiler that creates a text editing program from given input and output example.
-This compiler promises no knowledge of any programming language to edit files in a way similar programming languages (like awk) would.
+**Ebe** [_i:bi:_ or _ebe_] is a program (compiler and interpreter) for editting files just from given examples.
+This program does not require any knowledge of any programming language to edit files and promises editting options similar to ones provided by editting programming languages (like awk).
 
 _This project was created as my diploma thesis._
 
-## What edits can/will ebe do
+## What edits can/will Ebe do
 
-Ebe does not change text directly, it takes words (letters separated by whitespace or symbols) as an object with set of possible modifications (such as capitalization). But ebe mainly focuses on modification of structure of these objects (moving words around, deleting them, splitting...).
+Ebe does not change text directly, it takes words (letters separated by whitespace or symbols) as an object with set of possible modifications (such as capitalization). But Ebe mainly focuses on modification of structure of these objects (moving words around, deleting them, splitting...).
 
 ### Example
 
@@ -27,4 +27,4 @@ Elon Musk & Peter Svidler
 Harrison Ford & Anthony Daniels
 ```
 
-We can give these 2 files to ebe compiler and it should be able to find a program which modifies any text written in this way and rewrite it in an expected format. There is also a chance that ebe will not be able to find such a program, in that case program with best fitness will be compiled. Compiled program can then be used for modification on any input file which follows input example given.
+We can give these 2 files to Ebe compiler and it should be able to find a program which modifies any text written in this way and rewrite it in an expected format. There is also a chance that Ebe will not be able to find such a program, in that case program with best fitness will be compiled. Compiled program can then be used for modification on any input file which follows input example given.
