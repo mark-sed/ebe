@@ -11,9 +11,9 @@
 
 #include <iterator>
 #include "rng.hpp"
-#include "ir.hpp"
-#include "gp.hpp"
-#include "instruction.hpp"
+#include "midend/ir.hpp"
+#include "backend/instruction.hpp"
+#include "gp/gp.hpp"
 
 #include <iostream>
 

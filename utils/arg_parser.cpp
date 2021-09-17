@@ -17,10 +17,10 @@
 #include <set>
 #include <string>
 #include "arg_parser.hpp"
-#include "compiler.hpp"
 #include "ebe.hpp"
-#include "logging.hpp"
-#include "utils.hpp"
+#include "backend/compiler.hpp"
+#include "utils/logging.hpp"
+#include "utils/utils.hpp"
 
 /** Text to be displayed to user when --help option is used */
 const char *HELP_TEXT = "Usage: ebe [options] file\n"

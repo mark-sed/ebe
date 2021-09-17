@@ -16,10 +16,10 @@
 #include <string>
 #include <cstddef>
 #include "scanner.hpp"
-#include "ir.hpp"
-#include "arg_parser.hpp"
-#include "instruction.hpp"
-#include "utils.hpp"
+#include "midend/ir.hpp"
+#include "backend/instruction.hpp"
+#include "utils/arg_parser.hpp"
+#include "utils/utils.hpp"
 
 #include <iostream>
 

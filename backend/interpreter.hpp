@@ -12,8 +12,8 @@
 #ifndef _INTERPRETER_HPP_
 #define _INTERPRETER_HPP_
 
-#include "ir.hpp"
-#include "compiler.hpp"
+#include "midend/ir.hpp"
+#include "backend/compiler.hpp"
 
 /**
  * Interpreter for ebel code

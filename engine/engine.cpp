@@ -15,11 +15,11 @@
 #include <list>
 #include <unordered_set>
 #include "engine.hpp"
-#include "compiler.hpp"
-#include "ir.hpp"
-#include "rng.hpp"
-#include "interpreter.hpp"
-#include "logging.hpp"
+#include "midend/ir.hpp"
+#include "backend/compiler.hpp"
+#include "backend/interpreter.hpp"
+#include "utils/rng.hpp"
+#include "utils/logging.hpp"
 
 #include <iostream>
 

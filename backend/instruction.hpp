@@ -15,7 +15,7 @@
 #include <vector>
 #include <list>
 #include <iterator>
-#include "ir.hpp"
+#include "midend/ir.hpp"
 
 // Forward declarations
 namespace IR{

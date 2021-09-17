@@ -1,15 +1,15 @@
-SRC=$(wildcard libs/*.c)
-FILES=$(wildcard *.cpp)
+SRC=$(wildcard libs/*.cpp)
+FILES=$(wildcard *.cpp) $(wildcard */*.cpp)
 CC=g++
 FLAGS=-Wall -std=c++17 -g
 LIBS=
 EXT=
 OUT_NAME=ebe
-PATHS=libs
+PATHS=.
 MACROS=
 
 all: $(SRC)
-	$(CC) $(FLAGS) $(MACROS) -I $(PATHS) -o $(OUT_NAME)$(EXT) $(FILES) $^ $(LIBS)
+	$(CC) $(FLAGS) -I $(PATHS) $(MACROS) -o $(OUT_NAME)$(EXT) $(FILES) $^ $(LIBS)
 
 check:
 	echo "Test are not yet implemented"

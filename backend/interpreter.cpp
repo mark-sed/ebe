@@ -9,9 +9,9 @@
  * Holds resources for interpreter for ebel program over input text
  */
 
-#include "interpreter.hpp"
-#include "ir.hpp"
 #include <iostream>
+#include "interpreter.hpp"
+#include "midend/ir.hpp"
 
 Interpreter::Interpreter(IR::EbelNode *ebel) : Compiler("Interpreter"), ebel{ebel} {
 

@@ -13,9 +13,9 @@
 #define _ENGINE_HPP_
 
 #include <stddef.h>
-#include "ir.hpp"
-#include "compiler.hpp"
-#include "gp.hpp"
+#include "midend/ir.hpp"
+#include "backend/compiler.hpp"
+#include "gp/gp.hpp"
 
 // Forward declarations
 namespace GP {

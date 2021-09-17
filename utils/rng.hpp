@@ -17,9 +17,9 @@
 #include <list>
 #include <vector>
 #include <unordered_set>
-#include "ir.hpp"
-#include "instruction.hpp"
-#include "gp.hpp"
+#include "midend/ir.hpp"
+#include "backend/instruction.hpp"
+#include "gp/gp.hpp"
 
 namespace RNG {
     /**
