@@ -17,6 +17,7 @@
 #include "backend/compiler.hpp"
 #include "utils/utils.hpp"
 #include "utils/rng.hpp"
+#include "utils/logging.hpp"
 
 #include <iostream>
 
@@ -65,7 +66,7 @@ void CONCAT::exec(std::list<std::list<IR::Word *> *>::iterator &line,
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
     // Lines pass
     if(std::distance(line, doc->end()) <= this->arg1){
-        // TODO: Add log
+        LOG1("CONCAT argument in lines pass is out of range, skipping");
         return;
     }
     auto src = line;
@@ -83,7 +84,7 @@ void DEL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *lin
 }
 
 void DEL::exec(std::list<std::list<IR::Word *> *>::iterator &line, 
-                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
+               std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
     // Lines pass
     for(auto word: **line){
         delete word;
@@ -120,7 +121,7 @@ void SWAP::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *li
     // Words pass
     // Check if advanced iterator is correct otherwise dont do anything
     if(std::distance(word, line->end()) <= this->arg1){
-        // TODO: Add log
+        LOG1("SWAP argument in words pass is out of range, skipping");
         return;
     }
     auto src = word;
@@ -132,7 +133,7 @@ void SWAP::exec(std::list<std::list<IR::Word *> *>::iterator &line,
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
     // Lines pass
     if(std::distance(line, doc->end()) <= this->arg1){
-        // TODO: Add log
+        LOG1("SWAP argument in lines pass is out of range, skipping");
         return;
     }
     auto src = line;

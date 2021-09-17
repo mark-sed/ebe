@@ -20,6 +20,7 @@
 #include "backend/compiler.hpp"
 #include "utils/arg_parser.hpp"
 #include "utils/rng.hpp"
+#include "utils/logging.hpp"
 
 #include <iostream>
 
@@ -145,8 +146,7 @@ void PassWords::process(IR::Node *text) {
     if(this->pipeline->empty()){
         return;
     }
-    // TODO: Add logs of whats being interpreted
-    //LOG3();
+    LOG1("Words pass processing:\n" << *text);
     // Iterate through lines of text
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
         size_t column = 0;
@@ -203,6 +203,7 @@ void PassLines::process(IR::Node *text) {
     size_t column = 0;
     env.loop_inst = nullptr;
     bool checked_executable_loop = false;
+    LOG1("Lines pass processing:\n" << *text);
     // Iterate through lines of text
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
         // Break when not looping and there are no more instructions for the line

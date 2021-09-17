@@ -10,3 +10,7 @@ PASS words
 	LOOP 
 	LOOP 
 	SWAP 4
+pass lines
+SWAP 1
+pass documents
+NOP
