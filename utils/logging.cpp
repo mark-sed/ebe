@@ -47,7 +47,7 @@ void Logger::debug(unsigned level, const std::string &file_func, const std::stri
     }
     // Output log to all registered streams
     for(auto s: streams){
-        (*s) << file_func << ": " << message << std::endl;
+        (*s) << std::boolalpha << file_func << ": " << message << std::endl;
     }
 }
 

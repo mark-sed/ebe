@@ -59,6 +59,31 @@ ArgOpts Args::arg_opts {
     .iterations = 200
 };
 
+namespace Args {
+    std::ostream& operator<< (std::ostream &out, const ArgOpts& param) {
+        out << "ArgOpts:" << std::endl
+            << TAB1"logging_level = " << param.logging_level << std::endl
+            << TAB1"interpret_mode = " << param.interpret_mode << std::endl
+            << TAB1"file_in = " << (param.file_in ? param.file_in : "") << std::endl
+            << TAB1"file_out = " << (param.file_out ? param.file_out : "") << std::endl
+            << TAB1"ebel_file = " << (param.ebel_file ? param.ebel_file : "") << std::endl;
+        out << TAB1"int_files = [" << std::endl;
+        for(auto f: param.int_files) {
+            out << TAB2 << f << ";" << std::endl;
+        }
+        out << TAB1"]" << std::endl;
+        out << TAB1"alpha_num = " << param.alpha_num << std::endl
+            << TAB1"alpha_sym = " << param.alpha_sym << std::endl
+            << TAB1"group_delim = " << param.group_delim << std::endl
+            << TAB1"group_sym = " << param.group_sym << std::endl
+            << TAB1"float_delim = " << param.float_delim << std::endl
+            << TAB1"line_delim = " << static_cast<int>(param.line_delim) << std::endl
+            << TAB1"evolutions = " << param.evolutions << std::endl
+            << TAB1"iterations = " << param.iterations << std::endl;
+        return out;
+    }
+}
+
 /**
  * Prints help text and exits with success
  */

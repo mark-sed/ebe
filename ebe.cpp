@@ -156,7 +156,10 @@ int main(int argc, char *argv[]){
     // Parse arguments (no need to make sure there are args because help is printed if argc is low)
     Args::parse_args(argc-1, &argv[1]);
     // Inits
+    // Set logging level
     Logger::get().set_logging_level(Args::arg_opts.logging_level);
+    Logger::get().set_flags(std::ios_base::boolalpha);
+    LOG1("Argument params: \n" << Args::arg_opts);
     RNG::init();
 
     // Start compilation of example input files

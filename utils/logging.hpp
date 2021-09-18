@@ -18,6 +18,7 @@
 #include <ostream>
 #include <set>
 #include <algorithm>
+#include <ios>
 #include "utils/utils.hpp"
 
 
@@ -30,6 +31,7 @@ protected:
     bool log_everything;
     unsigned logging_level;
     std::vector<std::ostream *> streams;
+    std::ios_base::fmtflags flags;
 public:
     /** Constructor */
     BaseLogger();
@@ -61,6 +63,16 @@ public:
      * @param log_everything new value
      */ 
     void set_log_everything(bool log_everything) { this->log_everything = log_everything; }
+
+    /**
+     * Setter for flags
+     */
+    void set_flags(std::ios_base::fmtflags flags) { this->flags = flags; }
+
+    /**
+     * Getter for flags
+     */ 
+    std::ios_base::fmtflags get_flags() { return flags; }
 };
 
 
@@ -125,17 +137,20 @@ public:
     /// @param message Can be even stream
     #define LOG(level, message) if ((level) <= MAX_LOGGING_LEVEL) { \
         std::stringstream out; \
+        out.setf(Logger::get().get_flags()); \
         out << message; \
         Logger::get().debug(level, std::string(__FILE__)+std::string("::")+std::string(__func__), out.str()); }
     /// Logs whole container
     #define LOG_CONT(level, message, container) if ((level) <= MAX_LOGGING_LEVEL) { \
         std::stringstream out; \
+        out.setf(Logger::get().get_flags()); \
         out << message << std::endl; \
         for(auto v: (container)) { out << TAB1 << v << std::endl; } \
         Logger::get().debug(level, std::string(__FILE__)+std::string("::")+std::string(__func__), out.str()); }
     /// Logs container of strings which will be sanitized (removes escape sequences)
     #define LOG_CONT_SANITIZE(level, message, container) if ((level) <= MAX_LOGGING_LEVEL) { \
         std::stringstream out; \
+        out.setf(Logger::get().get_flags()); \
         out << message << std::endl; \
         for(auto v: (container)) { out << Utils::sanitize(v) << std::endl; } \
         Logger::get().debug(level, std::string(__FILE__)+std::string("::")+std::string(__func__), out.str()); }

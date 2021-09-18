@@ -38,6 +38,8 @@ namespace Args {
         char line_delim;       ///< Character determining the end of a line
         size_t evolutions;     ///< How many evolutions at most should be done
         size_t iterations;     ///< How many iterations are in one evolution
+
+        friend std::ostream& operator<< (std::ostream &out, const ArgOpts& param);
     };
 
     /**
