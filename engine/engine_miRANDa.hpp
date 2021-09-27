@@ -18,6 +18,17 @@
 #include "engine.hpp"
 
 class EngineMiRANDa : public Engine {
+private:
+    size_t min_program_size;
+    size_t max_program_size;
+    size_t min_passes;
+    size_t max_passes;
+
+    /**
+     * Generates random program based on engine params
+     * @return Valid ebel program which is random
+     */ 
+    IR::EbelNode *random_program();
 public:
     /**
      * Constructor
@@ -27,6 +38,8 @@ public:
     ~EngineMiRANDa();
 
     IR::EbelNode *generate(float *precision = nullptr) override;
+
+    friend std::ostream& operator<< (std::ostream &out, const EngineMiRANDa& param);
 };
 
 #endif//_ENGINE_MIRANDA_HPP_

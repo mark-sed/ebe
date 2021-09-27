@@ -63,7 +63,7 @@ namespace RNG {
      * @param chance Chance for roll to succeed
      * @return true if roll succeeded otherwise false
      */ 
-    inline bool roll(float chance) {
+    inline bool roll(float chance=0.5) {
         return rand_float() <= chance;
     }
 

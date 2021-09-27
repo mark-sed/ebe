@@ -54,7 +54,7 @@ void compile(const char *f_in, const char *f_out) {
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 1;
     for(size_t e = 0; e < evolutions; ++e){
         auto engine = new EngineMiRANDa(ir_in, ir_out);
-        LOGMAX("Started " << e << ". evolution with engine " << engine->engine_name);
+        LOGMAX("Started " << e << ". compilation with engine " << engine->engine_name);
         auto program = engine->generate(&precision);
         if(precision >= 1.0f){
             // Found perfect program, end now
@@ -64,11 +64,11 @@ void compile(const char *f_in, const char *f_out) {
             }
             best_program = program;
             best_precision = precision;
-            LOG3("Perfectly fitting program found, evolution ended");
+            LOG3("Perfectly fitting program found, compilation ended");
             delete engine;
             break;
         }
-        LOG4(e << ". evolution finished. Best phenotype (with " << (precision*100) << "% precision):\n" << *program);
+        LOG4(e << ". evolution finished. Best program (with " << (precision*100) << "% precision):\n" << *program);
         // Save program if it is the best one so far
         if(!best_program || best_precision < precision){
             if(best_program){
