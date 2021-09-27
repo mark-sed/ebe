@@ -55,8 +55,8 @@ ArgOpts Args::arg_opts {
     .group_sym = false,
     .float_delim = '.',
     .line_delim = '\n',
-    .evolutions = 5,
-    .iterations = 200
+    .evolutions = 0,
+    .iterations = 0
 };
 
 namespace Args {

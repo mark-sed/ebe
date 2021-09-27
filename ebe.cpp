@@ -18,6 +18,7 @@
 #include "midend/ir.hpp"
 #include "backend/interpreter.hpp"
 #include "engine/engine_jenn.hpp"
+#include "engine/engine_miRANDa.hpp"
 #include "utils/rng.hpp"
 #include "utils/logging.hpp"
 #include "utils/arg_parser.hpp"
@@ -49,8 +50,10 @@ void compile(const char *f_in, const char *f_out) {
     float precision = -0.01f;
     float best_precision = -0.01f;
     IR::EbelNode *best_program = nullptr;
-    for(size_t e = 0; e < Args::arg_opts.evolutions; ++e){
-        auto engine = new EngineJenn(ir_in, ir_out);
+    // TODO: Call initializer when implemented to set the correct number of evolutions when not set
+    size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 1;
+    for(size_t e = 0; e < evolutions; ++e){
+        auto engine = new EngineMiRANDa(ir_in, ir_out);
         LOGMAX("Started " << e << ". evolution with engine " << engine->engine_name);
         auto program = engine->generate(&precision);
         if(precision >= 1.0f){

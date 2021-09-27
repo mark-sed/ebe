@@ -19,12 +19,17 @@
 
 #include <iostream>
 
-EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, "Jenn") {
+EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, Args::arg_opts.iterations, "Jenn") {
     // Create params
     // TODO: Set the params for the best possible but also following ones specified by the user
+    if(Args::arg_opts.iterations == 0){
+        // TODO: Call initialized when implemented and set iterations in case its not set 
+        // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
+        iterations = 100;
+    }
     auto params = new GPEngineParams(default_gpparams);
     set_params(params);
-    LOG1("Engine Jenn params:\n" << *params)
+    LOG1("Engine Jenn params:\n" << *params << TAB1 << "iterations = " << iterations);
     // Creates and initializes a new population
     this->population = new GP::Population(params);
 }
@@ -39,7 +44,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
     size_t cnt_insert_cross = 0;
     size_t cnt_switch_cross = 0;
     size_t cnt_mutation = 0;
-    for(size_t iter = 0; iter < Args::arg_opts.iterations; ++iter){
+    for(size_t iter = 0; iter < iterations; ++iter){
         LOG3(iter << ". iteration started");
         // Eval population
         auto perfect_pheno = this->evaluate();
@@ -84,7 +89,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
             pheno_number++;
         }
         // Log population every 10 %
-        if(iter % Args::arg_opts.iterations/10 == 0) {
+        if(iter % iterations/10 == 0) {
             LOG4("Population after " << iter << " iteration: " << *population);
         }
     }
@@ -95,7 +100,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
     }
     LOG1("Jenn engine evolution finished with best fitness " << this->population->candidates->front()->fitness
          << " on phenotype:\n" << *this->population->candidates->front()->program);
-    LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << Args::arg_opts.iterations << "\n" TAB1 "Mutations: " << cnt_mutation 
+    LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iterations << "\n" TAB1 "Mutations: " << cnt_mutation 
          << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
     return this->population->candidates->front()->program;
 }

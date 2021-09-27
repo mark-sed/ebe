@@ -59,10 +59,11 @@ std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
     return out;
 }
 
-Engine::Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : Compiler("Engine"),
-                                                                                 engine_name(engine_name),
-                                                                                 text_in(text_in), 
-                                                                                 text_out(text_out){
+Engine::Engine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name) : Compiler("Engine"),
+                                                                                                    engine_name(engine_name),
+                                                                                                    text_in(text_in), 
+                                                                                                    text_out(text_out),
+                                                                                                    iterations(iterations) {
 
 }
 
@@ -204,8 +205,8 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
     //std::cout << "-----------\n\n";
 }
 
-GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_name) : 
-                   Engine(text_in, text_out, engine_name) {
+GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name) : 
+                   Engine(text_in, text_out, iterations, engine_name) {
     params = &default_gpparams;
 }
 

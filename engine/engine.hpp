@@ -36,12 +36,19 @@ public:
 protected:
     IR::Node *text_in;        ///< IR of input example text
     IR::Node *text_out;       ///< IR of output example text
+    size_t iterations;        ///< How many iterations should be done
     
     /**
      * Constructor
+     * @param text_in Input IR text
+     * @param text_out Output IR text
+     * @param iterations Number of iterations to be done
      * @param engine_name Name of the specific engine
      */
-    Engine(IR::Node *text_in, IR::Node *text_out, const char *engine_name);
+    Engine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name);
+
+    /** Destructor */
+    virtual ~Engine() {}
 
     /**
      * Compares 2 text IRs and returns percentage-wise similarity.
@@ -96,9 +103,12 @@ protected:
 
     /**
      * Constructor
+     * @param text_in Input text IR
+     * @param text_out Output text IR
+     * @param iterations Number of iterations to be done
      * @param engine_name Name of the specific engine
      */
-    GPEngine(IR::Node *text_in, IR::Node *text_out, const char *engine_name);
+    GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name);
     virtual ~GPEngine() {}
 
     /**
