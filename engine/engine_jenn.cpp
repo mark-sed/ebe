@@ -41,6 +41,18 @@ EngineJenn::~EngineJenn() {
     delete params;
 }
 
+/**
+ * The working principle is as follows:
+ *   1. Generate population
+ *   2. Evaluate population
+ *   3. If perfect phenotype (100 % precision), then end the program
+ *   4. Sort the population based on fitness (to make following steps easier)
+ *   5. If elitism is set, then leave the first phenotype untouched
+ *   6. Do rolls (rng) for mutation and crossover
+ *   7. Based on set chances and rolled values for mutations and crossovers do them
+ *   8. If not all iterations have been done, then repeat from step 2
+ *   9. Otherwise set precision (fitness) of best phenotype and return this phenotype
+ */
 IR::EbelNode *EngineJenn::generate(float *precision) {
     // Iterations in an evolution
     size_t cnt_insert_cross = 0;

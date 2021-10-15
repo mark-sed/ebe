@@ -77,6 +77,17 @@ std::ostream& operator<<(std::ostream &out, const EngineMiRANDa& param) {
     return out;
 }
 
+/**
+ * The working principle is as follows:
+ *   1. Create new program using random_program method
+ *      This method just uses rng to decide on length and instructions in the program
+ *   2. Interpret this program
+ *   3. Compare how precise is this program
+ *   4. If the precision is 100 % return this program
+ *   5. Otherwise compare this program to currently the best one and save it if it's better
+ *   6. If not all iterations are done, then continue from step 1
+ *   7. After all iterations return the best program
+ */ 
 IR::EbelNode *EngineMiRANDa::generate(float *precision) {
     IR::EbelNode *best_program = nullptr;
     float best_fitness = -1.0f;

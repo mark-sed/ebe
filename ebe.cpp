@@ -58,6 +58,10 @@ void compile(const char *f_in, const char *f_out) {
             // This should not happen, it should be tested in the parse_args
             Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect engine name");
         }
+        // In case MiRANDa is used generate a warning to let the user know
+        if(engine_id == EngineUtils::EngineID::MIRANDA){
+            Error::warning("Using MiRANDa engine, which uses only pure randomness and is NOT meant for real use.");
+        }
     }
     IR::EbelNode *best_program = nullptr;
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
