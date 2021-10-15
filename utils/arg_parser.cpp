@@ -19,6 +19,7 @@
 #include "arg_parser.hpp"
 #include "ebe.hpp"
 #include "backend/compiler.hpp"
+#include "engine/engine.hpp"
 #include "utils/logging.hpp"
 #include "utils/utils.hpp"
 
@@ -32,6 +33,9 @@ const char *HELP_TEXT = "Usage: ebe [options] file\n"
 "  -group-delim                Multiple delimiters after each other will be parsed as one delimiter.\n"
 "  -group-sym                  Multiple symbols after each other will be parsed as one symbol.\n"
 "  --float-delim <character>   Character used in your locale as a floating point dot (by default this is `.`).\n"
+"  -it --iterations <amount>   Number of iterations to be done in one evolution.\n"
+"  -e --evolutions <amount>    Number of evolution to be done.\n"
+"  -E --engine <name>          Engine to be used for compilation.\n"
 "  -in <file> --input <file>   File from which will be read input example text.\n"
 "  -out <file> --output <file> File from which will be read output example text.\n"
 "  -o <file>                   File to which will be output program saved.\n"
@@ -55,6 +59,7 @@ ArgOpts Args::arg_opts {
     .group_sym = false,
     .float_delim = '.',
     .line_delim = '\n',
+    .engine = nullptr,
     .evolutions = 0,
     .iterations = 0
 };
@@ -78,6 +83,7 @@ namespace Args {
             << TAB1"group_sym = " << param.group_sym << std::endl
             << TAB1"float_delim = " << param.float_delim << std::endl
             << TAB1"line_delim = " << static_cast<int>(param.line_delim) << std::endl
+            << TAB1"engine = " << (param.engine ? param.engine : "") << std::endl
             << TAB1"evolutions = " << param.evolutions << std::endl
             << TAB1"iterations = " << param.iterations << std::endl;
         return out;
@@ -169,6 +175,45 @@ void Args::parse_args(int argc, char *argv[]){
         arg_opts.interpret_mode = true;
         if(!(arg_opts.ebel_file = get_option_value(argv, argv+argc, "-i", ""))){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for ebel program file");
+        }
+    }
+
+    // Iterations
+    if(exists_option(argv, argv+argc, "--iterations", "-it")){
+        char *in_value;
+        if(!(in_value = get_option_value(argv, argv+argc, "--iterations", "-it"))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --iterations");
+        }
+        // FIXME: Value is taken as UInt not Size_t
+        try{
+            arg_opts.iterations = Cast::to<unsigned int>(in_value);
+        } catch (Exception::EbeException e){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --iterations", &e);
+        }
+    }
+
+    // Evolutions
+    if(exists_option(argv, argv+argc, "--evolutions", "-e")){
+        char *in_value;
+        if(!(in_value = get_option_value(argv, argv+argc, "--evolutions", "-e"))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --evolutions");
+        }
+        // FIXME: Value is taken as UInt not Size_t
+        try{
+            arg_opts.evolutions = Cast::to<unsigned int>(in_value);
+        } catch (Exception::EbeException e){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --evolutions", &e);
+        }
+    }
+
+    // Engine
+    if(exists_option(argv, argv+argc, "--engine", "-E")){
+        if(!(arg_opts.engine = get_option_value(argv, argv+argc, "--engine", "-E"))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --engine");
+        }
+        // Check if engine name is correct in advance so that user does not wait till parsing is done
+        if(EngineUtils::get_engine_id(Args::arg_opts.engine) == EngineUtils::EngineID::UNKNOWN){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect engine name");
         }
     }
 

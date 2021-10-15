@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <list>
 #include <unordered_set>
+#include <vector>
+#include <utility>
 #include "engine.hpp"
 #include "midend/ir.hpp"
 #include "backend/compiler.hpp"
@@ -22,6 +24,8 @@
 #include "utils/logging.hpp"
 
 #include <iostream>
+
+using namespace EngineUtils;
 
 GPEngineParams default_gpparams {
     .population_size = 100,
@@ -59,12 +63,37 @@ std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
     return out;
 }
 
-Engine::Engine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name) : Compiler("Engine"),
-                                                                                                    engine_name(engine_name),
-                                                                                                    text_in(text_in), 
-                                                                                                    text_out(text_out),
-                                                                                                    iterations(iterations) {
+namespace EngineUtils {
+    const TEngineInfo ENGINE_NAMES = TEngineInfo{
+        std::pair<EngineID, const char *>(EngineID::JENN, "Jenn"),
+        std::pair<EngineID, const char *>(EngineID::MIRANDA, "MiRANDa")
+    };
+}
 
+EngineUtils::EngineID EngineUtils::get_engine_id(const char *name){
+    for(auto &e: EngineUtils::ENGINE_NAMES) {
+        if(Utils::to_upper(e.second) == Utils::to_upper(name)){
+            return e.first;
+        }
+    }
+    return EngineID::UNKNOWN;
+}
+
+const char *EngineUtils::get_engine_name(EngineID id){
+    for(auto &e: EngineUtils::ENGINE_NAMES) {
+        if(e.first == id){
+            return e.second;
+        }
+    }
+    return "Unknown";
+}
+
+Engine::Engine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id) : Compiler("Engine"),
+                                                                                                            engine_id(engine_id),
+                                                                                                            text_in(text_in), 
+                                                                                                            text_out(text_out),
+                                                                                                            iterations(iterations) {
+    this->engine_name = EngineUtils::get_engine_name(this->engine_id);
 }
 
 float Engine::compare(IR::Node *ir1, IR::Node *ir2){
@@ -205,8 +234,8 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
     //std::cout << "-----------\n\n";
 }
 
-GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name) : 
-                   Engine(text_in, text_out, iterations, engine_name) {
+GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id) : 
+                   Engine(text_in, text_out, iterations, engine_id) {
     params = &default_gpparams;
 }
 

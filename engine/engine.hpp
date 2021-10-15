@@ -13,6 +13,8 @@
 #define _ENGINE_HPP_
 
 #include <stddef.h>
+#include <vector>
+#include <utility>
 #include "midend/ir.hpp"
 #include "backend/compiler.hpp"
 #include "gp/gp.hpp"
@@ -28,11 +30,50 @@ namespace IR {
 }
 
 /**
+ * Namespace containing utilities used by the compiler that 
+ * have something to do with engines.
+ */ 
+namespace EngineUtils {
+    
+    /**
+     * Engine identifiers
+     * This is used to identify engines without comparing string names
+     */ 
+    enum EngineID {
+        UNKNOWN = -1,
+        JENN = 0,
+        MIRANDA
+    };
+
+    /// Type holding engine ID and its corresponding name
+    using TEngineInfo = std::vector<std::pair<EngineID, const char *>>;
+
+    /// Holds all the engine IDs and names
+    /// If a new engine is to be added it has to be here as well
+    extern const TEngineInfo ENGINE_NAMES;
+
+    /**
+     * Returns engine ID to correspoding case-insensitive name
+     * @param name Case-insensitive C string with the engine name
+     * @return Engine's ID based on the passed in name
+     */ 
+    EngineID get_engine_id(const char *name);
+
+    /**
+     * Returns engine's name (formated)
+     * @param id ID of the engine
+     * @return Name of engine correspoding to the passed in id
+     */ 
+    const char *get_engine_name(EngineID id);
+}
+
+/**
  * Main abstract class that all engines should inherit
  */
 class Engine : public Compiler {
 public:
-    const char *engine_name;  ///< Name of the engine (needed for info printing)
+    EngineUtils::EngineID engine_id;  ///< Unique identified of the engine type
+    const char *engine_name;          ///< Name of the engine (needed for info printing)
 protected:
     IR::Node *text_in;        ///< IR of input example text
     IR::Node *text_out;       ///< IR of output example text
@@ -43,12 +84,9 @@ protected:
      * @param text_in Input IR text
      * @param text_out Output IR text
      * @param iterations Number of iterations to be done
-     * @param engine_name Name of the specific engine
+     * @param engine_id ID of the specific engine
      */
-    Engine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name);
-
-    /** Destructor */
-    virtual ~Engine() {}
+    Engine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id);
 
     /**
      * Compares 2 text IRs and returns percentage-wise similarity.
@@ -58,6 +96,9 @@ protected:
      */ 
     float compare(IR::Node *ir1, IR::Node *ir2);
 public:
+    /** Destructor */
+    virtual ~Engine() {}
+
     /**
      * Through evolution and set params generated new ebel program for input and output passed in at creation
      * @param precision[out] This value will be set to generated code's precision on provided and generated output. 
@@ -106,9 +147,9 @@ protected:
      * @param text_in Input text IR
      * @param text_out Output text IR
      * @param iterations Number of iterations to be done
-     * @param engine_name Name of the specific engine
+     * @param engine_id ID of the specific engine
      */
-    GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, const char *engine_name);
+    GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id);
     virtual ~GPEngine() {}
 
     /**

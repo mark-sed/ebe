@@ -19,7 +19,9 @@
 #include "utils/rng.hpp"
 
 
-EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(text_in, text_out, Args::arg_opts.iterations, "MiRANDa") {
+EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(text_in, text_out, 
+                                                                      Args::arg_opts.iterations, 
+                                                                      EngineUtils::EngineID::MIRANDA) {
     if(Args::arg_opts.iterations == 0){
         // TODO: Call initialized when implemented and set iterations in case its not set 
         // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution

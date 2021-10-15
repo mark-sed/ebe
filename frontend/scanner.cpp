@@ -20,6 +20,7 @@
 #include "backend/instruction.hpp"
 #include "utils/arg_parser.hpp"
 #include "utils/utils.hpp"
+#include "utils/exceptions.hpp"
 
 #include <iostream>
 
@@ -349,7 +350,13 @@ IR::EbelNode *EbelScanner::process(std::vector<std::string> *text, const char *f
                 // CONCAT
                 if(parsed_inst == Inst::CONCAT::NAME){
                     cc_args_size = 1;
-                    unsigned int arg1 = Cast::to<unsigned int>(args[0]);
+                    unsigned int arg1;
+                    try {
+                        arg1 = Cast::to<unsigned int>(args[0]);
+                    } catch (Exception::EbeException e) {
+                        error(Error::ErrorCode::INTERNAL, file_name, line_number, static_cast<unsigned long>(i+1), 
+                              "Incorrect argument type", &e);
+                    }
                     curr_pass->push_back(new Inst::CONCAT(arg1));
                 }
                 // DEL
@@ -394,7 +401,13 @@ IR::EbelNode *EbelScanner::process(std::vector<std::string> *text, const char *f
                 else if(parsed_inst == Inst::SWAP::NAME){
                     cc_args_size = 1;
                     // FIXME: Check if argument is >0
-                    unsigned int arg1 = Cast::to<unsigned int>(args[0]);
+                    unsigned int arg1;
+                    try {
+                        arg1 = Cast::to<unsigned int>(args[0]);
+                    } catch (Exception::EbeException e){
+                        error(Error::ErrorCode::INTERNAL, file_name, line_number, static_cast<unsigned long>(i+1), 
+                              "Incorrect argument type", &e);
+                    }
                     curr_pass->push_back(new Inst::SWAP(arg1));
                 }
                 // Constraint check for all instructions

@@ -14,6 +14,7 @@
 #define _COMPILER_HPP_
 
 #include <iostream>
+#include "utils/exceptions.hpp"
 
 /**
  * Namespace holding resources for error and warning handling
@@ -47,8 +48,9 @@ namespace Error {
      * Prints error information passed in and exits with passed in code
      * @param code Code of an error that occured
      * @param msg Info message to be printed for the user
+     * @param exc Exception that might hava accompanied this error or nullptr
      */
-    [[noreturn]] void error(Error::ErrorCode code, const char *msg);
+    [[noreturn]] void error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc=nullptr);
 
     inline void warning(const char *msg) {
         std::cerr << "WARNING: " << msg << std::endl;
@@ -76,9 +78,10 @@ protected:
      * @param line Line at which the error occured
      * @param column Column at which the error occured
      * @param msg Message to be printed to the user
+     * @param exc Exception that might hava accompanied this error or nullptr
      */
     [[noreturn]] void error(Error::ErrorCode code, const char *file, long line, 
-                            long column, const char *msg);
+                            long column, const char *msg, Exception::EbeException *exc=nullptr);
 };
 
 #endif//_COMPILER_HPP_

@@ -13,6 +13,7 @@
 #include <sstream>
 #include <regex>
 #include "utils.hpp"
+#include "exceptions.hpp"
 #include "backend/compiler.hpp"
 
 using namespace Utils;
@@ -77,6 +78,6 @@ template<> unsigned int Cast::to(std::string v){
     try{
         return std::stoul(v);
     }catch (std::exception & e){
-        Error::error(Error::ErrorCode::INTERNAL, "Incorrect argument type (could not be converted to unsigned integer)");
+        throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to unsigned int"));
     }
 }

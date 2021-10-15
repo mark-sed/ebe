@@ -154,7 +154,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        void format_args(std::ostream &out);
+        void format_args(std::ostream &out) override;
         SWAP(unsigned int arg1) : arg1{arg1} { pragma = false; }
         virtual SWAP *copy() const override {
             return new SWAP(arg1);

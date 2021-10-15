@@ -19,7 +19,9 @@
 
 #include <iostream>
 
-EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, Args::arg_opts.iterations, "Jenn") {
+EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, 
+                                                                Args::arg_opts.iterations, 
+                                                                EngineUtils::EngineID::JENN) {
     // Create params
     // TODO: Set the params for the best possible but also following ones specified by the user
     if(Args::arg_opts.iterations == 0){

@@ -45,20 +45,20 @@ namespace Utils {
     std::string sanitize(const std::string &text);
 }
 
+/**
+ * Namespace containing all functions for working with types
+ * and namely for type casting
+ */ 
 namespace Cast {
     /**
      * Method for casting to other types
-     * @note has to be specialized, otherwise error
+     * @note has to be specialized, otherwise Error::error is called
+     * @throw Exception::EbeTypeException when unable to cast
      * @param v Value
      */
     template<typename T>
     T to(std::string v);
 
-    /**
-     * Method for casting to uint
-     * @param v Value
-     * @return v converted
-     */
     template<> unsigned int to(std::string v);
 }
 

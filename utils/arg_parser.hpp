@@ -36,6 +36,7 @@ namespace Args {
         bool group_sym;        ///< If multiple symbols should be group together
         char float_delim;      ///< Delimiter for floating point numbers (42.1 vs 42,1)
         char line_delim;       ///< Character determining the end of a line
+        char *engine;          ///< Engine to be used for compilation
         size_t evolutions;     ///< How many evolutions at most should be done
         size_t iterations;     ///< How many iterations are in one evolution
 

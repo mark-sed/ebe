@@ -49,11 +49,31 @@ void compile(const char *f_in, const char *f_out) {
     // Evolution
     float precision = -0.01f;
     float best_precision = -0.01f;
+    // Get the engine ID
+    // TODO: Use heuristic to decide what engine to use here
+    EngineUtils::EngineID engine_id = EngineUtils::EngineID::JENN;
+    if(Args::arg_opts.engine != nullptr){
+        engine_id = EngineUtils::get_engine_id(Args::arg_opts.engine);
+        if(engine_id == EngineUtils::EngineID::UNKNOWN) {
+            // This should not happen, it should be tested in the parse_args
+            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect engine name");
+        }
+    }
     IR::EbelNode *best_program = nullptr;
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 1;
     for(size_t e = 0; e < evolutions; ++e){
-        auto engine = new EngineMiRANDa(ir_in, ir_out);
+        Engine *engine = nullptr;
+        switch(engine_id){
+            case EngineUtils::EngineID::MIRANDA:
+                engine = new EngineMiRANDa(ir_in, ir_out);
+            break;
+            case EngineUtils::EngineID::JENN:
+                engine = new EngineJenn(ir_in, ir_out);
+            break;
+            default:
+                Error::error(Error::ErrorCode::INTERNAL, "Attempt to use engine unknown by the compile process");
+        }
         LOGMAX("Started " << e << ". compilation with engine " << engine->engine_name);
         auto program = engine->generate(&precision);
         if(precision >= 1.0f){

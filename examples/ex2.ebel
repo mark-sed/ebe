@@ -11,6 +11,6 @@ PASS words
 	LOOP 
 	SWAP 4
 pass lines
-SWAP 1
+SWAP a
 pass documents
 NOP

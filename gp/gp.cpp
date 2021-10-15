@@ -23,8 +23,8 @@ Phenotype::Phenotype(IR::EbelNode *program, float fitness) : program{program}, f
 
 Population::Population(struct GPEngineParams *params) : params(params) {
     this->candidates = new std::list<Phenotype *>();
-    for(size_t i = 0; i < params->population_size; i++){
-        this->candidates->push_back(new Phenotype(new IR::EbelNode(params)));
+    for(size_t i = 0; i < this->params->population_size; i++){
+        this->candidates->push_back(new Phenotype(new IR::EbelNode(this->params)));
     }
 }
 

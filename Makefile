@@ -1,6 +1,6 @@
 SRC=$(wildcard libs/*.cpp)
 FILES=$(wildcard *.cpp) $(wildcard */*.cpp)
-CC=g++
+CC=clang++
 FLAGS=-Wall -std=c++17 -g
 LIBS=
 EXT=

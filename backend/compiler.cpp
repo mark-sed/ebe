@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "compiler.hpp"
+#include "utils/exceptions.hpp"
 
 const char *Error::get_code_name(Error::ErrorCode c){
     const char *NAMES[] = {
@@ -26,21 +27,27 @@ const char *Error::get_code_name(Error::ErrorCode c){
         "Unimplemented"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
-    if(c < names_size){
-        return NAMES[c];
+    if(static_cast<int>(c) < names_size){
+        return NAMES[static_cast<int>(c)];
     }
     return "Unknown";
 }
 
-[[noreturn]] void Error::error(Error::ErrorCode code, const char *msg){
-    std::cerr << "ERROR (" << Error::get_code_name(code) << "): " 
-              << msg << "!" << std::endl;
+[[noreturn]] void Error::error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc){
+    std::cerr << "ERROR (" << Error::get_code_name(code); 
+    if(exc == nullptr) {
+        std::cerr << "): " << msg << "!" << std::endl;
+    }
+    else {
+        std::cerr << exc->get_type() << "): " << msg << "!" << exc->what() << "." << std::endl;
+    }
     std::exit(code);
 }
 
 
 [[noreturn]] void Compiler::error(Error::ErrorCode code, const char *file, 
-                                  long line, long column, const char *msg){
+                                  long line, long column, const char *msg,
+                                  Exception::EbeException *exc){
     if(file)
         // Dont print name if it is nullptr
         std::cerr << file;
@@ -51,8 +58,13 @@ const char *Error::get_code_name(Error::ErrorCode c){
         }
     }
     // FIXME: unit_name probably should not be printed to users
-    std::cerr << ":[" << unit_name << "]: ERROR (" << Error::get_code_name(code) << "): " 
-              << msg << "!" << std::endl;
+    std::cerr << ":[" << unit_name << "]: ERROR (" << Error::get_code_name(code);
+    if(exc == nullptr) {
+        std::cerr << "): " << msg << "!" << std::endl;
+    }
+    else {
+        std::cerr << ", " << exc->get_type() << "): " << msg << "! " << exc->what() << "." << std::endl;
+    }
     std::exit(code);
 }
 
