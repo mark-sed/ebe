@@ -10,7 +10,8 @@
  * based on example (original program and wanted output on small scale).
  */
 
-#include <iostream> 
+#include <iostream>
+#include <fstream> 
 #include <vector>
 #include "ebe.hpp"
 #include "frontend/preprocessor.hpp"
@@ -65,7 +66,7 @@ void compile(const char *f_in, const char *f_out) {
     }
     IR::EbelNode *best_program = nullptr;
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
-    size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 1;
+    size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
     for(size_t e = 0; e < evolutions; ++e){
         Engine *engine = nullptr;
         switch(engine_id){
@@ -108,8 +109,18 @@ void compile(const char *f_in, const char *f_out) {
 
     if(best_program){
         // Print the best program
-        std::cout << std::endl << "Best compiled program with " << (best_precision*100) << "% precision: " << std::endl;
-        std::cout << *best_program;
+        std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision." << std::endl;
+
+        // TODO: Create custom output method to have better control
+        if(Args::arg_opts.ebel_file) {
+            // Folder existence is checked in arg_parser
+            std::ofstream o_file(Args::arg_opts.ebel_file);
+            o_file << *best_program;
+            o_file.close(); 
+        }
+        else {
+            std::cout << *best_program;
+        }
         LOG1("Best compiled program with " << (best_precision*100) << "% precision:\n" << *best_program);
         delete best_program;
     }

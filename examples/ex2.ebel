@@ -1,16 +1,19 @@
-PASS words
-	NOP
-	NOP
-	DEL 
-	DEL 
-	DEL 
-	DEL 
-	DEL 
-	DEL 
-	LOOP 
-	LOOP 
-	SWAP 4
-pass lines
-SWAP a
-pass documents
-NOP
+PASS Words
+  LOOP 
+  DEL 
+  DEL 
+  DEL 
+  LOOP 
+  DEL 
+  LOOP 
+  DEL 
+  DEL 
+  LOOP 
+  DEL 
+  LOOP 
+  DEL 
+  LOOP 
+  NOP 
+  NOP 
+  LOOP 
+  SWAP 1

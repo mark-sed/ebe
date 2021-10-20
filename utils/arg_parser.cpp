@@ -16,6 +16,7 @@
 #include <iostream>
 #include <set>
 #include <string>
+#include <filesystem>
 #include "arg_parser.hpp"
 #include "ebe.hpp"
 #include "backend/compiler.hpp"
@@ -237,8 +238,16 @@ void Args::parse_args(int argc, char *argv[]){
     }
     // Output ebel file
     if(exists_option(argv, argv+argc, "-o", "")){
+        // TODO: Fill default file (out.ebel?) when not specified
+        // TODO: Have option to use stdout
         if(!(arg_opts.ebel_file = get_option_value(argv, argv+argc, "-o", ""))){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for output program file");
+        }
+        // Because opening of the file will happen after many iterations and evolution
+        // existence of its path is checked here
+        auto o_path = std::filesystem::path(arg_opts.ebel_file);
+        if(!o_path.remove_filename().empty() && !std::filesystem::exists(o_path.remove_filename())){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Path to passed in output file (-o) does not exist");
         }
     }
     // Parsing options

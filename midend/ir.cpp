@@ -350,7 +350,7 @@ namespace IR {
 
     std::ostream& operator<< (std::ostream &out, const IR::Pass& pass){
         const char * INDENT = "  ";
-        out << pass.pass_name << " pass:" << std::endl;
+        out << "PASS " << pass.pass_name << std::endl;
         for(auto inst: *pass.pipeline){
             out << INDENT << inst->get_name() << " ";
             inst->format_args(out);

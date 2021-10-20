@@ -27,7 +27,7 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
     if(Args::arg_opts.iterations == 0){
         // TODO: Call initialized when implemented and set iterations in case its not set 
         // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
-        iterations = 100;
+        iterations = 200;
     }
     auto params = new GPEngineParams(default_gpparams);
     set_params(params);
