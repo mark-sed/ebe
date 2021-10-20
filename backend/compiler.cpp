@@ -15,7 +15,7 @@
 #include "compiler.hpp"
 #include "utils/exceptions.hpp"
 
-const char *Error::get_code_name(Error::ErrorCode c){
+const char *Error::get_code_name(Error::ErrorCode code){
     const char *NAMES[] = {
         "None",
         "Unknown",
@@ -27,8 +27,8 @@ const char *Error::get_code_name(Error::ErrorCode c){
         "Unimplemented"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
-    if(static_cast<int>(c) < names_size){
-        return NAMES[static_cast<int>(c)];
+    if(static_cast<int>(code) < names_size){
+        return NAMES[static_cast<int>(code)];
     }
     return "Unknown";
 }

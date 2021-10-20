@@ -1,6 +1,10 @@
 # Prerequisites
 *.d
 
+# Doxygen
+docs/html/
+docs/docs.html
+
 # Compiled Object files
 *.slo
 *.lo

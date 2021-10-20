@@ -11,6 +11,12 @@ MACROS=
 all: $(SRC)
 	$(CC) $(FLAGS) -I $(PATHS) $(MACROS) -o $(OUT_NAME)$(EXT) $(FILES) $^ $(LIBS)
 
+.PHONY: docs
+
+docs:
+	doxygen docs/Doxyfile 1>/dev/null
+	cd docs && ln -s -f html/index.html docs.html &>/dev/null
+
 check:
 	echo "Test are not yet implemented"
 

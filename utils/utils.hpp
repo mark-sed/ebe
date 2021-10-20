@@ -33,7 +33,8 @@ namespace Utils {
 
     /**
      * Parses csv values
-     * @param values String of csv values
+     * @param csv String of csv values
+     * @param delim CSV delimiter. Comma by default.
      * @return Set of these value
      */
     std::set<std::string> split_csv(std::string csv, char delim=','); 

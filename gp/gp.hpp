@@ -44,7 +44,7 @@ namespace GP {
          * @param program Phenotype's program
          * @param fitness Phenotype's fitness (default value is -inf) 
          */
-        Phenotype(IR::EbelNode *program, float fitnesss=-1*std::numeric_limits<float>::infinity());
+        Phenotype(IR::EbelNode *program, float fitness=-1*std::numeric_limits<float>::infinity());
     };
 
     /**

@@ -37,7 +37,7 @@ namespace Error {
     };
 
     /**
-     * Returns name of ErroCode
+     * Returns name of ErrorCode
      * @param code Error code
      * @return Error code's name
      */

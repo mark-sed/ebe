@@ -155,6 +155,7 @@ public:
 
     /**
      * Checks argument value
+     * @param index Index of the argument
      * @param expected Set of allowed values
      * @param case_sensitive If the letter case is important (false by default)
      */

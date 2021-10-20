@@ -95,7 +95,7 @@ public:
     /**
      * Debug logging
      * @param level Verbosity level
-     * @param file __FILE__ should be passed here or the file name
+     * @param file_func __FILE__ should be passed here or the file name
      * @param message Message to print
      */
     void debug(unsigned level, const std::string &file_func, const std::string &message);
@@ -134,6 +134,7 @@ public:
 
 /// Logging macro
 #ifndef DISABLE_LOGGING
+    /// @param level Verbosity level
     /// @param message Can be even stream
     #define LOG(level, message) if ((level) <= MAX_LOGGING_LEVEL) { \
         std::stringstream out; \

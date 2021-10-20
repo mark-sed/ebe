@@ -101,7 +101,7 @@ public:
 
     /**
      * Through evolution and set params generated new ebel program for input and output passed in at creation
-     * @param precision[out] This value will be set to generated code's precision on provided and generated output. 
+     * @param[out] precision This value will be set to generated code's precision on provided and generated output. 
      *                       When set to nullptr should be ignored.
      * @return Ebel program generated from text_in and text_out
      */ 
