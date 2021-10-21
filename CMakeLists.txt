@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.8)
 project(ebe)
 set(CMAKE_CXX_STANDARD 17)
 
+# Includes for headers
 include_directories(.)
 include_directories(backend)
 include_directories(engine)
@@ -12,14 +13,8 @@ include_directories(gp)
 include_directories(midend)
 include_directories(utils)
 
-# Enable gtest
-enable_testing()
-add_subdirectory(tests/googletest)
-
-# Create executable
-add_executable(
-    ${PROJECT_NAME}
-    ebe.cpp
+# Source files excluding main
+set(SOURCES 
     backend/compiler.cpp
     backend/instruction.cpp
     backend/interpreter.cpp
@@ -37,18 +32,43 @@ add_executable(
     utils/utils.cpp
 )
 
-target_link_libraries(
+# Test source files
+set(TEST_SRCS
+    tests/test_utils.cpp
+)
+
+# Enable gtest
+enable_testing()
+add_subdirectory(tests/googletest)
+
+# Targets
+# ebe target
+add_executable(
     ${PROJECT_NAME}
+    ebe.cpp
+    ${SOURCES}
+)
+
+# ebetests target
+add_executable(
+    ebetests
+    ${TEST_SRCS}
+    ${SOURCES}
+)
+
+target_link_libraries(
+    ebetests
     gtest_main
 )
 
 # GTest include
 include(GoogleTest)
+gtest_discover_tests(ebetests)
 
 # Docs build
+# docs target
 find_package(Doxygen REQUIRED dot)
 if(DOXYGEN_FOUND)
-    # set input file
     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
@@ -60,5 +80,5 @@ if(DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM )
 else (DOXYGEN_FOUND)
-message("Doxygen need to be installed to generate the doxygen documentation")
+    message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
