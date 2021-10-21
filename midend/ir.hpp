@@ -16,9 +16,9 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include "backend/instruction.hpp"
-#include "engine/engine.hpp"
-#include "gp/gp.hpp"
+#include "instruction.hpp"
+#include "engine.hpp"
+#include "gp.hpp"
 
 // Forward declarations
 namespace Inst {

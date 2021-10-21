@@ -63,7 +63,8 @@ CMAKE_BINARY_DIR = /home/marek/Desktop/Skola/dp/ebe/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/ebe.cpp.dir/all
+all: CMakeFiles/docs.dir/all
+all: CMakeFiles/ebe.dir/all
 all: tests/googletest/all
 .PHONY : all
 
@@ -72,7 +73,8 @@ preinstall: tests/googletest/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/ebe.cpp.dir/clean
+clean: CMakeFiles/docs.dir/clean
+clean: CMakeFiles/ebe.dir/clean
 clean: tests/googletest/clean
 .PHONY : clean
 
@@ -128,30 +130,57 @@ tests/googletest/googletest/clean: tests/googletest/googletest/CMakeFiles/gtest.
 .PHONY : tests/googletest/googletest/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/ebe.cpp.dir
+# Target rules for target CMakeFiles/docs.dir
 
 # All Build rule for target.
-CMakeFiles/ebe.cpp.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 "Built target ebe.cpp"
-.PHONY : CMakeFiles/ebe.cpp.dir/all
+CMakeFiles/docs.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/docs.dir/build.make CMakeFiles/docs.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/docs.dir/build.make CMakeFiles/docs.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=1 "Built target docs"
+.PHONY : CMakeFiles/docs.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/ebe.cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles 17
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ebe.cpp.dir/all
+CMakeFiles/docs.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles 1
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/docs.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles 0
-.PHONY : CMakeFiles/ebe.cpp.dir/rule
+.PHONY : CMakeFiles/docs.dir/rule
 
 # Convenience name for target.
-ebe.cpp: CMakeFiles/ebe.cpp.dir/rule
-.PHONY : ebe.cpp
+docs: CMakeFiles/docs.dir/rule
+.PHONY : docs
 
 # clean rule for target.
-CMakeFiles/ebe.cpp.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/clean
-.PHONY : CMakeFiles/ebe.cpp.dir/clean
+CMakeFiles/docs.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/docs.dir/build.make CMakeFiles/docs.dir/clean
+.PHONY : CMakeFiles/docs.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/ebe.dir
+
+# All Build rule for target.
+CMakeFiles/ebe.dir/all: tests/googletest/googletest/CMakeFiles/gtest_main.dir/all
+CMakeFiles/ebe.dir/all: tests/googletest/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 "Built target ebe"
+.PHONY : CMakeFiles/ebe.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/ebe.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles 21
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ebe.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles 0
+.PHONY : CMakeFiles/ebe.dir/rule
+
+# Convenience name for target.
+ebe: CMakeFiles/ebe.dir/rule
+.PHONY : ebe
+
+# clean rule for target.
+CMakeFiles/ebe.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/clean
+.PHONY : CMakeFiles/ebe.dir/clean
 
 #=============================================================================
 # Target rules for target tests/googletest/googlemock/CMakeFiles/gmock_main.dir
@@ -161,7 +190,7 @@ tests/googletest/googlemock/CMakeFiles/gmock_main.dir/all: tests/googletest/goog
 tests/googletest/googlemock/CMakeFiles/gmock_main.dir/all: tests/googletest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googlemock/CMakeFiles/gmock_main.dir/build.make tests/googletest/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googlemock/CMakeFiles/gmock_main.dir/build.make tests/googletest/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=20,21 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=21,22 "Built target gmock_main"
 .PHONY : tests/googletest/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -187,7 +216,7 @@ tests/googletest/googlemock/CMakeFiles/gmock_main.dir/clean:
 tests/googletest/googlemock/CMakeFiles/gmock.dir/all: tests/googletest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googlemock/CMakeFiles/gmock.dir/build.make tests/googletest/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googlemock/CMakeFiles/gmock.dir/build.make tests/googletest/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=18,19 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=19,20 "Built target gmock"
 .PHONY : tests/googletest/googlemock/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -213,7 +242,7 @@ tests/googletest/googlemock/CMakeFiles/gmock.dir/clean:
 tests/googletest/googletest/CMakeFiles/gtest_main.dir/all: tests/googletest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googletest/CMakeFiles/gtest_main.dir/build.make tests/googletest/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googletest/CMakeFiles/gtest_main.dir/build.make tests/googletest/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=24,25 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=25,26 "Built target gtest_main"
 .PHONY : tests/googletest/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -239,7 +268,7 @@ tests/googletest/googletest/CMakeFiles/gtest_main.dir/clean:
 tests/googletest/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googletest/CMakeFiles/gtest.dir/build.make tests/googletest/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/googletest/googletest/CMakeFiles/gtest.dir/build.make tests/googletest/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=22,23 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles --progress-num=23,24 "Built target gtest"
 .PHONY : tests/googletest/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.

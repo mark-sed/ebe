@@ -15,9 +15,9 @@
 #include <stddef.h>
 #include <vector>
 #include <utility>
-#include "midend/ir.hpp"
-#include "backend/compiler.hpp"
-#include "gp/gp.hpp"
+#include "ir.hpp"
+#include "compiler.hpp"
+#include "gp.hpp"
 
 // Forward declarations
 namespace GP {

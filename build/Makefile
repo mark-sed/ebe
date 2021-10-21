@@ -77,6 +77,18 @@ install/strip/fast: preinstall/fast
 	/var/lib/snapd/snap/cmake/936/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/var/lib/snapd/snap/cmake/936/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/var/lib/snapd/snap/cmake/936/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
@@ -128,18 +140,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/var/lib/snapd/snap/cmake/936/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/var/lib/snapd/snap/cmake/936/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles /home/marek/Desktop/Skola/dp/ebe/build//CMakeFiles/progress.marks
@@ -172,17 +172,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named ebe.cpp
+# Target rules for targets named docs
 
 # Build rule for target.
-ebe.cpp: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ebe.cpp
-.PHONY : ebe.cpp
+docs: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 docs
+.PHONY : docs
 
 # fast build rule for target.
-ebe.cpp/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/build
-.PHONY : ebe.cpp/fast
+docs/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/docs.dir/build.make CMakeFiles/docs.dir/build
+.PHONY : docs/fast
+
+#=============================================================================
+# Target rules for targets named ebe
+
+# Build rule for target.
+ebe: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ebe
+.PHONY : ebe
+
+# fast build rule for target.
+ebe/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/build
+.PHONY : ebe/fast
 
 #=============================================================================
 # Target rules for targets named gmock_main
@@ -241,7 +254,7 @@ backend/compiler.o: backend/compiler.cpp.o
 
 # target to build an object file
 backend/compiler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/compiler.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/compiler.cpp.o
 .PHONY : backend/compiler.cpp.o
 
 backend/compiler.i: backend/compiler.cpp.i
@@ -249,7 +262,7 @@ backend/compiler.i: backend/compiler.cpp.i
 
 # target to preprocess a source file
 backend/compiler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/compiler.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/compiler.cpp.i
 .PHONY : backend/compiler.cpp.i
 
 backend/compiler.s: backend/compiler.cpp.s
@@ -257,7 +270,7 @@ backend/compiler.s: backend/compiler.cpp.s
 
 # target to generate assembly for a file
 backend/compiler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/compiler.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/compiler.cpp.s
 .PHONY : backend/compiler.cpp.s
 
 backend/instruction.o: backend/instruction.cpp.o
@@ -265,7 +278,7 @@ backend/instruction.o: backend/instruction.cpp.o
 
 # target to build an object file
 backend/instruction.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/instruction.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/instruction.cpp.o
 .PHONY : backend/instruction.cpp.o
 
 backend/instruction.i: backend/instruction.cpp.i
@@ -273,7 +286,7 @@ backend/instruction.i: backend/instruction.cpp.i
 
 # target to preprocess a source file
 backend/instruction.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/instruction.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/instruction.cpp.i
 .PHONY : backend/instruction.cpp.i
 
 backend/instruction.s: backend/instruction.cpp.s
@@ -281,7 +294,7 @@ backend/instruction.s: backend/instruction.cpp.s
 
 # target to generate assembly for a file
 backend/instruction.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/instruction.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/instruction.cpp.s
 .PHONY : backend/instruction.cpp.s
 
 backend/interpreter.o: backend/interpreter.cpp.o
@@ -289,7 +302,7 @@ backend/interpreter.o: backend/interpreter.cpp.o
 
 # target to build an object file
 backend/interpreter.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/interpreter.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/interpreter.cpp.o
 .PHONY : backend/interpreter.cpp.o
 
 backend/interpreter.i: backend/interpreter.cpp.i
@@ -297,7 +310,7 @@ backend/interpreter.i: backend/interpreter.cpp.i
 
 # target to preprocess a source file
 backend/interpreter.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/interpreter.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/interpreter.cpp.i
 .PHONY : backend/interpreter.cpp.i
 
 backend/interpreter.s: backend/interpreter.cpp.s
@@ -305,7 +318,7 @@ backend/interpreter.s: backend/interpreter.cpp.s
 
 # target to generate assembly for a file
 backend/interpreter.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/backend/interpreter.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/backend/interpreter.cpp.s
 .PHONY : backend/interpreter.cpp.s
 
 ebe.o: ebe.cpp.o
@@ -313,7 +326,7 @@ ebe.o: ebe.cpp.o
 
 # target to build an object file
 ebe.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/ebe.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/ebe.cpp.o
 .PHONY : ebe.cpp.o
 
 ebe.i: ebe.cpp.i
@@ -321,7 +334,7 @@ ebe.i: ebe.cpp.i
 
 # target to preprocess a source file
 ebe.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/ebe.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/ebe.cpp.i
 .PHONY : ebe.cpp.i
 
 ebe.s: ebe.cpp.s
@@ -329,7 +342,7 @@ ebe.s: ebe.cpp.s
 
 # target to generate assembly for a file
 ebe.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/ebe.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/ebe.cpp.s
 .PHONY : ebe.cpp.s
 
 engine/engine.o: engine/engine.cpp.o
@@ -337,7 +350,7 @@ engine/engine.o: engine/engine.cpp.o
 
 # target to build an object file
 engine/engine.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine.cpp.o
 .PHONY : engine/engine.cpp.o
 
 engine/engine.i: engine/engine.cpp.i
@@ -345,7 +358,7 @@ engine/engine.i: engine/engine.cpp.i
 
 # target to preprocess a source file
 engine/engine.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine.cpp.i
 .PHONY : engine/engine.cpp.i
 
 engine/engine.s: engine/engine.cpp.s
@@ -353,7 +366,7 @@ engine/engine.s: engine/engine.cpp.s
 
 # target to generate assembly for a file
 engine/engine.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine.cpp.s
 .PHONY : engine/engine.cpp.s
 
 engine/engine_jenn.o: engine/engine_jenn.cpp.o
@@ -361,7 +374,7 @@ engine/engine_jenn.o: engine/engine_jenn.cpp.o
 
 # target to build an object file
 engine/engine_jenn.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine_jenn.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine_jenn.cpp.o
 .PHONY : engine/engine_jenn.cpp.o
 
 engine/engine_jenn.i: engine/engine_jenn.cpp.i
@@ -369,7 +382,7 @@ engine/engine_jenn.i: engine/engine_jenn.cpp.i
 
 # target to preprocess a source file
 engine/engine_jenn.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine_jenn.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine_jenn.cpp.i
 .PHONY : engine/engine_jenn.cpp.i
 
 engine/engine_jenn.s: engine/engine_jenn.cpp.s
@@ -377,7 +390,7 @@ engine/engine_jenn.s: engine/engine_jenn.cpp.s
 
 # target to generate assembly for a file
 engine/engine_jenn.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine_jenn.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine_jenn.cpp.s
 .PHONY : engine/engine_jenn.cpp.s
 
 engine/engine_miRANDa.o: engine/engine_miRANDa.cpp.o
@@ -385,7 +398,7 @@ engine/engine_miRANDa.o: engine/engine_miRANDa.cpp.o
 
 # target to build an object file
 engine/engine_miRANDa.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine_miRANDa.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine_miRANDa.cpp.o
 .PHONY : engine/engine_miRANDa.cpp.o
 
 engine/engine_miRANDa.i: engine/engine_miRANDa.cpp.i
@@ -393,7 +406,7 @@ engine/engine_miRANDa.i: engine/engine_miRANDa.cpp.i
 
 # target to preprocess a source file
 engine/engine_miRANDa.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine_miRANDa.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine_miRANDa.cpp.i
 .PHONY : engine/engine_miRANDa.cpp.i
 
 engine/engine_miRANDa.s: engine/engine_miRANDa.cpp.s
@@ -401,7 +414,7 @@ engine/engine_miRANDa.s: engine/engine_miRANDa.cpp.s
 
 # target to generate assembly for a file
 engine/engine_miRANDa.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/engine/engine_miRANDa.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/engine/engine_miRANDa.cpp.s
 .PHONY : engine/engine_miRANDa.cpp.s
 
 frontend/preprocessor.o: frontend/preprocessor.cpp.o
@@ -409,7 +422,7 @@ frontend/preprocessor.o: frontend/preprocessor.cpp.o
 
 # target to build an object file
 frontend/preprocessor.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/frontend/preprocessor.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/frontend/preprocessor.cpp.o
 .PHONY : frontend/preprocessor.cpp.o
 
 frontend/preprocessor.i: frontend/preprocessor.cpp.i
@@ -417,7 +430,7 @@ frontend/preprocessor.i: frontend/preprocessor.cpp.i
 
 # target to preprocess a source file
 frontend/preprocessor.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/frontend/preprocessor.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/frontend/preprocessor.cpp.i
 .PHONY : frontend/preprocessor.cpp.i
 
 frontend/preprocessor.s: frontend/preprocessor.cpp.s
@@ -425,7 +438,7 @@ frontend/preprocessor.s: frontend/preprocessor.cpp.s
 
 # target to generate assembly for a file
 frontend/preprocessor.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/frontend/preprocessor.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/frontend/preprocessor.cpp.s
 .PHONY : frontend/preprocessor.cpp.s
 
 frontend/scanner.o: frontend/scanner.cpp.o
@@ -433,7 +446,7 @@ frontend/scanner.o: frontend/scanner.cpp.o
 
 # target to build an object file
 frontend/scanner.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/frontend/scanner.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/frontend/scanner.cpp.o
 .PHONY : frontend/scanner.cpp.o
 
 frontend/scanner.i: frontend/scanner.cpp.i
@@ -441,7 +454,7 @@ frontend/scanner.i: frontend/scanner.cpp.i
 
 # target to preprocess a source file
 frontend/scanner.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/frontend/scanner.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/frontend/scanner.cpp.i
 .PHONY : frontend/scanner.cpp.i
 
 frontend/scanner.s: frontend/scanner.cpp.s
@@ -449,7 +462,7 @@ frontend/scanner.s: frontend/scanner.cpp.s
 
 # target to generate assembly for a file
 frontend/scanner.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/frontend/scanner.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/frontend/scanner.cpp.s
 .PHONY : frontend/scanner.cpp.s
 
 gp/gp.o: gp/gp.cpp.o
@@ -457,7 +470,7 @@ gp/gp.o: gp/gp.cpp.o
 
 # target to build an object file
 gp/gp.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/gp/gp.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/gp/gp.cpp.o
 .PHONY : gp/gp.cpp.o
 
 gp/gp.i: gp/gp.cpp.i
@@ -465,7 +478,7 @@ gp/gp.i: gp/gp.cpp.i
 
 # target to preprocess a source file
 gp/gp.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/gp/gp.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/gp/gp.cpp.i
 .PHONY : gp/gp.cpp.i
 
 gp/gp.s: gp/gp.cpp.s
@@ -473,7 +486,7 @@ gp/gp.s: gp/gp.cpp.s
 
 # target to generate assembly for a file
 gp/gp.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/gp/gp.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/gp/gp.cpp.s
 .PHONY : gp/gp.cpp.s
 
 midend/ir.o: midend/ir.cpp.o
@@ -481,7 +494,7 @@ midend/ir.o: midend/ir.cpp.o
 
 # target to build an object file
 midend/ir.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/midend/ir.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/midend/ir.cpp.o
 .PHONY : midend/ir.cpp.o
 
 midend/ir.i: midend/ir.cpp.i
@@ -489,7 +502,7 @@ midend/ir.i: midend/ir.cpp.i
 
 # target to preprocess a source file
 midend/ir.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/midend/ir.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/midend/ir.cpp.i
 .PHONY : midend/ir.cpp.i
 
 midend/ir.s: midend/ir.cpp.s
@@ -497,7 +510,7 @@ midend/ir.s: midend/ir.cpp.s
 
 # target to generate assembly for a file
 midend/ir.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/midend/ir.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/midend/ir.cpp.s
 .PHONY : midend/ir.cpp.s
 
 utils/arg_parser.o: utils/arg_parser.cpp.o
@@ -505,7 +518,7 @@ utils/arg_parser.o: utils/arg_parser.cpp.o
 
 # target to build an object file
 utils/arg_parser.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/arg_parser.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/arg_parser.cpp.o
 .PHONY : utils/arg_parser.cpp.o
 
 utils/arg_parser.i: utils/arg_parser.cpp.i
@@ -513,7 +526,7 @@ utils/arg_parser.i: utils/arg_parser.cpp.i
 
 # target to preprocess a source file
 utils/arg_parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/arg_parser.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/arg_parser.cpp.i
 .PHONY : utils/arg_parser.cpp.i
 
 utils/arg_parser.s: utils/arg_parser.cpp.s
@@ -521,7 +534,7 @@ utils/arg_parser.s: utils/arg_parser.cpp.s
 
 # target to generate assembly for a file
 utils/arg_parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/arg_parser.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/arg_parser.cpp.s
 .PHONY : utils/arg_parser.cpp.s
 
 utils/exceptions.o: utils/exceptions.cpp.o
@@ -529,7 +542,7 @@ utils/exceptions.o: utils/exceptions.cpp.o
 
 # target to build an object file
 utils/exceptions.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/exceptions.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/exceptions.cpp.o
 .PHONY : utils/exceptions.cpp.o
 
 utils/exceptions.i: utils/exceptions.cpp.i
@@ -537,7 +550,7 @@ utils/exceptions.i: utils/exceptions.cpp.i
 
 # target to preprocess a source file
 utils/exceptions.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/exceptions.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/exceptions.cpp.i
 .PHONY : utils/exceptions.cpp.i
 
 utils/exceptions.s: utils/exceptions.cpp.s
@@ -545,7 +558,7 @@ utils/exceptions.s: utils/exceptions.cpp.s
 
 # target to generate assembly for a file
 utils/exceptions.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/exceptions.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/exceptions.cpp.s
 .PHONY : utils/exceptions.cpp.s
 
 utils/logging.o: utils/logging.cpp.o
@@ -553,7 +566,7 @@ utils/logging.o: utils/logging.cpp.o
 
 # target to build an object file
 utils/logging.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/logging.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/logging.cpp.o
 .PHONY : utils/logging.cpp.o
 
 utils/logging.i: utils/logging.cpp.i
@@ -561,7 +574,7 @@ utils/logging.i: utils/logging.cpp.i
 
 # target to preprocess a source file
 utils/logging.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/logging.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/logging.cpp.i
 .PHONY : utils/logging.cpp.i
 
 utils/logging.s: utils/logging.cpp.s
@@ -569,7 +582,7 @@ utils/logging.s: utils/logging.cpp.s
 
 # target to generate assembly for a file
 utils/logging.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/logging.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/logging.cpp.s
 .PHONY : utils/logging.cpp.s
 
 utils/rng.o: utils/rng.cpp.o
@@ -577,7 +590,7 @@ utils/rng.o: utils/rng.cpp.o
 
 # target to build an object file
 utils/rng.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/rng.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/rng.cpp.o
 .PHONY : utils/rng.cpp.o
 
 utils/rng.i: utils/rng.cpp.i
@@ -585,7 +598,7 @@ utils/rng.i: utils/rng.cpp.i
 
 # target to preprocess a source file
 utils/rng.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/rng.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/rng.cpp.i
 .PHONY : utils/rng.cpp.i
 
 utils/rng.s: utils/rng.cpp.s
@@ -593,7 +606,7 @@ utils/rng.s: utils/rng.cpp.s
 
 # target to generate assembly for a file
 utils/rng.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/rng.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/rng.cpp.s
 .PHONY : utils/rng.cpp.s
 
 utils/utils.o: utils/utils.cpp.o
@@ -601,7 +614,7 @@ utils/utils.o: utils/utils.cpp.o
 
 # target to build an object file
 utils/utils.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/utils.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/utils.cpp.o
 .PHONY : utils/utils.cpp.o
 
 utils/utils.i: utils/utils.cpp.i
@@ -609,7 +622,7 @@ utils/utils.i: utils/utils.cpp.i
 
 # target to preprocess a source file
 utils/utils.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/utils.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/utils.cpp.i
 .PHONY : utils/utils.cpp.i
 
 utils/utils.s: utils/utils.cpp.s
@@ -617,7 +630,7 @@ utils/utils.s: utils/utils.cpp.s
 
 # target to generate assembly for a file
 utils/utils.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.cpp.dir/build.make CMakeFiles/ebe.cpp.dir/utils/utils.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ebe.dir/build.make CMakeFiles/ebe.dir/utils/utils.cpp.s
 .PHONY : utils/utils.cpp.s
 
 # Help Target
@@ -633,7 +646,8 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... ebe.cpp"
+	@echo "... docs"
+	@echo "... ebe"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"

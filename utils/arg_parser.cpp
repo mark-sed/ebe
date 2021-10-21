@@ -19,10 +19,10 @@
 #include <filesystem>
 #include "arg_parser.hpp"
 #include "ebe.hpp"
-#include "backend/compiler.hpp"
-#include "engine/engine.hpp"
-#include "utils/logging.hpp"
-#include "utils/utils.hpp"
+#include "compiler.hpp"
+#include "engine.hpp"
+#include "logging.hpp"
+#include "utils.hpp"
 
 /** Text to be displayed to user when --help option is used */
 const char *HELP_TEXT = "Usage: ebe [options] file\n"

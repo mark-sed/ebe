@@ -13,7 +13,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "compiler.hpp"
-#include "utils/exceptions.hpp"
+#include "exceptions.hpp"
 
 const char *Error::get_code_name(Error::ErrorCode code){
     const char *NAMES[] = {

@@ -14,7 +14,7 @@
 #include <regex>
 #include "utils.hpp"
 #include "exceptions.hpp"
-#include "backend/compiler.hpp"
+#include "compiler.hpp"
 
 using namespace Utils;
 using namespace Cast;

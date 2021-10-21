@@ -14,7 +14,7 @@
 #define _PREPROCESSOR_HPP_
 
 #include <vector>
-#include "backend/compiler.hpp"
+#include "compiler.hpp"
 
 /**
  * Preprocessor of the exampe files

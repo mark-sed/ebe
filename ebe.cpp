@@ -14,15 +14,15 @@
 #include <fstream> 
 #include <vector>
 #include "ebe.hpp"
-#include "frontend/preprocessor.hpp"
-#include "frontend/scanner.hpp"
-#include "midend/ir.hpp"
-#include "backend/interpreter.hpp"
-#include "engine/engine_jenn.hpp"
-#include "engine/engine_miRANDa.hpp"
-#include "utils/rng.hpp"
-#include "utils/logging.hpp"
-#include "utils/arg_parser.hpp"
+#include "preprocessor.hpp"
+#include "scanner.hpp"
+#include "ir.hpp"
+#include "interpreter.hpp"
+#include "engine_jenn.hpp"
+#include "engine_miRANDa.hpp"
+#include "rng.hpp"
+#include "logging.hpp"
+#include "arg_parser.hpp"
 
 /**
  * Initializer and handler for compilation

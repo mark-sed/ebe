@@ -14,9 +14,9 @@
 
 #include "engine_miRANDa.hpp"
 #include "backend/interpreter.hpp"
-#include "utils/arg_parser.hpp"
-#include "utils/logging.hpp"
-#include "utils/rng.hpp"
+#include "arg_parser.hpp"
+#include "logging.hpp"
+#include "rng.hpp"
 
 
 EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(text_in, text_out, 

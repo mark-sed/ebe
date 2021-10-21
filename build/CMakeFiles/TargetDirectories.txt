@@ -1,11 +1,12 @@
 /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/install/strip.dir
+/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/install.dir
+/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/docs.dir
+/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/ebe.dir
 /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/install/local.dir
 /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/test.dir
 /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/list_install_components.dir
-/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/ebe.cpp.dir
 /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/edit_cache.dir
 /home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/rebuild_cache.dir
-/home/marek/Desktop/Skola/dp/ebe/build/CMakeFiles/install.dir
 /home/marek/Desktop/Skola/dp/ebe/build/tests/googletest/CMakeFiles/install/strip.dir
 /home/marek/Desktop/Skola/dp/ebe/build/tests/googletest/CMakeFiles/edit_cache.dir
 /home/marek/Desktop/Skola/dp/ebe/build/tests/googletest/CMakeFiles/list_install_components.dir
