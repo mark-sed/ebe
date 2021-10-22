@@ -59,6 +59,7 @@ ArgOpts Args::arg_opts {
     .group_delim = false,
     .group_sym = false,
     .float_delim = '.',
+    .leading_plus = false,
     .line_delim = '\n',
     .engine = nullptr,
     .evolutions = 0,

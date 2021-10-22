@@ -91,7 +91,7 @@ IR::Node *TextScanner::process(std::vector<std::string> *text, const char *file_
                         break;
                     }
                     // Has to be after delimiter
-                    if(c == '+' || c == '-'){
+                    if((Args::arg_opts.leading_plus && c == '+') || c == '-'){
                         state = State::POS_NUM;
                         break;
                     }
