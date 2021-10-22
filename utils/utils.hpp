@@ -60,6 +60,7 @@ namespace Cast {
     template<typename T>
     T to(std::string v);
 
+    /// @note Default base (base 10) is used
     template<> unsigned int to(std::string v);
 }
 
