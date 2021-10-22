@@ -14,8 +14,8 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "frontend/preprocessor.hpp"
-#include "backend/compiler.hpp"
+#include "preprocessor.hpp"
+#include "compiler.hpp"
 
 #include <iostream>
 

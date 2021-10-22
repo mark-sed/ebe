@@ -1,9 +1,12 @@
-# Prerequisites
-*.d
+# CMake
+build/
 
 # Doxygen
 docs/html/
 docs/docs.html
+
+# Prerequisites
+*.d
 
 # Compiled Object files
 *.slo

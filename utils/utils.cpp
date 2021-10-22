@@ -12,9 +12,10 @@
 #include <algorithm>
 #include <sstream>
 #include <regex>
+#include <cstdlib>
 #include "utils.hpp"
 #include "exceptions.hpp"
-#include "backend/compiler.hpp"
+#include "compiler.hpp"
 
 using namespace Utils;
 using namespace Cast;
@@ -76,7 +77,12 @@ T Cast::to(std::string v){
 
 template<> unsigned int Cast::to(std::string v){
     try{
-        return std::stoul(v);
+        char *pos = 0;
+        auto c = std::strtoul(v.c_str(), &pos, 10);
+        if(*pos != '\0'){
+            throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to unsigned int"));
+        }
+        return c;
     }catch (std::exception & e){
         throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to unsigned int"));
     }

@@ -14,7 +14,7 @@
 #define _COMPILER_HPP_
 
 #include <iostream>
-#include "utils/exceptions.hpp"
+#include "exceptions.hpp"
 
 /**
  * Namespace holding resources for error and warning handling

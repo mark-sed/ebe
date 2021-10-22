@@ -16,8 +16,8 @@
 #include <stddef.h>
 #include <ostream>
 #include <limits>
-#include "midend/ir.hpp"
-#include "engine/engine.hpp"
+#include "ir.hpp"
+#include "engine.hpp"
 
 // Forward declarations
 struct GPEngineParams;

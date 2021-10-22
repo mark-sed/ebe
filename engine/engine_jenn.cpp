@@ -9,13 +9,13 @@
  * Jenn [gen] engine using ~~jennetic~~ genetic programming for ebel generation
  */
 
-#include "midend/ir.hpp"
-#include "engine/engine_jenn.hpp"
-#include "engine/engine.hpp"
-#include "gp/gp.hpp"
-#include "utils/arg_parser.hpp"
-#include "utils/rng.hpp"
-#include "utils/logging.hpp"
+#include "engine_jenn.hpp"
+#include "ir.hpp"
+#include "engine.hpp"
+#include "gp.hpp"
+#include "arg_parser.hpp"
+#include "rng.hpp"
+#include "logging.hpp"
 
 #include <iostream>
 

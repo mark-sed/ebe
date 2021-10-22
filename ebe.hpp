@@ -1,5 +1,5 @@
 /**
- * @file ebe.cpp
+ * @file ebe.hpp
  * @author Marek Sedlacek
  * @date July 2021
  * @copyright Copyright 2021 Marek Sedlacek. All rights reserved.

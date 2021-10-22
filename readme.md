@@ -28,3 +28,7 @@ Harrison Ford & Anthony Daniels
 ```
 
 We can give these 2 files to Ebe compiler and it should be able to find a program which modifies any text written in this way and rewrite it in an expected format. There is also a chance that Ebe will not be able to find such a program, in that case program with best fitness will be compiled. Compiled program can then be used for modification on any input file which follows input example given.
+
+## Requirements for full build
+* `cmake`
+* `doxygen` and `dot` for documentation

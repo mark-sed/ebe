@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include "interpreter.hpp"
-#include "midend/ir.hpp"
+#include "ir.hpp"
 
 Interpreter::Interpreter(IR::EbelNode *ebel) : Compiler("Interpreter"), ebel{ebel} {
 

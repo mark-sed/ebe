@@ -17,11 +17,11 @@
 #include <vector>
 #include <utility>
 #include "engine.hpp"
-#include "midend/ir.hpp"
-#include "backend/compiler.hpp"
-#include "backend/interpreter.hpp"
-#include "utils/rng.hpp"
-#include "utils/logging.hpp"
+#include "ir.hpp"
+#include "compiler.hpp"
+#include "interpreter.hpp"
+#include "rng.hpp"
+#include "logging.hpp"
 
 #include <iostream>
 

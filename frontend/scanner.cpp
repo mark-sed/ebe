@@ -16,11 +16,11 @@
 #include <string>
 #include <cstddef>
 #include "scanner.hpp"
-#include "midend/ir.hpp"
-#include "backend/instruction.hpp"
-#include "utils/arg_parser.hpp"
-#include "utils/utils.hpp"
-#include "utils/exceptions.hpp"
+#include "ir.hpp"
+#include "instruction.hpp"
+#include "arg_parser.hpp"
+#include "utils.hpp"
+#include "exceptions.hpp"
 
 #include <iostream>
 
@@ -91,7 +91,7 @@ IR::Node *TextScanner::process(std::vector<std::string> *text, const char *file_
                         break;
                     }
                     // Has to be after delimiter
-                    if(c == '+' || c == '-'){
+                    if((Args::arg_opts.leading_plus && c == '+') || c == '-'){
                         state = State::POS_NUM;
                         break;
                     }

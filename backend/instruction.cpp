@@ -12,12 +12,12 @@
 #include <string>
 #include <ostream>
 #include <algorithm>
-#include "midend/ir.hpp"
-#include "backend/instruction.hpp"
-#include "backend/compiler.hpp"
-#include "utils/utils.hpp"
-#include "utils/rng.hpp"
-#include "utils/logging.hpp"
+#include "ir.hpp"
+#include "instruction.hpp"
+#include "compiler.hpp"
+#include "utils.hpp"
+#include "rng.hpp"
+#include "logging.hpp"
 
 #include <iostream>
 

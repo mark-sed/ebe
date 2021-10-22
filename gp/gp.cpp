@@ -11,9 +11,9 @@
 
 #include <list>
 #include <iostream>
-#include "midend/ir.hpp"
-#include "engine/engine.hpp"
-#include "gp/gp.hpp"
+#include "ir.hpp"
+#include "engine.hpp"
+#include "gp.hpp"
 
 using namespace GP;
 

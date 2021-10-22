@@ -17,8 +17,8 @@
 #include <string>
 #include <set>
 #include <cstddef>
-#include "midend/ir.hpp"
-#include "backend/compiler.hpp"
+#include "ir.hpp"
+#include "compiler.hpp"
 
 class Scanner : public Compiler {
 public:

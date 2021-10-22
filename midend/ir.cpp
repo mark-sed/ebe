@@ -16,11 +16,11 @@
 #include <string>
 #include <iterator>
 #include "ir.hpp"
-#include "backend/instruction.hpp"
-#include "backend/compiler.hpp"
-#include "utils/arg_parser.hpp"
-#include "utils/rng.hpp"
-#include "utils/logging.hpp"
+#include "instruction.hpp"
+#include "compiler.hpp"
+#include "arg_parser.hpp"
+#include "rng.hpp"
+#include "logging.hpp"
 
 #include <iostream>
 
