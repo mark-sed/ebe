@@ -77,10 +77,21 @@ void CONCAT::exec(std::list<std::list<IR::Word *> *>::iterator &line,
 
 void DEL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
     // Words pass
+    if((*word)->type == IR::EMPTY){
+        // Don't delete empty line
+        return;
+    }
     delete *word;
     word = line->erase(word);
-    // Word was deleted, make sure to not skip word
-    env.reprocess_obj = true;
+
+    // If line is empty, then place in the empty word
+    if(line->empty()){
+        line->push_back(new IR::Word("", IR::Type::EMPTY));
+    }
+    else{
+        // Word was deleted, make sure to not skip word
+        env.reprocess_obj = true;
+    }
 }
 
 void DEL::exec(std::list<std::list<IR::Word *> *>::iterator &line, 

@@ -36,6 +36,7 @@ set(SOURCES
 set(TEST_SRCS
     tests/test_utils.cpp
     tests/test_scanner.cpp
+    tests/test_interpreter.cpp
 )
 
 # Enable gtest

@@ -79,6 +79,10 @@ namespace IR {
 
         /** Copy operator */
         Word& operator=(const Word &other);
+
+        /** Comparison operator */
+        bool operator==(const Word &other) const;
+        bool operator!=(const Word &other) const;
     };
 
     /**
@@ -99,7 +103,11 @@ namespace IR {
         ~Node();
 
         /** Copy operator */
-        Node& operator=(const Node &other);
+        Node &operator=(const Node &other);
+
+        /** Comparison operator */
+        bool operator==(const Node &other) const;
+        bool operator!=(const Node &other) const;
 
         /**
          * Pushes new word into specific line

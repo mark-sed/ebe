@@ -57,6 +57,14 @@ Word& Word::operator=(const Word &other){
     return *this;
 }
 
+bool Word::operator==(const Word &other) const {
+    return this->type == other.type && this->text == other.text;
+}
+
+bool Word::operator!=(const Word &other) const {
+    return !(*this == other);
+}
+
 Node::Node() {
     this->nodes = new std::list<std::list<Word *> *>();
 }
@@ -82,7 +90,7 @@ Node::Node(const Node &other){
     }
 }
 
-Node& Node::operator=(const Node &other){
+Node &Node::operator=(const Node &other){
     for(const auto &line: *(other.nodes)){
         auto line_list = new std::list<Word *>();
         for(const auto &word: *line){
@@ -93,8 +101,49 @@ Node& Node::operator=(const Node &other){
     return *this;
 }
 
+bool Node::operator==(const Node &other) const {
+    // Get start and end iterators
+    auto start1 = this->nodes->begin();
+    auto start2 = other.nodes->begin();
+    auto end1 = this->nodes->end();
+    auto end2 = other.nodes->end();
+
+    // Iterate lines
+    while(start1 != end1 && start2 != end2){
+        // Get start and end iterators for words in a line
+        auto words_start1 = (*start1)->begin();
+        auto words_start2 = (*start2)->begin();
+        auto words_end1 = (*start1)->end();
+        auto words_end2 = (*start2)->end();
+        while(words_start1 != words_end1 && words_start2 != words_end2){
+            if(*(*words_start1) != *(*words_start2)){
+                // Types or text does not match
+                return false;
+            }
+            // Move to another word
+            words_start1 = std::next(words_start1);
+            words_start2 = std::next(words_start2);
+        }
+        if((words_start1 != words_end1) || (words_start2 != words_end2)){
+            // Both lines did not reach the end, they are not equal
+            return false;
+        }
+
+        // Advance pointers (move to another line)
+        start1 = std::next(start1);
+        start2 = std::next(start2);
+    }
+    // Make sure that both files have reached the end
+    return (start1 == end1) && (start2 == end2);
+}
+
+bool Node::operator!=(const Node &other) const {
+    return !(*this == other);
+}
+
 void Node::push_back(unsigned long line, Word *value){
-    if(line-1 >= this->nodes->size()){
+    while(line >= this->nodes->size()){
+        // Create new nodes until requested line is created
         this->nodes->push_back(new std::list<Word *>());
     }
     auto index_line = this->nodes->begin();
