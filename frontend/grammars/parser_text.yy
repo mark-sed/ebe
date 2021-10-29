@@ -82,7 +82,7 @@ word      : TEXT      { scanner->add_text($1);      }
           | DELIMITER { scanner->add_delimiter($1); }
           | SYMBOL    { scanner->add_symbol($1);    }
           | FLOAT     { scanner->add_float($1);     }
-          | NEWLINE   { scanner->add_newline($1);   }
+          | NEWLINE   { scanner->add_newline();   }
           ;
 
 %%

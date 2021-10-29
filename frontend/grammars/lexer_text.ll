@@ -47,13 +47,11 @@ ALPHANUM  [a-zA-Z0-9\_ěščřžýáíéúů]
     yylval = lval;    
 %}
 
-/* DELIMITERS */
 {DELIMITER}         {
                         yylval->build<std::string>(yytext);
                         return token::DELIMITER;
                     }
 
-/* FLOATS */
 {NUM}+\.{NUM}+[eE][+-]?{NUM}+   {
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
@@ -64,25 +62,21 @@ ALPHANUM  [a-zA-Z0-9\_ěščřžýáíéúů]
                                     return token::FLOAT;
                                 }
 
-/* NUMBERS */
 {NUM}+              {
                         yylval->build<std::string>(yytext); 
                         return token::NUMBER; 
                     }
 
-/* WORDS */
 {ALPHANUM}+         {
                         yylval->build<std::string>(yytext);
                         return token::TEXT;
                     }
 
-/* NEW LINE */
 \n                  {
                         loc->lines();
                         return token::NEWLINE;
                     }
 
-/* SYMBOLS */
 .                   {  
                         yylval->build<std::string>(yytext); 
                         return token::SYMBOL; 

@@ -21,7 +21,10 @@ set(SOURCES
     engine/engine.cpp
     engine/engine_jenn.cpp
     engine/engine_miRANDa.cpp
+    frontend/lexer_text.cpp
+    frontend/parser_text.cpp
     frontend/preprocessor.cpp
+    frontend/scanner_text.cpp
     frontend/scanner.cpp
     gp/gp.cpp
     midend/ir.cpp
@@ -35,7 +38,6 @@ set(SOURCES
 # Test source files
 set(TEST_SRCS
     tests/test_utils.cpp
-    tests/test_scanner.cpp
     tests/test_interpreter.cpp
 )
 
