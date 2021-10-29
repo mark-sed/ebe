@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <string>
+#include <istream>
 #include <set>
 #include <cstddef>
 #include "ir.hpp"
@@ -32,57 +33,7 @@ public:
      * @param file_name Example file's name for error information
      * @return Text parsed into IR node
      */
-    virtual IR::Node *process(std::vector<std::string> *text, const char *file_name) = 0;
-};
-
-/**
- * Lexical analysis for example files
- */
-class TextScanner : public Scanner {
-private:
-    std::set<char> delimiters;  ///< Set of characters considered word delimiters
-    
-    /**
-     * FSM states of the scanner
-     */
-    enum class State {
-        START,
-        ALPHA,
-        DELIMITER,
-        SYMBOL,
-        NUM,
-        POS_NUM,
-        POS_FLOAT,
-        FLOAT,
-        EXP,
-        EXP_SIGN,
-        EXP_VAL,
-        UNKNOWN,
-    };
-public:
-    /** Constructor */
-    TextScanner();
-    ~TextScanner();
-
-    IR::Node *process(std::vector<std::string> *text, const char *file_name) override;
-
-    /** @return True if character is alphabetical */
-    bool is_alpha(char c);
-
-    /** @return True if character is a delimiter */
-    bool is_delimiter(char c);
-
-    /** @return True if character is a symbol */
-    bool is_symbol(char c);
-
-    /** @return True if character is a number */
-    bool is_number(char c);
-
-    /** @return True if character is floating point delimiter */
-    bool is_float_delim(char c);
-
-    /** @return True if character is floating point exponent (e/E) */
-    bool is_float_exp(char c);
+    virtual IR::Node *process(std::istream *text, const char *file_name) = 0;
 };
 
 /**

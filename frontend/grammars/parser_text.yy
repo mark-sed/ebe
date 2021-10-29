@@ -19,6 +19,7 @@
 %define api.namespace { Parsing }
 /* Parser class */
 %define api.parser.class { ParserText }
+%define api.location.file none
 
 /* Forward declarations */
 %code requires {
@@ -89,6 +90,5 @@ word      : TEXT      { scanner->add_text($1);      }
 
 /* Error method */
 void Parsing::ParserText::error(const location_type &l, const std::string &err_message) {
-    // Call class error method
-    //error(Error::ErrorCode::SYNTACTIC, "", l, 0, err_message);
+    Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
 }

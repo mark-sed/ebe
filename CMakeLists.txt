@@ -86,3 +86,7 @@ if(DOXYGEN_FOUND)
 else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
+
+# TODO:
+# bison -d frontend/grammars/parser_text.yy -o frontend/parser_text.cpp
+# flex --outfile=frontend/lexer_text.cpp frontend/grammars/lexer_text.ll

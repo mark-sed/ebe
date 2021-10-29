@@ -42,7 +42,7 @@
 
 
 // Unqualified %code blocks.
-#line 42 "grammars/parser_text.yy"
+#line 43 "frontend/grammars/parser_text.yy"
 
     // Include compiler to use error
     #include "compiler.hpp"
@@ -52,7 +52,7 @@
     #undef yylex
     #define yylex scanner->yylex
 
-#line 56 "parser_text.cpp"
+#line 56 "frontend/parser_text.cpp"
 
 
 #ifndef YY_
@@ -143,9 +143,9 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 19 "grammars/parser_text.yy"
+#line 19 "frontend/grammars/parser_text.yy"
 namespace  Parsing  {
-#line 149 "parser_text.cpp"
+#line 149 "frontend/parser_text.cpp"
 
   /// Build a parser object.
    ParserText :: ParserText  (ScannerText *scanner_yyarg)
@@ -688,43 +688,43 @@ namespace  Parsing  {
           switch (yyn)
             {
   case 6: // word: TEXT
-#line 80 "grammars/parser_text.yy"
+#line 81 "frontend/grammars/parser_text.yy"
                       { scanner->add_text(yystack_[0].value.as < std::string > ());      }
-#line 694 "parser_text.cpp"
+#line 694 "frontend/parser_text.cpp"
     break;
 
   case 7: // word: NUMBER
-#line 81 "grammars/parser_text.yy"
+#line 82 "frontend/grammars/parser_text.yy"
                       { scanner->add_number(yystack_[0].value.as < std::string > ());    }
-#line 700 "parser_text.cpp"
+#line 700 "frontend/parser_text.cpp"
     break;
 
   case 8: // word: DELIMITER
-#line 82 "grammars/parser_text.yy"
+#line 83 "frontend/grammars/parser_text.yy"
                       { scanner->add_delimiter(yystack_[0].value.as < std::string > ()); }
-#line 706 "parser_text.cpp"
+#line 706 "frontend/parser_text.cpp"
     break;
 
   case 9: // word: SYMBOL
-#line 83 "grammars/parser_text.yy"
+#line 84 "frontend/grammars/parser_text.yy"
                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
-#line 712 "parser_text.cpp"
+#line 712 "frontend/parser_text.cpp"
     break;
 
   case 10: // word: FLOAT
-#line 84 "grammars/parser_text.yy"
+#line 85 "frontend/grammars/parser_text.yy"
                       { scanner->add_float(yystack_[0].value.as < std::string > ());     }
-#line 718 "parser_text.cpp"
+#line 718 "frontend/parser_text.cpp"
     break;
 
   case 11: // word: NEWLINE
-#line 85 "grammars/parser_text.yy"
+#line 86 "frontend/grammars/parser_text.yy"
                       { scanner->add_newline();   }
-#line 724 "parser_text.cpp"
+#line 724 "frontend/parser_text.cpp"
     break;
 
 
-#line 728 "parser_text.cpp"
+#line 728 "frontend/parser_text.cpp"
 
             default:
               break;
@@ -1000,8 +1000,8 @@ namespace  Parsing  {
   const signed char
    ParserText ::yyrline_[] =
   {
-       0,    70,    70,    71,    75,    76,    80,    81,    82,    83,
-      84,    85
+       0,    71,    71,    72,    76,    77,    81,    82,    83,    84,
+      85,    86
   };
 
   void
@@ -1079,15 +1079,14 @@ namespace  Parsing  {
       return symbol_kind::S_YYUNDEF;
   }
 
-#line 19 "grammars/parser_text.yy"
+#line 19 "frontend/grammars/parser_text.yy"
 } //  Parsing 
-#line 1085 "parser_text.cpp"
+#line 1085 "frontend/parser_text.cpp"
 
-#line 88 "grammars/parser_text.yy"
+#line 89 "frontend/grammars/parser_text.yy"
 
 
 /* Error method */
 void Parsing::ParserText::error(const location_type &l, const std::string &err_message) {
-    // Call class error method
-    //error(Error::ErrorCode::SYNTACTIC, "", l, 0, err_message);
+    Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
 }

@@ -15,12 +15,13 @@
 
 // Flex include has to be guarded
 #if ! defined(yyFlexLexerOnce)
-#include <FlexLexer.h>
+#include "FlexLexer.h"
 #endif
-
+#include <istream>
+#include <list>
+#include "ir.hpp"
 #include "scanner.hpp"
 #include "parser_text.hpp"
-#include "location.hh"
 
 /**
  * Namespace for lexers and parsers used by flex and bison/yacc.
@@ -28,27 +29,41 @@
 namespace Parsing {
 
 /**
- * Scanner for text files
+ * Scanner for text files 
  */ 
 class ScannerText : public Scanner, public yyFlexLexer {
+private:
+    Parsing::ParserText::semantic_type *yylval = nullptr;
+    Parsing::ParserText::location_type *loc = nullptr;
+
+    IR::Node *current_parse;              ///< Holds node that is currently being parsed during process method
+    std::list<IR::Word *> *current_line;  ///< Holds line currently being parsed during process method
+
+    /** If current line is nullptr allocates a new one */
+    void touch_line();
 public:
-    ScannerText(std::istream *input);
+    ScannerText();
 
     // Using has to be here to avoid compiler warnings
-    using FlexLexer::yylex
-    
-    virtual int yylex(EE::TextParser::semantic_type *const lval,
-                      EE::TextParser::location_type *location);
+    using FlexLexer::yylex;
+    virtual int yylex(Parsing::ParserText::semantic_type *const lval,
+                      Parsing::ParserText::location_type *location);
 
+    /**
+     * @defgroup wordparse Word parsers
+     * Receive Word od certain type and add it to the current_parse.
+     * @param v Text of the word
+     * @{
+     */  
     void add_text(const std::string &v);
     void add_number(const std::string &v);
     void add_delimiter(const std::string &v);
     void add_symbol(const std::string &v);
     void add_float(const std::string &v);
     void add_newline();
-private:
-    Parsing::TextParser::semantic_type *yylval = nullptr;
-    Parsing::TextParser::location_type *loc = nullptr;
+    /** @} */
+
+    IR::Node *process(std::istream *text, const char *file_name) override;
 };
 
 }
