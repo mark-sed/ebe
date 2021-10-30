@@ -30,17 +30,11 @@
 void compile(const char *f_in, const char *f_out) {
     LOGMAX("Compilation started");
     // Preprocessing
-    /*auto preproc = new Preprocessor(Args::arg_opts.line_delim);
+    auto preproc = new Preprocessor(Args::arg_opts.line_delim);
     LOGMAX("Text preprocessor started");
     auto in_text = preproc->process(f_in);
-    LOG_CONT_SANITIZE(2, "Processed IN text:", *in_text);
     auto out_text = preproc->process(f_out);
-    LOG_CONT_SANITIZE(2, "Processed OUT text:", *out_text);
-    LOGMAX("Text preprocessor finished");*/
-    // TODO: Preprocessor has to return istream
-    
-    auto in_text = new std::ifstream(f_in);
-    auto out_text = new std::ifstream(f_out);
+    LOGMAX("Text preprocessor finished");
 
     // Syntactical check
     auto scanner = new Parsing::ScannerText();
@@ -135,12 +129,12 @@ void compile(const char *f_in, const char *f_out) {
     delete in_text;
     delete out_text;
     delete scanner;
-    //delete preproc;
+    delete preproc;
     LOGMAX("Compilation done");
 }
 
 void interpret(const char *ebel_f, std::vector<const char *> input_files){
-    /*LOGMAX("Interpetation started");
+    LOGMAX("Interpetation started");
     //TODO: Make this work for all files in input_files
     auto input_f = input_files[0];
     
@@ -161,14 +155,13 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     // Preprocessing input file
     auto text_preproc = new Preprocessor();
     LOGMAX("Text preprocessor started");
-    auto text_vect = text_preproc->process(input_f);
-    LOG_CONT_SANITIZE(2, "Processed text:", *text_vect);
+    auto text_stream = text_preproc->process(input_f);
     LOGMAX("Text preprocessor finished");
 
     // Syntactical check/parse of input file
     auto text_scanner = new Parsing::ScannerText();
     LOGMAX("Text scanner started");
-    auto text_ir = text_scanner->process(text_vect, input_f);
+    auto text_ir = text_scanner->process(text_stream, input_f);
     LOG1("Text IR:\n" << *text_ir);
     LOGMAX("Text scanner finished");
 
@@ -184,13 +177,13 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     // Cleanup
     delete text_ir;
     delete text_scanner;
-    delete text_vect;
+    delete text_stream;
     delete text_preproc;
     delete ebel_ir;
     delete ebel_scanner;
     delete ebel_text;
     delete ebel_preproc;
-    LOGMAX("Interpretation done");*/
+    LOGMAX("Interpretation done");
 }
 
 // Main

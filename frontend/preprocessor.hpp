@@ -13,6 +13,7 @@
 #ifndef _PREPROCESSOR_HPP_
 #define _PREPROCESSOR_HPP_
 
+#include <istream>
 #include <vector>
 #include "compiler.hpp"
 
@@ -35,7 +36,7 @@ public:
      * @return Processed example file in vector form
      * @note New line symbol is left in
      */
-    std::vector<std::string> *process(const char *file_name);
+    std::istream *process(const char *file_name);
 };
 
 /**

@@ -268,11 +268,13 @@ void Args::parse_args(int argc, char *argv[]){
         if(!(arg_opts.float_delim = get_option_value(argv, argv+argc, "--float-delim", "")[0])){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --float-delim");
         }
+        Error::warning("--float-delim is not supported in this version");
     }
     if(exists_option(argv, argv+argc, "--line-delim", "")){
         if(!(arg_opts.line_delim = get_option_value(argv, argv+argc, "--line-delim", "")[0])){
             Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --line-delim");
         }
+        Error::warning("--line-delim is not supported in this version");
     }
 
     // Verbosity logging level
