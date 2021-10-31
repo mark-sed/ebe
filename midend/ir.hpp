@@ -180,6 +180,11 @@ namespace IR {
          * @param text Text to be processed
          */
         virtual void process(IR::Node *text) = 0;
+
+        /**
+         * Getter for pass name
+         */ 
+        const char *get_name() { return this->pass_name; }
     };
 
     /**

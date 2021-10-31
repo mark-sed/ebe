@@ -23,8 +23,11 @@ set(SOURCES
     engine/engine_miRANDa.cpp
     frontend/lexer_text.cpp
     frontend/parser_text.cpp
-    frontend/preprocessor.cpp
     frontend/scanner_text.cpp
+    frontend/lexer_ebel.cpp
+    frontend/parser_ebel.cpp
+    frontend/scanner_ebel.cpp
+    frontend/preprocessor.cpp
     frontend/scanner.cpp
     gp/gp.cpp
     midend/ir.cpp
@@ -89,4 +92,4 @@ endif (DOXYGEN_FOUND)
 
 # TODO:
 # bison -d frontend/grammars/parser_text.yy -o frontend/parser_text.cpp
-# flex --outfile=frontend/lexer_text.cpp frontend/grammars/lexer_text.ll
+# flex --outfile=frontend/lexer_text.cpp --header-file=frontend/lexer_text.hpp frontend/grammars/lexer_text.ll

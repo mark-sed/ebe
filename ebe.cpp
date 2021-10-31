@@ -16,6 +16,7 @@
 #include "ebe.hpp"
 #include "preprocessor.hpp"
 #include "scanner_text.hpp"
+#include "scanner_ebel.hpp"
 #include "ir.hpp"
 #include "interpreter.hpp"
 #include "engine_jenn.hpp"
@@ -37,7 +38,7 @@ void compile(const char *f_in, const char *f_out) {
     LOGMAX("Text preprocessor finished");
 
     // Syntactical check
-    auto scanner = new Parsing::ScannerText();
+    auto scanner = new TextFile::ScannerText();
     LOGMAX("Text scanner started");
     auto ir_in = scanner->process(in_text, f_in);
     LOG1("Text IN IR:\n" << *ir_in);
@@ -139,14 +140,13 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     auto input_f = input_files[0];
     
     // Preprocessing
-    auto ebel_preproc = new EbelPreprocessor();
-    LOGMAX("Ebel preprocessor started");
+    auto ebel_preproc = new Preprocessor();
+    LOGMAX("Text preprocessor started");
     auto ebel_text = ebel_preproc->process(ebel_f);
-    LOG_CONT_SANITIZE(2, "Preprocessed ebel code:", *ebel_text);
-    LOGMAX("Ebel preprocessor finished");
+    LOGMAX("Text preprocessor finished");
 
     // Syntactical check
-    auto ebel_scanner = new EbelScanner();
+    auto ebel_scanner = new EbelFile::ScannerEbel();
     LOGMAX("Ebel scanner started");
     auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
     LOG2("Ebel IR:\n" << *ebel_ir);
@@ -159,7 +159,7 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     LOGMAX("Text preprocessor finished");
 
     // Syntactical check/parse of input file
-    auto text_scanner = new Parsing::ScannerText();
+    auto text_scanner = new TextFile::ScannerText();
     LOGMAX("Text scanner started");
     auto text_ir = text_scanner->process(text_stream, input_f);
     LOG1("Text IR:\n" << *text_ir);

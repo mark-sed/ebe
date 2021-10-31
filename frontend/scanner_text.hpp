@@ -26,15 +26,15 @@
 /**
  * Namespace for lexers and parsers used by flex and bison/yacc.
  */ 
-namespace Parsing {
+namespace TextFile {
 
 /**
  * Scanner for text files 
  */ 
 class ScannerText : public Scanner, public yyFlexLexer {
 private:
-    Parsing::ParserText::semantic_type *yylval = nullptr;
-    Parsing::ParserText::location_type *loc = nullptr;
+    TextFile::ParserText::semantic_type *yylval = nullptr;
+    TextFile::ParserText::location_type *loc = nullptr;
 
     IR::Node *current_parse;              ///< Holds node that is currently being parsed during process method
     std::list<IR::Word *> *current_line;  ///< Holds line currently being parsed during process method
@@ -44,14 +44,12 @@ private:
 public:
     ScannerText();
 
-    // Using has to be here to avoid compiler warnings
-    using FlexLexer::yylex;
-    virtual int yylex(Parsing::ParserText::semantic_type *const lval,
-                      Parsing::ParserText::location_type *location);
+    virtual int yylex(TextFile::ParserText::semantic_type *const lval,
+                      TextFile::ParserText::location_type *location);
 
     /**
      * @defgroup wordparse Word parsers
-     * Receive Word od certain type and add it to the current_parse.
+     * Receive Word of certain type and add it to the current_parse.
      * @param v Text of the word
      * @{
      */  

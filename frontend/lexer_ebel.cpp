@@ -1,6 +1,6 @@
-#line 2 "frontend/lexer_text.cpp"
+#line 2 "frontend/lexer_ebel.cpp"
 
-#line 4 "frontend/lexer_text.cpp"
+#line 4 "frontend/lexer_ebel.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -20,7 +20,25 @@
      * We will address this in a future release of flex, or omit the C++ scanner
      * altogether.
      */
-    #define yyFlexLexer yyFlexLexer
+    #define yyFlexLexer eeFlexLexer
+
+#ifdef yyalloc
+#define eealloc_ALREADY_DEFINED
+#else
+#define yyalloc eealloc
+#endif
+
+#ifdef yyrealloc
+#define eerealloc_ALREADY_DEFINED
+#else
+#define yyrealloc eerealloc
+#endif
+
+#ifdef yyfree
+#define eefree_ALREADY_DEFINED
+#else
+#define yyfree eefree
+#endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
@@ -310,7 +328,7 @@ int yyFlexLexer::yylex()
 	return 0;
 	}
 
-#define YY_DECL int TextFile::ScannerText::yylex()
+#define YY_DECL int EbelFile::ScannerEbel::yylex()
 
 /* Done after the current pattern has been matched and before the
  * corresponding action - sets up yytext.
@@ -321,8 +339,8 @@ int yyFlexLexer::yylex()
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 8
-#define YY_END_OF_BUFFER 9
+#define YY_NUM_RULES 15
+#define YY_END_OF_BUFFER 16
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -330,73 +348,120 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[17] =
+static const flex_int16_t yy_accept[61] =
     {   0,
-        0,    0,    9,    7,    1,    6,    4,    5,    0,    4,
-        5,    3,    0,    0,    2,    0
+        0,    0,   16,   14,    2,   12,    1,    3,   13,   13,
+       13,   13,   13,   13,   13,    1,    1,    3,   13,   13,
+       13,   13,   13,   13,   13,   13,    5,   13,    7,   13,
+       13,   13,    6,   13,   13,   13,    0,   11,   13,    0,
+        0,    0,    4,    0,    0,    0,    0,    0,    0,    0,
+        9,    8,    0,    9,    8,    0,    0,   10,   10,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
-        2,    2,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    4,    2,    4,    5,    1,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    2,    2,    1,
-        1,    1,    1,    1,    7,    7,    7,    7,    8,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        1,    1,    1,    1,    7,    1,    7,    7,    7,    7,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    2,    1,    1,    4,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    1,    1,    1,
+        1,    1,    1,    1,    6,    7,    8,    9,   10,    7,
+        7,    7,   11,    7,    7,   12,   13,   14,   15,   16,
+        7,   17,   18,   19,   20,    7,   21,    7,    7,    7,
+        1,    1,    1,    1,    7,    1,   22,    7,   23,   24,
 
-        8,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    1,    1,    1,    1,    1,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+       25,    7,    7,    7,   26,    7,    7,   27,   28,   29,
+       30,   31,    7,   32,   33,   34,   35,    7,   36,    7,
+        7,    7,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
 
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[9] =
+static const YY_CHAR yy_meta[37] =
     {   0,
-        1,    1,    1,    1,    1,    2,    2,    2
+        1,    1,    2,    1,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3
     } ;
 
-static const flex_int16_t yy_base[18] =
+static const flex_int16_t yy_base[63] =
     {   0,
-        0,    0,   21,   22,   22,   22,    4,    0,   14,    0,
-        0,    7,   12,   13,   11,   22,   12
+        0,    0,  124,  125,  125,  125,  118,  108,    0,   22,
+       28,   24,   25,   35,   22,    0,  106,  102,    0,   30,
+       33,   31,   31,   30,   43,   43,    0,   40,    0,   46,
+       51,   62,    0,  104,   79,   51,   84,   76,   67,   57,
+       62,   59,   48,   67,   62,   60,   60,   73,   85,   84,
+       81,   82,   91,  125,  125,   88,   84,   86,  125,  125,
+      120,   39
     } ;
 
-static const flex_int16_t yy_def[18] =
+static const flex_int16_t yy_def[63] =
     {   0,
-       16,    1,   16,   16,   16,   16,   16,   17,   16,    7,
-       17,   16,   16,   16,   16,    0,   16
+       60,    1,   60,   60,   60,   60,   61,   62,   62,   62,
+       62,   62,   62,   62,   62,   61,   61,   62,   62,   62,
+       62,   62,   62,   62,   62,   62,   62,   62,   62,   62,
+       62,   62,   62,   62,   62,   62,   60,   60,   62,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,    0,
+       60,   60
     } ;
 
-static const flex_int16_t yy_nxt[31] =
+static const flex_int16_t yy_nxt[162] =
     {   0,
-        4,    5,    6,    4,    5,    7,    8,    8,    9,   10,
-       11,   11,   12,   11,   13,   14,   15,   15,   15,   12,
-       16,    3,   16,   16,   16,   16,   16,   16,   16,   16
+        4,    5,    6,    7,    8,    9,    9,   10,   11,    9,
+        9,   12,    9,   13,    9,   14,    9,   15,    9,    9,
+        9,    9,   10,   11,    9,    9,   12,    9,   13,    9,
+       14,    9,   15,    9,    9,    9,   20,   21,   22,   23,
+       24,   19,   25,   26,   27,   28,   29,   30,   31,   43,
+       32,   20,   21,   22,   23,   33,   24,   25,   26,   27,
+       28,   29,   30,   34,   31,   32,   35,   36,   43,   39,
+       33,   44,   45,   46,   47,   48,   49,   38,   34,   50,
+       38,   35,   51,   36,   39,   37,   44,   45,   46,   47,
+       48,   49,   40,   52,   50,   41,   53,   51,   54,   55,
+
+       56,   57,   58,   59,   42,   37,   18,   40,   52,   17,
+       41,   53,   18,   54,   55,   56,   57,   58,   59,   42,
+       16,   17,   16,   60,    3,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60
     } ;
 
-static const flex_int16_t yy_chk[31] =
+static const flex_int16_t yy_chk[162] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    7,    7,
-        7,    7,   12,   17,   12,   13,   15,   13,   14,    9,
-        3,   16,   16,   16,   16,   16,   16,   16,   16,   16
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,   10,   11,   12,   13,
+       14,   62,   15,   20,   21,   22,   23,   24,   25,   43,
+       26,   10,   11,   12,   13,   28,   14,   15,   20,   21,
+       22,   23,   24,   30,   25,   26,   31,   32,   39,   36,
+       28,   40,   41,   42,   44,   45,   46,   38,   30,   47,
+       35,   31,   48,   32,   36,   37,   40,   41,   42,   44,
+       45,   46,   37,   49,   47,   37,   50,   48,   51,   52,
+
+       53,   56,   57,   58,   37,   34,   18,   37,   49,   17,
+       37,   50,    8,   51,   52,   53,   56,   57,   58,   37,
+       61,    7,   61,    3,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       60
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -406,39 +471,38 @@ static const flex_int16_t yy_chk[31] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "frontend/grammars/lexer_text.ll"
+#line 1 "frontend/grammars/lexer_ebel.ll"
 /**
  * @author Marek Sedlacek
  * @date October 2021
  * 
- * @brief Text file lexems
- * Lexer file for flex tool for text file format.
+ * @brief Ebel code lexems
+ * Lexer file for flex tool for ebel source code.
  */
-#line 10 "frontend/grammars/lexer_text.ll"
-
+#line 10 "frontend/grammars/lexer_ebel.ll"
+    
 #include <string>
-#include "scanner_text.hpp"
+#include "scanner_ebel.hpp"
+#include <iostream>
 
-// Define get token method
-#undef  YY_DECL
-#define YY_DECL int TextFile::ScannerText::yylex(TextFile::ParserText::semantic_type * const lval, TextFile::ParserText::location_type *location)
+// Define custom lex method
+#undef YY_DECL
+#define YY_DECL int EbelFile::ScannerEbel::eelex(EbelFile::ParserEbel::semantic_type * const lval, EbelFile::ParserEbel::location_type *location)
 
-// Even though the input cannot be incorrect, still add location info
-// Could be useful for debugging
-// TODO: Remove location info?
+// Define token to return on end of parsing
 #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 
 // Typedef to shorten scope
-using token = TextFile::ParserText::token;
+using token = EbelFile::ParserEbel::token;
 
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 438 "frontend/lexer_text.cpp"
+#line 502 "frontend/lexer_ebel.cpp"
 /* Define what scanner class is used */
-/* Macros for symbol types */
-/* TODO: Add special characters from all possible languages */
-#line 442 "frontend/lexer_text.cpp"
+/* Ebel code is caseless, so case can be ignored */
+/* Macros for tokens */
+#line 506 "frontend/lexer_ebel.cpp"
 
 #define INITIAL 0
 
@@ -570,14 +634,14 @@ YY_DECL
 		}
 
 	{
-#line 45 "frontend/grammars/lexer_text.ll"
+#line 44 "frontend/grammars/lexer_ebel.ll"
 
 
-#line 48 "frontend/grammars/lexer_text.ll"
+#line 47 "frontend/grammars/lexer_ebel.ll"
     yylval = lval;    
 
 
-#line 581 "frontend/lexer_text.cpp"
+#line 645 "frontend/lexer_ebel.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -604,13 +668,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 17 )
+				if ( yy_current_state >= 61 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 22 );
+		while ( yy_base[yy_current_state] != 125 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -636,67 +700,90 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 51 "frontend/grammars/lexer_text.ll"
-{   // Delimiters
-                        yylval->build<std::string>(yytext);
-                        return token::DELIMITER;
-                    }
+#line 50 "frontend/grammars/lexer_ebel.ll"
+{   /* Line comment */       ; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 56 "frontend/grammars/lexer_text.ll"
-{   // Float in scientific notation
-                                    yylval->build<std::string>(yytext); 
-                                    return token::FLOAT;
-                                }
+#line 51 "frontend/grammars/lexer_ebel.ll"
+{   /* Spaces are ignored */ ; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 61 "frontend/grammars/lexer_text.ll"
-{   // Float
-                                    yylval->build<std::string>(yytext); 
-                                    return token::FLOAT;
+#line 52 "frontend/grammars/lexer_ebel.ll"
+{   /* Integer */
+                                    // TODO: Change to unsigned int and use Cast::to
+                                    yylval->emplace<int>(atoi(yytext));
+                                    return token::NUMBER;
                                 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 66 "frontend/grammars/lexer_text.ll"
-{   // Number
-                        yylval->build<std::string>(yytext); 
-                        return token::NUMBER; 
-                    }
+#line 57 "frontend/grammars/lexer_ebel.ll"
+{   return token::CONCAT; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 71 "frontend/grammars/lexer_text.ll"
-{   // Text
-                        yylval->build<std::string>(yytext);
-                        return token::TEXT;
-                    }
+#line 58 "frontend/grammars/lexer_ebel.ll"
+{   return token::DEL;    }
 	YY_BREAK
 case 6:
-/* rule 6 can match eol */
 YY_RULE_SETUP
-#line 76 "frontend/grammars/lexer_text.ll"
-{   // New line
-                        loc->lines();
-                        return token::NEWLINE;
-                    }
+#line 59 "frontend/grammars/lexer_ebel.ll"
+{   return token::LOOP;   }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 81 "frontend/grammars/lexer_text.ll"
-{   // Anything else is symbol
-                        yylval->build<std::string>(yytext); 
-                        return token::SYMBOL; 
-                    }
+#line 60 "frontend/grammars/lexer_ebel.ll"
+{   return token::NOP;    }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 85 "frontend/grammars/lexer_text.ll"
+#line 61 "frontend/grammars/lexer_ebel.ll"
+{   /* Pass words     */ return token::PASS_WORDS;     }
+	YY_BREAK
+case 9:
+YY_RULE_SETUP
+#line 62 "frontend/grammars/lexer_ebel.ll"
+{   /* Pass lines     */ return token::PASS_LINES;     }
+	YY_BREAK
+case 10:
+YY_RULE_SETUP
+#line 63 "frontend/grammars/lexer_ebel.ll"
+{   /* Pass documents */ return token::PASS_DOCUMENTS; }
+	YY_BREAK
+case 11:
+YY_RULE_SETUP
+#line 64 "frontend/grammars/lexer_ebel.ll"
+{   return token::SWAP;   }
+	YY_BREAK
+case 12:
+/* rule 12 can match eol */
+YY_RULE_SETUP
+#line 65 "frontend/grammars/lexer_ebel.ll"
+{
+                                    loc->lines();
+                                    return token::NEWLINE;
+                                }
+	YY_BREAK
+case 13:
+YY_RULE_SETUP
+#line 69 "frontend/grammars/lexer_ebel.ll"
+{   /* TODO: Call error */
+                                    std::cerr << "Unknown instruction " << yytext << "\n";
+                                }
+	YY_BREAK
+case 14:
+YY_RULE_SETUP
+#line 72 "frontend/grammars/lexer_ebel.ll"
+{  std::cerr << "Unknown symbol " << yytext << "\n"; }
+	YY_BREAK
+case 15:
+YY_RULE_SETUP
+#line 74 "frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 700 "frontend/lexer_text.cpp"
+#line 787 "frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1113,7 +1200,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 17 )
+			if ( yy_current_state >= 61 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1141,11 +1228,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 17 )
+		if ( yy_current_state >= 61 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 16);
+	yy_is_jam = (yy_current_state == 60);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1659,6 +1746,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 85 "frontend/grammars/lexer_text.ll"
-
+#line 74 "frontend/grammars/lexer_ebel.ll"
 

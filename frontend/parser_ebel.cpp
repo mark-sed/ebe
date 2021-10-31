@@ -35,24 +35,26 @@
 // private implementation details that can be changed or removed.
 
 
+// Take the name prefix into account.
+#define yylex   eelex
 
 
 
-#include "parser_text.hpp"
+#include "parser_ebel.hpp"
 
 
 // Unqualified %code blocks.
-#line 43 "frontend/grammars/parser_text.yy"
+#line 41 "frontend/grammars/parser_ebel.yy"
 
     // Include compiler to use error
     #include "compiler.hpp"
-    #include "scanner_text.hpp"
+    #include "scanner_ebel.hpp"
 
     // Set correct token method
     #undef yylex
-    #define yylex scanner->yylex
+    #define yylex scanner->eelex
 
-#line 56 "frontend/parser_text.cpp"
+#line 58 "frontend/parser_ebel.cpp"
 
 
 #ifndef YY_
@@ -143,12 +145,12 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 19 "frontend/grammars/parser_text.yy"
-namespace  TextFile  {
-#line 149 "frontend/parser_text.cpp"
+#line 17 "frontend/grammars/parser_ebel.yy"
+namespace  EbelFile  {
+#line 151 "frontend/parser_ebel.cpp"
 
   /// Build a parser object.
-   ParserText :: ParserText  (ScannerText *scanner_yyarg)
+   ParserEbel :: ParserEbel  (ScannerEbel *scanner_yyarg)
 #if YYDEBUG
     : yydebug_ (false),
       yycdebug_ (&std::cerr),
@@ -158,10 +160,10 @@ namespace  TextFile  {
       scanner (scanner_yyarg)
   {}
 
-   ParserText ::~ ParserText  ()
+   ParserEbel ::~ ParserEbel  ()
   {}
 
-   ParserText ::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+   ParserEbel ::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
   /*---------.
@@ -170,19 +172,15 @@ namespace  TextFile  {
 
   // basic_symbol.
   template <typename Base>
-   ParserText ::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+   ParserEbel ::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
     : Base (that)
     , value ()
     , location (that.location)
   {
     switch (this->kind ())
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.copy< std::string > (YY_MOVE (that.value));
+        value.copy< int > (YY_MOVE (that.value));
         break;
 
       default:
@@ -195,8 +193,8 @@ namespace  TextFile  {
 
 
   template <typename Base>
-   ParserText ::symbol_kind_type
-   ParserText ::basic_symbol<Base>::type_get () const YY_NOEXCEPT
+   ParserEbel ::symbol_kind_type
+   ParserEbel ::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
@@ -204,24 +202,20 @@ namespace  TextFile  {
 
   template <typename Base>
   bool
-   ParserText ::basic_symbol<Base>::empty () const YY_NOEXCEPT
+   ParserEbel ::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
     return this->kind () == symbol_kind::S_YYEMPTY;
   }
 
   template <typename Base>
   void
-   ParserText ::basic_symbol<Base>::move (basic_symbol& s)
+   ParserEbel ::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move (s);
     switch (this->kind ())
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.move< std::string > (YY_MOVE (s.value));
+        value.move< int > (YY_MOVE (s.value));
         break;
 
       default:
@@ -232,50 +226,50 @@ namespace  TextFile  {
   }
 
   // by_kind.
-   ParserText ::by_kind::by_kind () YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind () YY_NOEXCEPT
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-   ParserText ::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-   ParserText ::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {}
 
-   ParserText ::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
     : kind_ (yytranslate_ (t))
   {}
 
 
 
   void
-   ParserText ::by_kind::clear () YY_NOEXCEPT
+   ParserEbel ::by_kind::clear () YY_NOEXCEPT
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
 
   void
-   ParserText ::by_kind::move (by_kind& that)
+   ParserEbel ::by_kind::move (by_kind& that)
   {
     kind_ = that.kind_;
     that.clear ();
   }
 
-   ParserText ::symbol_kind_type
-   ParserText ::by_kind::kind () const YY_NOEXCEPT
+   ParserEbel ::symbol_kind_type
+   ParserEbel ::by_kind::kind () const YY_NOEXCEPT
   {
     return kind_;
   }
 
 
-   ParserText ::symbol_kind_type
-   ParserText ::by_kind::type_get () const YY_NOEXCEPT
+   ParserEbel ::symbol_kind_type
+   ParserEbel ::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
@@ -283,33 +277,33 @@ namespace  TextFile  {
 
 
   // by_state.
-   ParserText ::by_state::by_state () YY_NOEXCEPT
+   ParserEbel ::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-   ParserText ::by_state::by_state (const by_state& that) YY_NOEXCEPT
+   ParserEbel ::by_state::by_state (const by_state& that) YY_NOEXCEPT
     : state (that.state)
   {}
 
   void
-   ParserText ::by_state::clear () YY_NOEXCEPT
+   ParserEbel ::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
 
   void
-   ParserText ::by_state::move (by_state& that)
+   ParserEbel ::by_state::move (by_state& that)
   {
     state = that.state;
     that.clear ();
   }
 
-   ParserText ::by_state::by_state (state_type s) YY_NOEXCEPT
+   ParserEbel ::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-   ParserText ::symbol_kind_type
-   ParserText ::by_state::kind () const YY_NOEXCEPT
+   ParserEbel ::symbol_kind_type
+   ParserEbel ::by_state::kind () const YY_NOEXCEPT
   {
     if (state == empty_state)
       return symbol_kind::S_YYEMPTY;
@@ -317,20 +311,16 @@ namespace  TextFile  {
       return YY_CAST (symbol_kind_type, yystos_[+state]);
   }
 
-   ParserText ::stack_symbol_type::stack_symbol_type ()
+   ParserEbel ::stack_symbol_type::stack_symbol_type ()
   {}
 
-   ParserText ::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+   ParserEbel ::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
     : super_type (YY_MOVE (that.state), YY_MOVE (that.location))
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.YY_MOVE_OR_COPY< std::string > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
         break;
 
       default:
@@ -343,17 +333,13 @@ namespace  TextFile  {
 #endif
   }
 
-   ParserText ::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+   ParserEbel ::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
     : super_type (s, YY_MOVE (that.location))
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.move< std::string > (YY_MOVE (that.value));
+        value.move< int > (YY_MOVE (that.value));
         break;
 
       default:
@@ -365,18 +351,14 @@ namespace  TextFile  {
   }
 
 #if YY_CPLUSPLUS < 201103L
-   ParserText ::stack_symbol_type&
-   ParserText ::stack_symbol_type::operator= (const stack_symbol_type& that)
+   ParserEbel ::stack_symbol_type&
+   ParserEbel ::stack_symbol_type::operator= (const stack_symbol_type& that)
   {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.copy< std::string > (that.value);
+        value.copy< int > (that.value);
         break;
 
       default:
@@ -387,18 +369,14 @@ namespace  TextFile  {
     return *this;
   }
 
-   ParserText ::stack_symbol_type&
-   ParserText ::stack_symbol_type::operator= (stack_symbol_type& that)
+   ParserEbel ::stack_symbol_type&
+   ParserEbel ::stack_symbol_type::operator= (stack_symbol_type& that)
   {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.move< std::string > (that.value);
+        value.move< int > (that.value);
         break;
 
       default:
@@ -414,7 +392,7 @@ namespace  TextFile  {
 
   template <typename Base>
   void
-   ParserText ::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+   ParserEbel ::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
     if (yymsg)
       YY_SYMBOL_PRINT (yymsg, yysym);
@@ -423,7 +401,7 @@ namespace  TextFile  {
 #if YYDEBUG
   template <typename Base>
   void
-   ParserText ::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
+   ParserEbel ::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
     YY_USE (yyoutput);
@@ -442,7 +420,7 @@ namespace  TextFile  {
 #endif
 
   void
-   ParserText ::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
+   ParserEbel ::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
       YY_SYMBOL_PRINT (m, sym);
@@ -450,7 +428,7 @@ namespace  TextFile  {
   }
 
   void
-   ParserText ::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+   ParserEbel ::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
   {
 #if 201103L <= YY_CPLUSPLUS
     yypush_ (m, stack_symbol_type (s, std::move (sym)));
@@ -461,40 +439,40 @@ namespace  TextFile  {
   }
 
   void
-   ParserText ::yypop_ (int n) YY_NOEXCEPT
+   ParserEbel ::yypop_ (int n) YY_NOEXCEPT
   {
     yystack_.pop (n);
   }
 
 #if YYDEBUG
   std::ostream&
-   ParserText ::debug_stream () const
+   ParserEbel ::debug_stream () const
   {
     return *yycdebug_;
   }
 
   void
-   ParserText ::set_debug_stream (std::ostream& o)
+   ParserEbel ::set_debug_stream (std::ostream& o)
   {
     yycdebug_ = &o;
   }
 
 
-   ParserText ::debug_level_type
-   ParserText ::debug_level () const
+   ParserEbel ::debug_level_type
+   ParserEbel ::debug_level () const
   {
     return yydebug_;
   }
 
   void
-   ParserText ::set_debug_level (debug_level_type l)
+   ParserEbel ::set_debug_level (debug_level_type l)
   {
     yydebug_ = l;
   }
 #endif // YYDEBUG
 
-   ParserText ::state_type
-   ParserText ::yy_lr_goto_state_ (state_type yystate, int yysym)
+   ParserEbel ::state_type
+   ParserEbel ::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - YYNTOKENS] + yystate;
     if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
@@ -504,25 +482,25 @@ namespace  TextFile  {
   }
 
   bool
-   ParserText ::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
+   ParserEbel ::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-   ParserText ::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
+   ParserEbel ::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
   {
     return yyvalue == yytable_ninf_;
   }
 
   int
-   ParserText ::operator() ()
+   ParserEbel ::operator() ()
   {
     return parse ();
   }
 
   int
-   ParserText ::parse ()
+   ParserEbel ::parse ()
   {
     int yyn;
     /// Length of the RHS of the rule being reduced.
@@ -659,12 +637,8 @@ namespace  TextFile  {
          when using variants.  */
       switch (yyr1_[yyn])
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        yylhs.value.emplace< std::string > ();
+        yylhs.value.emplace< int > ();
         break;
 
       default:
@@ -687,44 +661,56 @@ namespace  TextFile  {
         {
           switch (yyn)
             {
-  case 6: // word: TEXT
-#line 81 "frontend/grammars/parser_text.yy"
-                      { scanner->add_text(yystack_[0].value.as < std::string > ());      }
-#line 694 "frontend/parser_text.cpp"
+  case 8: // instruction: CONCAT NUMBER
+#line 82 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_concat(yystack_[0].value.as < int > ());       }
+#line 668 "frontend/parser_ebel.cpp"
     break;
 
-  case 7: // word: NUMBER
-#line 82 "frontend/grammars/parser_text.yy"
-                      { scanner->add_number(yystack_[0].value.as < std::string > ());    }
-#line 700 "frontend/parser_text.cpp"
+  case 9: // instruction: DEL
+#line 83 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_del();            }
+#line 674 "frontend/parser_ebel.cpp"
     break;
 
-  case 8: // word: DELIMITER
-#line 83 "frontend/grammars/parser_text.yy"
-                      { scanner->add_delimiter(yystack_[0].value.as < std::string > ()); }
-#line 706 "frontend/parser_text.cpp"
+  case 10: // instruction: LOOP
+#line 84 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_loop();           }
+#line 680 "frontend/parser_ebel.cpp"
     break;
 
-  case 9: // word: SYMBOL
-#line 84 "frontend/grammars/parser_text.yy"
-                      { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
-#line 712 "frontend/parser_text.cpp"
+  case 11: // instruction: NOP
+#line 85 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_nop();            }
+#line 686 "frontend/parser_ebel.cpp"
     break;
 
-  case 10: // word: FLOAT
-#line 85 "frontend/grammars/parser_text.yy"
-                      { scanner->add_float(yystack_[0].value.as < std::string > ());     }
-#line 718 "frontend/parser_text.cpp"
+  case 12: // instruction: PASS_WORDS
+#line 86 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_pass_words();     }
+#line 692 "frontend/parser_ebel.cpp"
     break;
 
-  case 11: // word: NEWLINE
-#line 86 "frontend/grammars/parser_text.yy"
-                      { scanner->add_newline();   }
-#line 724 "frontend/parser_text.cpp"
+  case 13: // instruction: PASS_LINES
+#line 87 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_pass_lines();     }
+#line 698 "frontend/parser_ebel.cpp"
+    break;
+
+  case 14: // instruction: PASS_DOCUMENTS
+#line 88 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_pass_documents(); }
+#line 704 "frontend/parser_ebel.cpp"
+    break;
+
+  case 15: // instruction: SWAP NUMBER
+#line 89 "frontend/grammars/parser_ebel.yy"
+                                { scanner->add_swap(yystack_[0].value.as < int > ());         }
+#line 710 "frontend/parser_ebel.cpp"
     break;
 
 
-#line 728 "frontend/parser_text.cpp"
+#line 714 "frontend/parser_ebel.cpp"
 
             default:
               break;
@@ -896,14 +882,14 @@ namespace  TextFile  {
   }
 
   void
-   ParserText ::error (const syntax_error& yyexc)
+   ParserEbel ::error (const syntax_error& yyexc)
   {
     error (yyexc.location, yyexc.what ());
   }
 
 #if YYDEBUG || 0
   const char *
-   ParserText ::symbol_name (symbol_kind_type yysymbol)
+   ParserEbel ::symbol_name (symbol_kind_type yysymbol)
   {
     return yytname_[yysymbol];
   }
@@ -917,69 +903,71 @@ namespace  TextFile  {
 
 
 
-  const signed char  ParserText ::yypact_ninf_ = -8;
+  const signed char  ParserEbel ::yypact_ninf_ = -3;
 
-  const signed char  ParserText ::yytable_ninf_ = -1;
+  const signed char  ParserEbel ::yytable_ninf_ = -1;
 
   const signed char
-   ParserText ::yypact_[] =
+   ParserEbel ::yypact_[] =
   {
-       0,    -8,    -8,    -8,    -8,    -8,    -8,    -8,     1,     9,
-      -8,    -8,    -8,    -8
+       0,    -3,    -3,    -2,    -3,    -3,    -3,    -3,    -3,    -3,
+       5,    18,     1,    -3,    -3,    -3,    -3,    -3,     9,    -3
   };
 
   const signed char
-   ParserText ::yydefact_[] =
+   ParserEbel ::yydefact_[] =
   {
-       0,     2,    11,     6,     7,     8,     9,    10,     0,     0,
-       4,     1,     3,     5
+       0,     2,     5,     0,     9,    10,    11,    12,    13,    14,
+       0,     0,     0,     4,     8,    15,     1,     3,     6,     7
   };
 
   const signed char
-   ParserText ::yypgoto_[] =
+   ParserEbel ::yypgoto_[] =
   {
-      -8,    -8,    -8,    -7
+      -3,    -3,    -3,     6
   };
 
   const signed char
-   ParserText ::yydefgoto_[] =
+   ParserEbel ::yydefgoto_[] =
   {
-       0,     8,     9,    10
+       0,    11,    12,    13
   };
 
   const signed char
-   ParserText ::yytable_[] =
+   ParserEbel ::yytable_[] =
   {
-       1,    11,    13,     2,     3,     4,     5,     6,     7,    12,
-       0,     0,     2,     3,     4,     5,     6,     7
+       1,    17,    14,     2,    18,     3,     4,     5,     6,    15,
+       7,     8,     9,    10,     3,     4,     5,     6,    16,     7,
+       8,     9,    10,     0,    19
   };
 
   const signed char
-   ParserText ::yycheck_[] =
+   ParserEbel ::yycheck_[] =
   {
-       0,     0,     9,     3,     4,     5,     6,     7,     8,     0,
-      -1,    -1,     3,     4,     5,     6,     7,     8
+       0,     0,     4,     3,     3,     5,     6,     7,     8,     4,
+      10,    11,    12,    13,     5,     6,     7,     8,     0,    10,
+      11,    12,    13,    -1,    18
   };
 
   const signed char
-   ParserText ::yystos_[] =
+   ParserEbel ::yystos_[] =
   {
-       0,     0,     3,     4,     5,     6,     7,     8,    10,    11,
-      12,     0,     0,    12
+       0,     0,     3,     5,     6,     7,     8,    10,    11,    12,
+      13,    15,    16,    17,     4,     4,     0,     0,     3,    17
   };
 
   const signed char
-   ParserText ::yyr1_[] =
+   ParserEbel ::yyr1_[] =
   {
-       0,     9,    10,    10,    11,    11,    12,    12,    12,    12,
-      12,    12
+       0,    14,    15,    15,    16,    16,    16,    16,    17,    17,
+      17,    17,    17,    17,    17,    17
   };
 
   const signed char
-   ParserText ::yyr2_[] =
+   ParserEbel ::yyr2_[] =
   {
-       0,     2,     1,     2,     1,     2,     1,     1,     1,     1,
-       1,     1
+       0,     2,     1,     2,     1,     1,     2,     3,     2,     1,
+       1,     1,     1,     1,     1,     2
   };
 
 
@@ -987,25 +975,25 @@ namespace  TextFile  {
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
-  const  ParserText ::yytname_[] =
+  const  ParserEbel ::yytname_[] =
   {
-  "\"EOF\"", "error", "\"invalid token\"", "NEWLINE", "TEXT", "NUMBER",
-  "DELIMITER", "SYMBOL", "FLOAT", "$accept", "text_file", "sentence",
-  "word", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "NEWLINE", "NUMBER",
+  "CONCAT", "DEL", "LOOP", "NOP", "PASS", "PASS_WORDS", "PASS_LINES",
+  "PASS_DOCUMENTS", "SWAP", "$accept", "program", "code", "instruction", YY_NULLPTR
   };
 #endif
 
 
 #if YYDEBUG
   const signed char
-   ParserText ::yyrline_[] =
+   ParserEbel ::yyrline_[] =
   {
-       0,    71,    71,    72,    76,    77,    81,    82,    83,    84,
-      85,    86
+       0,    72,    72,    73,    76,    77,    78,    79,    82,    83,
+      84,    85,    86,    87,    88,    89
   };
 
   void
-   ParserText ::yy_stack_print_ () const
+   ParserEbel ::yy_stack_print_ () const
   {
     *yycdebug_ << "Stack now";
     for (stack_type::const_iterator
@@ -1017,7 +1005,7 @@ namespace  TextFile  {
   }
 
   void
-   ParserText ::yy_reduce_print_ (int yyrule) const
+   ParserEbel ::yy_reduce_print_ (int yyrule) const
   {
     int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
@@ -1031,8 +1019,8 @@ namespace  TextFile  {
   }
 #endif // YYDEBUG
 
-   ParserText ::symbol_kind_type
-   ParserText ::yytranslate_ (int t) YY_NOEXCEPT
+   ParserEbel ::symbol_kind_type
+   ParserEbel ::yytranslate_ (int t) YY_NOEXCEPT
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -1066,10 +1054,10 @@ namespace  TextFile  {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8
+       5,     6,     7,     8,     9,    10,    11,    12,    13
     };
     // Last valid token kind.
-    const int code_max = 263;
+    const int code_max = 268;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -1079,14 +1067,14 @@ namespace  TextFile  {
       return symbol_kind::S_YYUNDEF;
   }
 
-#line 19 "frontend/grammars/parser_text.yy"
-} //  TextFile 
-#line 1085 "frontend/parser_text.cpp"
+#line 17 "frontend/grammars/parser_ebel.yy"
+} //  EbelFile 
+#line 1073 "frontend/parser_ebel.cpp"
 
-#line 89 "frontend/grammars/parser_text.yy"
+#line 92 "frontend/grammars/parser_ebel.yy"
 
 
 /* Error method */
-void TextFile::ParserText::error(const location_type &l, const std::string &err_message) {
+void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_message) {
     Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
 }

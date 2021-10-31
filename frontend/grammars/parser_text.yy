@@ -4,7 +4,7 @@
  * 
  * @brief Text file grammar
  * EBNF grammar for text files used by bison (yacc)
- * to generate parse for it.
+ * to generate parser for it.
  * 
  * File setup was inspired by http://www.jonathanbeard.io/tutorials/FlexBisonC++
  */
@@ -16,14 +16,14 @@
 
 %defines
 /* Set namespace used */
-%define api.namespace { Parsing }
+%define api.namespace { TextFile }
 /* Parser class */
 %define api.parser.class { ParserText }
 %define api.location.file none
 
 /* Forward declarations */
 %code requires {
-    namespace Parsing {
+    namespace TextFile {
         class ScannerText;
     }
 
@@ -89,6 +89,6 @@ word      : TEXT      { scanner->add_text($1);      }
 %%
 
 /* Error method */
-void Parsing::ParserText::error(const location_type &l, const std::string &err_message) {
+void TextFile::ParserText::error(const location_type &l, const std::string &err_message) {
     Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
 }

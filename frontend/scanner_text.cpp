@@ -18,10 +18,10 @@
 
 #include <iostream>
 
-using namespace Parsing;
+using namespace TextFile;
 
 ScannerText::ScannerText() : Scanner("Text scanner"), yyFlexLexer() {
-    loc = new Parsing::ParserText::location_type();
+    loc = new TextFile::ParserText::location_type();
 }
 
 IR::Node *ScannerText::process(std::istream *text, const char *file_name) {
@@ -32,10 +32,11 @@ IR::Node *ScannerText::process(std::istream *text, const char *file_name) {
     this->current_parse = new IR::Node();
     this->current_line = nullptr;
 
-    auto parser = new Parsing::ParserText(this);
+    auto parser = new TextFile::ParserText(this);
 
     if(parser->parse() != 0){
-        this->error(Error::ErrorCode::SYNTACTIC, file_name, 0, 0, "Parsing failed");
+        this->error(Error::ErrorCode::SYNTACTIC, file_name, 0, 0, 
+                    (std::string("Parsing failed for file ")+std::string(file_name)).c_str());
     }
 
     if(this->current_line != nullptr) {

@@ -32,8 +32,8 @@
 
 
 /**
- ** \file frontend/parser_text.hpp
- ** Define the  TextFile ::parser class.
+ ** \file frontend/parser_ebel.hpp
+ ** Define the  EbelFile ::parser class.
  */
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
@@ -42,13 +42,13 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
-# define YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+#ifndef YY_EE_FRONTEND_PARSER_EBEL_HPP_INCLUDED
+# define YY_EE_FRONTEND_PARSER_EBEL_HPP_INCLUDED
 // "%code requires" blocks.
-#line 25 "frontend/grammars/parser_text.yy"
+#line 23 "frontend/grammars/parser_ebel.yy"
 
-    namespace TextFile {
-        class ScannerText;
+    namespace EbelFile {
+        class ScannerEbel;
     }
 
     #ifndef YY_NULLPTR
@@ -59,7 +59,7 @@
         #endif
     #endif
 
-#line 63 "frontend/parser_text.hpp"
+#line 63 "frontend/parser_ebel.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -198,9 +198,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 19 "frontend/grammars/parser_text.yy"
-namespace  TextFile  {
-#line 204 "frontend/parser_text.hpp"
+#line 17 "frontend/grammars/parser_ebel.yy"
+namespace  EbelFile  {
+#line 204 "frontend/parser_ebel.hpp"
 
 
   /// A point in a source file.
@@ -447,7 +447,7 @@ namespace  TextFile  {
 
 
   /// A Bison parser.
-  class  ParserText 
+  class  ParserEbel 
   {
   public:
 #ifdef YYSTYPE
@@ -660,12 +660,8 @@ namespace  TextFile  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // TEXT
       // NUMBER
-      // DELIMITER
-      // SYMBOL
-      // FLOAT
-      char dummy1[sizeof (std::string)];
+      char dummy1[sizeof (int)];
     };
 
     /// The size of the largest semantic type.
@@ -715,15 +711,20 @@ namespace  TextFile  {
       enum token_kind_type
       {
         YYEMPTY = -2,
-    END = 0,                       // "EOF"
+    END = 0,                       // "end of file"
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
     NEWLINE = 258,                 // NEWLINE
-    TEXT = 259,                    // TEXT
-    NUMBER = 260,                  // NUMBER
-    DELIMITER = 261,               // DELIMITER
-    SYMBOL = 262,                  // SYMBOL
-    FLOAT = 263                    // FLOAT
+    NUMBER = 259,                  // NUMBER
+    CONCAT = 260,                  // CONCAT
+    DEL = 261,                     // DEL
+    LOOP = 262,                    // LOOP
+    NOP = 263,                     // NOP
+    PASS = 264,                    // PASS
+    PASS_WORDS = 265,              // PASS_WORDS
+    PASS_LINES = 266,              // PASS_LINES
+    PASS_DOCUMENTS = 267,          // PASS_DOCUMENTS
+    SWAP = 268                     // SWAP
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -740,21 +741,26 @@ namespace  TextFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 9, ///< Number of tokens.
+        YYNTOKENS = 14, ///< Number of tokens.
         S_YYEMPTY = -2,
-        S_YYEOF = 0,                             // "EOF"
+        S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_NEWLINE = 3,                           // NEWLINE
-        S_TEXT = 4,                              // TEXT
-        S_NUMBER = 5,                            // NUMBER
-        S_DELIMITER = 6,                         // DELIMITER
-        S_SYMBOL = 7,                            // SYMBOL
-        S_FLOAT = 8,                             // FLOAT
-        S_YYACCEPT = 9,                          // $accept
-        S_text_file = 10,                        // text_file
-        S_sentence = 11,                         // sentence
-        S_word = 12                              // word
+        S_NUMBER = 4,                            // NUMBER
+        S_CONCAT = 5,                            // CONCAT
+        S_DEL = 6,                               // DEL
+        S_LOOP = 7,                              // LOOP
+        S_NOP = 8,                               // NOP
+        S_PASS = 9,                              // PASS
+        S_PASS_WORDS = 10,                       // PASS_WORDS
+        S_PASS_LINES = 11,                       // PASS_LINES
+        S_PASS_DOCUMENTS = 12,                   // PASS_DOCUMENTS
+        S_SWAP = 13,                             // SWAP
+        S_YYACCEPT = 14,                         // $accept
+        S_program = 15,                          // program
+        S_code = 16,                             // code
+        S_instruction = 17                       // instruction
       };
     };
 
@@ -791,12 +797,8 @@ namespace  TextFile  {
       {
         switch (this->kind ())
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.move< std::string > (std::move (that.value));
+        value.move< int > (std::move (that.value));
         break;
 
       default:
@@ -823,13 +825,13 @@ namespace  TextFile  {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, std::string&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, int&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const std::string& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const int& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -860,12 +862,8 @@ namespace  TextFile  {
         // Value type destructor.
 switch (yykind)
     {
-      case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
-      case symbol_kind::S_DELIMITER: // DELIMITER
-      case symbol_kind::S_SYMBOL: // SYMBOL
-      case symbol_kind::S_FLOAT: // FLOAT
-        value.template destroy< std::string > ();
+        value.template destroy< int > ();
         break;
 
       default:
@@ -879,7 +877,7 @@ switch (yykind)
       /// The user-facing name of this symbol.
       const char *name () const YY_NOEXCEPT
       {
-        return  ParserText ::symbol_name (this->kind ());
+        return  ParserEbel ::symbol_name (this->kind ());
       }
 #endif // #if YYDEBUG || 0
 
@@ -969,32 +967,33 @@ switch (yykind)
       {
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::END
-                   || (token::YYerror <= tok && tok <= token::NEWLINE));
+                   || (token::YYerror <= tok && tok <= token::NEWLINE)
+                   || (token::CONCAT <= tok && tok <= token::SWAP));
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, std::string v, location_type l)
+      symbol_type (int tok, int v, location_type l)
         : super_type (token_kind_type (tok), std::move (v), std::move (l))
 #else
-      symbol_type (int tok, const std::string& v, const location_type& l)
+      symbol_type (int tok, const int& v, const location_type& l)
         : super_type (token_kind_type (tok), v, l)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::TEXT <= tok && tok <= token::FLOAT));
+        YY_ASSERT (tok == token::NUMBER);
 #endif
       }
     };
 
     /// Build a parser object.
-     ParserText  (ScannerText *scanner_yyarg);
-    virtual ~ ParserText  ();
+     ParserEbel  (ScannerEbel *scanner_yyarg);
+    virtual ~ ParserEbel  ();
 
 #if 201103L <= YY_CPLUSPLUS
     /// Non copyable.
-     ParserText  (const  ParserText &) = delete;
+     ParserEbel  (const  ParserEbel &) = delete;
     /// Non copyable.
-     ParserText & operator= (const  ParserText &) = delete;
+     ParserEbel & operator= (const  ParserEbel &) = delete;
 #endif
 
     /// Parse.  An alias for parse ().
@@ -1098,29 +1097,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_TEXT (std::string v, location_type l)
-      {
-        return symbol_type (token::TEXT, std::move (v), std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_TEXT (const std::string& v, const location_type& l)
-      {
-        return symbol_type (token::TEXT, v, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_NUMBER (std::string v, location_type l)
+      make_NUMBER (int v, location_type l)
       {
         return symbol_type (token::NUMBER, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_NUMBER (const std::string& v, const location_type& l)
+      make_NUMBER (const int& v, const location_type& l)
       {
         return symbol_type (token::NUMBER, v, l);
       }
@@ -1128,46 +1112,136 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_DELIMITER (std::string v, location_type l)
+      make_CONCAT (location_type l)
       {
-        return symbol_type (token::DELIMITER, std::move (v), std::move (l));
+        return symbol_type (token::CONCAT, std::move (l));
       }
 #else
       static
       symbol_type
-      make_DELIMITER (const std::string& v, const location_type& l)
+      make_CONCAT (const location_type& l)
       {
-        return symbol_type (token::DELIMITER, v, l);
+        return symbol_type (token::CONCAT, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_SYMBOL (std::string v, location_type l)
+      make_DEL (location_type l)
       {
-        return symbol_type (token::SYMBOL, std::move (v), std::move (l));
+        return symbol_type (token::DEL, std::move (l));
       }
 #else
       static
       symbol_type
-      make_SYMBOL (const std::string& v, const location_type& l)
+      make_DEL (const location_type& l)
       {
-        return symbol_type (token::SYMBOL, v, l);
+        return symbol_type (token::DEL, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_FLOAT (std::string v, location_type l)
+      make_LOOP (location_type l)
       {
-        return symbol_type (token::FLOAT, std::move (v), std::move (l));
+        return symbol_type (token::LOOP, std::move (l));
       }
 #else
       static
       symbol_type
-      make_FLOAT (const std::string& v, const location_type& l)
+      make_LOOP (const location_type& l)
       {
-        return symbol_type (token::FLOAT, v, l);
+        return symbol_type (token::LOOP, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_NOP (location_type l)
+      {
+        return symbol_type (token::NOP, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_NOP (const location_type& l)
+      {
+        return symbol_type (token::NOP, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PASS (location_type l)
+      {
+        return symbol_type (token::PASS, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_PASS (const location_type& l)
+      {
+        return symbol_type (token::PASS, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PASS_WORDS (location_type l)
+      {
+        return symbol_type (token::PASS_WORDS, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_PASS_WORDS (const location_type& l)
+      {
+        return symbol_type (token::PASS_WORDS, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PASS_LINES (location_type l)
+      {
+        return symbol_type (token::PASS_LINES, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_PASS_LINES (const location_type& l)
+      {
+        return symbol_type (token::PASS_LINES, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PASS_DOCUMENTS (location_type l)
+      {
+        return symbol_type (token::PASS_DOCUMENTS, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_PASS_DOCUMENTS (const location_type& l)
+      {
+        return symbol_type (token::PASS_DOCUMENTS, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_SWAP (location_type l)
+      {
+        return symbol_type (token::SWAP, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_SWAP (const location_type& l)
+      {
+        return symbol_type (token::SWAP, l);
       }
 #endif
 
@@ -1175,9 +1249,9 @@ switch (yykind)
   private:
 #if YY_CPLUSPLUS < 201103L
     /// Non copyable.
-     ParserText  (const  ParserText &);
+     ParserEbel  (const  ParserEbel &);
     /// Non copyable.
-     ParserText & operator= (const  ParserText &);
+     ParserEbel & operator= (const  ParserEbel &);
 #endif
 
 
@@ -1474,23 +1548,23 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 17,     ///< Last index in yytable_.
+      yylast_ = 24,     ///< Last index in yytable_.
       yynnts_ = 4,  ///< Number of nonterminal symbols.
-      yyfinal_ = 11 ///< Termination state number.
+      yyfinal_ = 16 ///< Termination state number.
     };
 
 
     // User arguments.
-    ScannerText *scanner;
+    ScannerEbel *scanner;
 
   };
 
 
-#line 19 "frontend/grammars/parser_text.yy"
-} //  TextFile 
-#line 1492 "frontend/parser_text.hpp"
+#line 17 "frontend/grammars/parser_ebel.yy"
+} //  EbelFile 
+#line 1566 "frontend/parser_ebel.hpp"
 
 
 
 
-#endif // !YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+#endif // !YY_EE_FRONTEND_PARSER_EBEL_HPP_INCLUDED

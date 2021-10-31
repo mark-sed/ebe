@@ -13,10 +13,7 @@
 
 // Define get token method
 #undef  YY_DECL
-#define YY_DECL int Parsing::ScannerText::yylex(Parsing::ParserText::semantic_type * const lval, Parsing::ParserText::location_type *location)
-
-// Redefine termination token to not use NULL
-#define yyterminate() return (token::END)
+#define YY_DECL int TextFile::ScannerText::yylex(TextFile::ParserText::semantic_type * const lval, TextFile::ParserText::location_type *location)
 
 // Even though the input cannot be incorrect, still add location info
 // Could be useful for debugging
@@ -24,7 +21,10 @@
 #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 
 // Typedef to shorten scope
-using token = Parsing::ParserText::token;
+using token = TextFile::ParserText::token;
+
+// Redefine termination token to not use NULL
+#define yyterminate() return (token::END)
 
 %}
 
@@ -33,51 +33,51 @@ using token = Parsing::ParserText::token;
 %option c++
 
 /* Define what scanner class is used */
-%option yyclass="Parsing::ScannerText"
+%option yyclass="TextFile::ScannerText"
 
 
 /* Macros for symbol types */
 DELIMITER [ \f\r\t\v,.:;]
 NUM       [0-9]
 /* TODO: Add special characters from all possible languages */
-ALPHANUM  [a-zA-Z0-9\_ěščřžýáíéúů]
+ALPHANUM  [a-zA-Z0-9\_\x80-\xf3]
 
 %%
 %{
     yylval = lval;    
 %}
 
-{DELIMITER}         {
+{DELIMITER}         {   // Delimiters
                         yylval->build<std::string>(yytext);
                         return token::DELIMITER;
                     }
 
-{NUM}+\.{NUM}+[eE][+-]?{NUM}+   {
+{NUM}+\.{NUM}+[eE][+-]?{NUM}+   {   // Float in scientific notation
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
                                 }
 
-{NUM}+\.{NUM}+                  {
+{NUM}+\.{NUM}+                  {   // Float
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
                                 }
 
-{NUM}+              {
+{NUM}+              {   // Number
                         yylval->build<std::string>(yytext); 
                         return token::NUMBER; 
                     }
 
-{ALPHANUM}+         {
+{ALPHANUM}+         {   // Text
                         yylval->build<std::string>(yytext);
                         return token::TEXT;
                     }
 
-\n                  {
+\n                  {   // New line
                         loc->lines();
                         return token::NEWLINE;
                     }
 
-.                   {  
+.                   {   // Anything else is symbol
                         yylval->build<std::string>(yytext); 
                         return token::SYMBOL; 
                     }
