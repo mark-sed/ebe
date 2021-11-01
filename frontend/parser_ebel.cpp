@@ -181,7 +181,7 @@ namespace  EbelFile  {
   {
     switch (this->kind ())
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.copy< int > (YY_MOVE (that.value));
         break;
 
@@ -214,7 +214,7 @@ namespace  EbelFile  {
     super_type::move (s);
     switch (this->kind ())
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.move< int > (YY_MOVE (s.value));
         break;
 
@@ -315,7 +315,7 @@ namespace  EbelFile  {
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
         break;
 
@@ -334,7 +334,7 @@ namespace  EbelFile  {
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.move< int > (YY_MOVE (that.value));
         break;
 
@@ -353,7 +353,7 @@ namespace  EbelFile  {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.copy< int > (that.value);
         break;
 
@@ -371,7 +371,7 @@ namespace  EbelFile  {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.move< int > (that.value);
         break;
 
@@ -633,7 +633,7 @@ namespace  EbelFile  {
          when using variants.  */
       switch (yyr1_[yyn])
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         yylhs.value.emplace< int > ();
         break;
 
@@ -657,7 +657,7 @@ namespace  EbelFile  {
         {
           switch (yyn)
             {
-  case 8: // instruction: CONCAT NUMBER
+  case 8: // instruction: CONCAT "number"
 #line 85 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_concat(yystack_[0].value.as < int > ());       }
 #line 664 "frontend/parser_ebel.cpp"
@@ -699,7 +699,7 @@ namespace  EbelFile  {
 #line 700 "frontend/parser_ebel.cpp"
     break;
 
-  case 15: // instruction: SWAP NUMBER
+  case 15: // instruction: SWAP "number"
 #line 92 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_swap(yystack_[0].value.as < int > ());         }
 #line 706 "frontend/parser_ebel.cpp"
@@ -1129,9 +1129,10 @@ namespace  EbelFile  {
   const char*
   const  ParserEbel ::yytname_[] =
   {
-  "\"end of file\"", "error", "\"invalid token\"", "NEWLINE", "NUMBER",
-  "CONCAT", "DEL", "LOOP", "NOP", "PASS", "PASS_WORDS", "PASS_LINES",
-  "PASS_DOCUMENTS", "SWAP", "$accept", "program", "code", "instruction", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "NEWLINE",
+  "\"number\"", "CONCAT", "DEL", "LOOP", "NOP", "PASS", "PASS_WORDS",
+  "PASS_LINES", "PASS_DOCUMENTS", "SWAP", "$accept", "program", "code",
+  "instruction", YY_NULLPTR
   };
 #endif
 
@@ -1221,7 +1222,7 @@ namespace  EbelFile  {
 
 #line 17 "frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1225 "frontend/parser_ebel.cpp"
+#line 1226 "frontend/parser_ebel.cpp"
 
 #line 95 "frontend/grammars/parser_ebel.yy"
 
@@ -1230,6 +1231,6 @@ namespace  EbelFile  {
 void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_message) {
     std::stringstream mss;
     mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
-        << " at line " << l.begin.line << ", column " << l.begin.column;
+        << " at line " << scanner->loc->begin.line << ", column " << scanner->loc->begin.column;
     Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str());
 }

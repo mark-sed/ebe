@@ -189,8 +189,27 @@ extern int yyleng;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
     
-    #define YY_LESS_LINENO(n)
-    #define YY_LINENO_REWIND_TO(ptr)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex.
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                int yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
+    #define YY_LINENO_REWIND_TO(dst) \
+            do {\
+                const char *p;\
+                for ( p = yy_cp-1; p >= (dst); --p)\
+                    if ( *p == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -464,6 +483,11 @@ static const flex_int16_t yy_chk[162] =
        60
     } ;
 
+/* Table of booleans, true if rule could match eol. */
+static const flex_int32_t yy_rule_can_match_eol[16] =
+    {   0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,     };
+
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
  */
@@ -489,7 +513,6 @@ static const flex_int16_t yy_chk[162] =
 #undef YY_DECL
 #define YY_DECL int EbelFile::ScannerEbel::eelex(EbelFile::ParserEbel::semantic_type * const lval, EbelFile::ParserEbel::location_type *location)
 
-// Define token to return on end of parsing
 #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 
 // Typedef to shorten scope
@@ -498,11 +521,11 @@ using token = EbelFile::ParserEbel::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 501 "frontend/lexer_ebel.cpp"
+#line 524 "frontend/lexer_ebel.cpp"
 /* Define what scanner class is used */
 /* Ebel code is caseless, so case can be ignored */
 /* Macros for tokens */
-#line 505 "frontend/lexer_ebel.cpp"
+#line 528 "frontend/lexer_ebel.cpp"
 
 #define INITIAL 0
 
@@ -641,7 +664,7 @@ YY_DECL
     yylval = lval;    
 
 
-#line 644 "frontend/lexer_ebel.cpp"
+#line 667 "frontend/lexer_ebel.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -686,6 +709,16 @@ yy_find_action:
 			}
 
 		YY_DO_BEFORE_ACTION;
+
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			int yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					
+    yylineno++;
+;
+			}
 
 do_action:	/* This label is used only to access EOF actions. */
 
@@ -789,7 +822,7 @@ YY_RULE_SETUP
 #line 80 "frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 792 "frontend/lexer_ebel.cpp"
+#line 825 "frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1276,6 +1309,10 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	*--yy_cp = (char) c;
 
+    if ( c == '\n' ){
+        --yylineno;
+    }
+
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
@@ -1345,6 +1382,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		
+    yylineno++;
+;
 
 	return c;
 }

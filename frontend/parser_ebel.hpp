@@ -649,7 +649,7 @@ namespace  EbelFile  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // NUMBER
+      // "number"
       char dummy1[sizeof (int)];
     };
 
@@ -703,7 +703,7 @@ namespace  EbelFile  {
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
     NEWLINE = 258,                 // NEWLINE
-    NUMBER = 259,                  // NUMBER
+    NUMBER = 259,                  // "number"
     CONCAT = 260,                  // CONCAT
     DEL = 261,                     // DEL
     LOOP = 262,                    // LOOP
@@ -735,7 +735,7 @@ namespace  EbelFile  {
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_NEWLINE = 3,                           // NEWLINE
-        S_NUMBER = 4,                            // NUMBER
+        S_NUMBER = 4,                            // "number"
         S_CONCAT = 5,                            // CONCAT
         S_DEL = 6,                               // DEL
         S_LOOP = 7,                              // LOOP
@@ -785,7 +785,7 @@ namespace  EbelFile  {
       {
         switch (this->kind ())
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.move< int > (std::move (that.value));
         break;
 
@@ -848,7 +848,7 @@ namespace  EbelFile  {
         // Value type destructor.
 switch (yykind)
     {
-      case symbol_kind::S_NUMBER: // NUMBER
+      case symbol_kind::S_NUMBER: // "number"
         value.template destroy< int > ();
         break;
 

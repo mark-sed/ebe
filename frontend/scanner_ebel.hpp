@@ -32,7 +32,6 @@ namespace EbelFile {
 class ScannerEbel : public Compiler, public yyFlexLexer {
 private:
     EbelFile::ParserEbel::semantic_type *yylval = nullptr;
-    EbelFile::ParserEbel::location_type *loc = nullptr;
 
     IR::EbelNode *current_parse;          ///< Holds program that is currently being parsed during process method
     IR::Pass *current_pass;               ///< Holds line currently being parsed during process method
@@ -41,6 +40,8 @@ private:
     /** If current pass is nullptr allocates a new one */
     void touch_pass();
 public:
+    EbelFile::ParserEbel::location_type *loc = nullptr;     ///< Current parsing location
+
     ScannerEbel();
 
     virtual int eelex(EbelFile::ParserEbel::semantic_type *const lval,

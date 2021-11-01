@@ -57,7 +57,7 @@
 /* Tokens and types */
 %token END 0 "end of file"
 %token NEWLINE
-%token <int> NUMBER
+%token <int> NUMBER "number"
 %token CONCAT
 %token DEL
 %token LOOP
@@ -98,6 +98,6 @@ instruction : CONCAT NUMBER     { scanner->add_concat($2);       }
 void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_message) {
     std::stringstream mss;
     mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
-        << " at line " << l.begin.line << ", column " << l.begin.column;
+        << " at line " << scanner->loc->begin.line << ", column " << scanner->loc->begin.column;
     Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str());
 }

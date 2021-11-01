@@ -16,7 +16,6 @@
 #undef YY_DECL
 #define YY_DECL int EbelFile::ScannerEbel::eelex(EbelFile::ParserEbel::semantic_type * const lval, EbelFile::ParserEbel::location_type *location)
 
-// Define token to return on end of parsing
 #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 
 // Typedef to shorten scope
@@ -30,6 +29,7 @@ using token = EbelFile::ParserEbel::token;
 %option nodefault
 %option noyywrap
 %option c++
+%option yylineno
 
 /* Define what scanner class is used */
 %option yyclass="EbelFile::ScannerEbel"
