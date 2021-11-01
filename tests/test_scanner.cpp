@@ -60,6 +60,7 @@ TEST(Scanner, ScannerText) {
 TEST(CodeScanner, ScannerEbel) {
     auto s = new EbelFile::ScannerEbel();
 
+    // Correct code with weird but allowed lexems
     std::istringstream corr_code(" \
         PASS    documents\n\
             NOP\n\
