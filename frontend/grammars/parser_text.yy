@@ -10,7 +10,7 @@
  */
 
 /* Since new constructs are used, newer version is needed */
-%require "3.8"
+%require "3.7"
 /* Use C++ parser */
 %skeleton "lalr1.cc"
 
@@ -90,5 +90,6 @@ word      : TEXT      { scanner->add_text($1);      }
 
 /* Error method */
 void TextFile::ParserText::error(const location_type &l, const std::string &err_message) {
-    Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
+    // Since this should never happen, there is no need for additional information
+    Error::error(Error::ErrorCode::INTERNAL, "Somehow input file was parsed as incorrect. Please report this.");
 }

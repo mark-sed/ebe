@@ -5,11 +5,13 @@
 #include <gtest/gtest.h>
 #include <string>
 #include "scanner_text.hpp"
+#include "scanner_ebel.hpp"
 #include "arg_parser.hpp"
 #include "ir.hpp"
 
 namespace{
 
+// Text file scanner test
 TEST(Scanner, ScannerText) {
     // Set up arguments for parsing
     Args::arg_opts.alpha_num = false;
@@ -22,14 +24,18 @@ TEST(Scanner, ScannerText) {
     auto s = new TextFile::ScannerText();
     
     // Test parsing text
-    auto *in_text = new std::istringstream("Hello 42+5.0e+10\n78\n");
+    auto *in_text = new std::istringstream("Hello 42+5.0e+10\n78\n\n3e,66f\t00001");
     auto in_types = std::vector<std::vector<IR::Type>>{
         {IR::Type::TEXT, IR::Type::DELIMITER, IR::Type::NUMBER, IR::Type::SYMBOL, IR::Type::FLOAT},
-        {IR::Type::NUMBER}
+        {IR::Type::NUMBER},
+        {IR::Type::EMPTY},
+        {IR::Type::TEXT, IR::Type::DELIMITER, IR::Type::TEXT, IR::Type::DELIMITER, IR::Type::NUMBER}
     };
     auto in_values = std::vector<std::vector<std::string>>{
         {"Hello", " ", "42", "+", "5.0e+10"},
-        {"78"}
+        {"78"},
+        {""},
+        {"3e", ",", "66f", "\t", "00001"}
     };
     auto node = s->process(in_text, "tests_file");
 
@@ -48,6 +54,17 @@ TEST(Scanner, ScannerText) {
 
     delete in_text;
     delete node;
+    delete s;
+}
+
+TEST(CodeScanner, ScannerEbel) {
+    auto s = new EbelFile::ScannerEbel();
+
+    // Test parsing incorrect code
+    std::istringstream in_text("unknown");
+    EXPECT_EXIT(s->process(&in_text, ""), testing::ExitedWithCode(Error::ErrorCode::SYNTACTIC), 
+                "Correct syntax error exit");
+
     delete s;
 }
 

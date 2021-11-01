@@ -1,6 +1,6 @@
-#line 2 "frontend/lexer_ebel.cpp"
+#line 1 "frontend/lexer_ebel.cpp"
 
-#line 4 "frontend/lexer_ebel.cpp"
+#line 3 "frontend/lexer_ebel.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -483,7 +483,7 @@ static const flex_int16_t yy_chk[162] =
     
 #include <string>
 #include "scanner_ebel.hpp"
-#include <iostream>
+#include "compiler.hpp"
 
 // Define custom lex method
 #undef YY_DECL
@@ -498,11 +498,11 @@ using token = EbelFile::ParserEbel::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 502 "frontend/lexer_ebel.cpp"
+#line 501 "frontend/lexer_ebel.cpp"
 /* Define what scanner class is used */
 /* Ebel code is caseless, so case can be ignored */
 /* Macros for tokens */
-#line 506 "frontend/lexer_ebel.cpp"
+#line 505 "frontend/lexer_ebel.cpp"
 
 #define INITIAL 0
 
@@ -641,7 +641,7 @@ YY_DECL
     yylval = lval;    
 
 
-#line 645 "frontend/lexer_ebel.cpp"
+#line 644 "frontend/lexer_ebel.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -769,21 +769,27 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 69 "frontend/grammars/lexer_ebel.ll"
-{   /* TODO: Call error */
-                                    std::cerr << "Unknown instruction " << yytext << "\n";
+{   /* Exit because of unknown instruction */
+                                    Error::error(Error::ErrorCode::SYNTACTIC, 
+                                                 (std::string("Unknown instruction '")+std::string(yytext)
+                                                 +std::string("'")).c_str());
                                 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 72 "frontend/grammars/lexer_ebel.ll"
-{  std::cerr << "Unknown symbol " << yytext << "\n"; }
+#line 74 "frontend/grammars/lexer_ebel.ll"
+{   /* Exit because of unknwon symbol */
+                                    Error::error(Error::ErrorCode::SYNTACTIC, 
+                                                 (std::string("Unknown symbol '")+std::string(yytext)
+                                                 +std::string("'")).c_str());
+                                }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 74 "frontend/grammars/lexer_ebel.ll"
+#line 80 "frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 787 "frontend/lexer_ebel.cpp"
+#line 792 "frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1746,5 +1752,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 74 "frontend/grammars/lexer_ebel.ll"
+#line 80 "frontend/grammars/lexer_ebel.ll"
 

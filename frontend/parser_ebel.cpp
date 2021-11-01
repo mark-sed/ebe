@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.8.2.
+// A Bison parser, made by GNU Bison 3.7.4.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -47,6 +47,8 @@
 #line 41 "frontend/grammars/parser_ebel.yy"
 
     // Include compiler to use error
+    #include <sstream>
+    #include <cctype>
     #include "compiler.hpp"
     #include "scanner_ebel.hpp"
 
@@ -54,7 +56,7 @@
     #undef yylex
     #define yylex scanner->eelex
 
-#line 58 "frontend/parser_ebel.cpp"
+#line 60 "frontend/parser_ebel.cpp"
 
 
 #ifndef YY_
@@ -131,7 +133,7 @@
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YY_USE (Symbol)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
 # define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
 # define YY_STACK_PRINT()                static_cast<void> (0)
 
@@ -147,7 +149,7 @@
 
 #line 17 "frontend/grammars/parser_ebel.yy"
 namespace  EbelFile  {
-#line 151 "frontend/parser_ebel.cpp"
+#line 153 "frontend/parser_ebel.cpp"
 
   /// Build a parser object.
    ParserEbel :: ParserEbel  (ScannerEbel *scanner_yyarg)
@@ -166,9 +168,9 @@ namespace  EbelFile  {
    ParserEbel ::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
-  /*---------.
-  | symbol.  |
-  `---------*/
+  /*---------------.
+  | symbol kinds.  |
+  `---------------*/
 
   // basic_symbol.
   template <typename Base>
@@ -191,14 +193,12 @@ namespace  EbelFile  {
 
 
 
-
   template <typename Base>
    ParserEbel ::symbol_kind_type
    ParserEbel ::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
-
 
   template <typename Base>
   bool
@@ -226,30 +226,28 @@ namespace  EbelFile  {
   }
 
   // by_kind.
-   ParserEbel ::by_kind::by_kind () YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind ()
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-   ParserEbel ::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (by_kind&& that)
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-   ParserEbel ::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (const by_kind& that)
     : kind_ (that.kind_)
   {}
 
-   ParserEbel ::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (token_kind_type t)
     : kind_ (yytranslate_ (t))
   {}
 
-
-
   void
-   ParserEbel ::by_kind::clear () YY_NOEXCEPT
+   ParserEbel ::by_kind::clear ()
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
@@ -267,13 +265,11 @@ namespace  EbelFile  {
     return kind_;
   }
 
-
    ParserEbel ::symbol_kind_type
    ParserEbel ::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
-
 
 
   // by_state.
@@ -404,7 +400,7 @@ namespace  EbelFile  {
    ParserEbel ::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
-    YY_USE (yyoutput);
+    YYUSE (yyoutput);
     if (yysym.empty ())
       yyo << "empty symbol";
     else
@@ -413,7 +409,7 @@ namespace  EbelFile  {
         yyo << (yykind < YYNTOKENS ? "token" : "nterm")
             << ' ' << yysym.name () << " ("
             << yysym.location << ": ";
-        YY_USE (yykind);
+        YYUSE (yykind);
         yyo << ')';
       }
   }
@@ -439,7 +435,7 @@ namespace  EbelFile  {
   }
 
   void
-   ParserEbel ::yypop_ (int n) YY_NOEXCEPT
+   ParserEbel ::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -482,13 +478,13 @@ namespace  EbelFile  {
   }
 
   bool
-   ParserEbel ::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
+   ParserEbel ::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-   ParserEbel ::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
+   ParserEbel ::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
@@ -662,55 +658,55 @@ namespace  EbelFile  {
           switch (yyn)
             {
   case 8: // instruction: CONCAT NUMBER
-#line 82 "frontend/grammars/parser_ebel.yy"
+#line 85 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_concat(yystack_[0].value.as < int > ());       }
-#line 668 "frontend/parser_ebel.cpp"
+#line 664 "frontend/parser_ebel.cpp"
     break;
 
   case 9: // instruction: DEL
-#line 83 "frontend/grammars/parser_ebel.yy"
+#line 86 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_del();            }
-#line 674 "frontend/parser_ebel.cpp"
+#line 670 "frontend/parser_ebel.cpp"
     break;
 
   case 10: // instruction: LOOP
-#line 84 "frontend/grammars/parser_ebel.yy"
+#line 87 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_loop();           }
-#line 680 "frontend/parser_ebel.cpp"
+#line 676 "frontend/parser_ebel.cpp"
     break;
 
   case 11: // instruction: NOP
-#line 85 "frontend/grammars/parser_ebel.yy"
+#line 88 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_nop();            }
-#line 686 "frontend/parser_ebel.cpp"
+#line 682 "frontend/parser_ebel.cpp"
     break;
 
   case 12: // instruction: PASS_WORDS
-#line 86 "frontend/grammars/parser_ebel.yy"
+#line 89 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_pass_words();     }
-#line 692 "frontend/parser_ebel.cpp"
+#line 688 "frontend/parser_ebel.cpp"
     break;
 
   case 13: // instruction: PASS_LINES
-#line 87 "frontend/grammars/parser_ebel.yy"
+#line 90 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_pass_lines();     }
-#line 698 "frontend/parser_ebel.cpp"
+#line 694 "frontend/parser_ebel.cpp"
     break;
 
   case 14: // instruction: PASS_DOCUMENTS
-#line 88 "frontend/grammars/parser_ebel.yy"
+#line 91 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_pass_documents(); }
-#line 704 "frontend/parser_ebel.cpp"
+#line 700 "frontend/parser_ebel.cpp"
     break;
 
   case 15: // instruction: SWAP NUMBER
-#line 89 "frontend/grammars/parser_ebel.yy"
+#line 92 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_swap(yystack_[0].value.as < int > ());         }
-#line 710 "frontend/parser_ebel.cpp"
+#line 706 "frontend/parser_ebel.cpp"
     break;
 
 
-#line 714 "frontend/parser_ebel.cpp"
+#line 710 "frontend/parser_ebel.cpp"
 
             default:
               break;
@@ -742,7 +738,8 @@ namespace  EbelFile  {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        std::string msg = YY_("syntax error");
+        context yyctx (*this, yyla);
+        std::string msg = yysyntax_error_ (yyctx);
         error (yyla.location, YY_MOVE (msg));
       }
 
@@ -887,20 +884,175 @@ namespace  EbelFile  {
     error (yyexc.location, yyexc.what ());
   }
 
-#if YYDEBUG || 0
-  const char *
+  /* Return YYSTR after stripping away unnecessary quotes and
+     backslashes, so that it's suitable for yyerror.  The heuristic is
+     that double-quoting is unnecessary unless the string contains an
+     apostrophe, a comma, or backslash (other than backslash-backslash).
+     YYSTR is taken from yytname.  */
+  std::string
+   ParserEbel ::yytnamerr_ (const char *yystr)
+  {
+    if (*yystr == '"')
+      {
+        std::string yyr;
+        char const *yyp = yystr;
+
+        for (;;)
+          switch (*++yyp)
+            {
+            case '\'':
+            case ',':
+              goto do_not_strip_quotes;
+
+            case '\\':
+              if (*++yyp != '\\')
+                goto do_not_strip_quotes;
+              else
+                goto append;
+
+            append:
+            default:
+              yyr += *yyp;
+              break;
+
+            case '"':
+              return yyr;
+            }
+      do_not_strip_quotes: ;
+      }
+
+    return yystr;
+  }
+
+  std::string
    ParserEbel ::symbol_name (symbol_kind_type yysymbol)
   {
-    return yytname_[yysymbol];
+    return yytnamerr_ (yytname_[yysymbol]);
   }
-#endif // #if YYDEBUG || 0
 
 
 
+  //  ParserEbel ::context.
+   ParserEbel ::context::context (const  ParserEbel & yyparser, const symbol_type& yyla)
+    : yyparser_ (yyparser)
+    , yyla_ (yyla)
+  {}
+
+  int
+   ParserEbel ::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  {
+    // Actual number of expected tokens
+    int yycount = 0;
+
+    int yyn = yypact_[+yyparser_.yystack_[0].state];
+    if (!yy_pact_value_is_default_ (yyn))
+      {
+        /* Start YYX at -YYN if negative to avoid negative indexes in
+           YYCHECK.  In other words, skip the first -YYN actions for
+           this state because they are default actions.  */
+        int yyxbegin = yyn < 0 ? -yyn : 0;
+        // Stay within bounds of both yycheck and yytname.
+        int yychecklim = yylast_ - yyn + 1;
+        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+          if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
+              && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+            {
+              if (!yyarg)
+                ++yycount;
+              else if (yycount == yyargn)
+                return 0;
+              else
+                yyarg[yycount++] = YY_CAST (symbol_kind_type, yyx);
+            }
+      }
+
+    if (yyarg && yycount == 0 && 0 < yyargn)
+      yyarg[0] = symbol_kind::S_YYEMPTY;
+    return yycount;
+  }
 
 
 
+  int
+   ParserEbel ::yy_syntax_error_arguments_ (const context& yyctx,
+                                                 symbol_kind_type yyarg[], int yyargn) const
+  {
+    /* There are many possibilities here to consider:
+       - If this state is a consistent state with a default action, then
+         the only way this function was invoked is if the default action
+         is an error action.  In that case, don't check for expected
+         tokens because there are none.
+       - The only way there can be no lookahead present (in yyla) is
+         if this state is a consistent state with a default action.
+         Thus, detecting the absence of a lookahead is sufficient to
+         determine that there is no unexpected or expected token to
+         report.  In that case, just report a simple "syntax error".
+       - Don't assume there isn't a lookahead just because this state is
+         a consistent state with a default action.  There might have
+         been a previous inconsistent state, consistent state with a
+         non-default action, or user semantic action that manipulated
+         yyla.  (However, yyla is currently not documented for users.)
+       - Of course, the expected token list depends on states to have
+         correct lookahead information, and it depends on the parser not
+         to perform extra reductions after fetching a lookahead from the
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
+    */
 
+    if (!yyctx.lookahead ().empty ())
+      {
+        if (yyarg)
+          yyarg[0] = yyctx.token ();
+        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
+        return yyn + 1;
+      }
+    return 0;
+  }
+
+  // Generate an error message.
+  std::string
+   ParserEbel ::yysyntax_error_ (const context& yyctx) const
+  {
+    // Its maximum.
+    enum { YYARGS_MAX = 5 };
+    // Arguments of yyformat.
+    symbol_kind_type yyarg[YYARGS_MAX];
+    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
+
+    char const* yyformat = YY_NULLPTR;
+    switch (yycount)
+      {
+#define YYCASE_(N, S)                         \
+        case N:                               \
+          yyformat = S;                       \
+        break
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+#undef YYCASE_
+      }
+
+    std::string yyres;
+    // Argument number.
+    std::ptrdiff_t yyi = 0;
+    for (char const* yyp = yyformat; *yyp; ++yyp)
+      if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
+        {
+          yyres += symbol_name (yyarg[yyi++]);
+          ++yyp;
+        }
+      else
+        yyres += *yyp;
+    return yyres;
+  }
 
 
   const signed char  ParserEbel ::yypact_ninf_ = -3;
@@ -930,7 +1082,7 @@ namespace  EbelFile  {
   const signed char
    ParserEbel ::yydefgoto_[] =
   {
-       0,    11,    12,    13
+      -1,    11,    12,    13
   };
 
   const signed char
@@ -971,7 +1123,7 @@ namespace  EbelFile  {
   };
 
 
-#if YYDEBUG
+#if YYDEBUG || 1
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
@@ -988,8 +1140,8 @@ namespace  EbelFile  {
   const signed char
    ParserEbel ::yyrline_[] =
   {
-       0,    72,    72,    73,    76,    77,    78,    79,    82,    83,
-      84,    85,    86,    87,    88,    89
+       0,    75,    75,    76,    79,    80,    81,    82,    85,    86,
+      87,    88,    89,    90,    91,    92
   };
 
   void
@@ -1020,7 +1172,7 @@ namespace  EbelFile  {
 #endif // YYDEBUG
 
    ParserEbel ::symbol_kind_type
-   ParserEbel ::yytranslate_ (int t) YY_NOEXCEPT
+   ParserEbel ::yytranslate_ (int t)
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -1062,19 +1214,22 @@ namespace  EbelFile  {
     if (t <= 0)
       return symbol_kind::S_YYEOF;
     else if (t <= code_max)
-      return static_cast <symbol_kind_type> (translate_table[t]);
+      return YY_CAST (symbol_kind_type, translate_table[t]);
     else
       return symbol_kind::S_YYUNDEF;
   }
 
 #line 17 "frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1073 "frontend/parser_ebel.cpp"
+#line 1225 "frontend/parser_ebel.cpp"
 
-#line 92 "frontend/grammars/parser_ebel.yy"
+#line 95 "frontend/grammars/parser_ebel.yy"
 
 
 /* Error method */
 void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_message) {
-    Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
+    std::stringstream mss;
+    mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
+        << " at line " << l.begin.line << ", column " << l.begin.column;
+    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str());
 }

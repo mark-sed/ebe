@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-Preprocessor::Preprocessor(char delim) : Compiler("Example preprocessor"), delim{delim} {
+Preprocessor::Preprocessor(char delim) : Compiler("Preprocessor"), delim{delim} {
 
 }
 
@@ -35,27 +35,4 @@ std::istream *Preprocessor::process(const char *file_name){
     else{
         return &std::cin;
     }
-}
-
-EbelPreprocessor::EbelPreprocessor() : Compiler("Ebel preprocessor") {
-
-}
-
-std::vector<std::string> *EbelPreprocessor::process(const char *file_name){
-    std::string l;
-    auto lines = new std::vector<std::string>();
-    if(file_name){
-        std::ifstream f(file_name);
-        if(f.fail()){
-            error(Error::ErrorCode::FILE_ACCESS, file_name, -1, -1, "Could not open file");
-        }
-        while(std::getline(f, l, '\n')){
-            // Append new line to a line (for scanner to detect end easily)
-            lines->push_back(l+"\n");
-        }
-    }
-    else{
-        Error::error(Error::ErrorCode::INTERNAL, "Problems with ebel file");
-    }
-    return lines;
 }

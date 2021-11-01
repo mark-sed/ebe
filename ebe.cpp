@@ -127,23 +127,24 @@ void compile(const char *f_in, const char *f_out) {
     // Cleanup
     delete ir_in;
     delete ir_out;
-    delete in_text;
-    delete out_text;
+    if(in_text != &std::cin) {
+        delete in_text;
+    }
+    if(out_text != &std::cin) {
+        delete out_text;
+    }
     delete scanner;
     delete preproc;
     LOGMAX("Compilation done");
 }
 
 void interpret(const char *ebel_f, std::vector<const char *> input_files){
-    LOGMAX("Interpetation started");
-    //TODO: Make this work for all files in input_files
-    auto input_f = input_files[0];
-    
+    LOGMAX("Interpetation started");    
     // Preprocessing
     auto ebel_preproc = new Preprocessor();
-    LOGMAX("Text preprocessor started");
+    LOGMAX("Ebel preprocessor started");
     auto ebel_text = ebel_preproc->process(ebel_f);
-    LOGMAX("Text preprocessor finished");
+    LOGMAX("Ebel preprocessor finished");
 
     // Syntactical check
     auto ebel_scanner = new EbelFile::ScannerEbel();
@@ -152,33 +153,42 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     LOG2("Ebel IR:\n" << *ebel_ir);
     LOGMAX("Ebel scanner finished");
 
-    // Preprocessing input file
-    auto text_preproc = new Preprocessor();
-    LOGMAX("Text preprocessor started");
-    auto text_stream = text_preproc->process(input_f);
-    LOGMAX("Text preprocessor finished");
-
-    // Syntactical check/parse of input file
-    auto text_scanner = new TextFile::ScannerText();
-    LOGMAX("Text scanner started");
-    auto text_ir = text_scanner->process(text_stream, input_f);
-    LOG1("Text IR:\n" << *text_ir);
-    LOGMAX("Text scanner finished");
-
-    // Interpret
+    // Interpret initialization
     auto interpreter = new Interpreter(ebel_ir);
-    LOGMAX("Interpreter started");
-    interpreter->parse(text_ir);
-    LOGMAX("Interpreter finished");
-    LOG1("Interpreted text IR:\n" << *text_ir);
 
-    std::cout << text_ir->output();
+    for(auto input_f: input_files){
+        // Preprocessing input file
+        auto text_preproc = new Preprocessor();
+        LOGMAX("Text preprocessor for " << input_f << " started");
+        auto text_stream = text_preproc->process(input_f);
+        LOGMAX("Text preprocessor finished");
+
+        // Syntactical check/parse of input file
+        auto text_scanner = new TextFile::ScannerText();
+        LOGMAX("Text scanner started");
+        auto text_ir = text_scanner->process(text_stream, input_f);
+        LOG1("Text IR:\n" << *text_ir);
+        LOGMAX("Text scanner finished");
+
+        LOGMAX("Interpreter started");
+        interpreter->parse(text_ir);
+        LOGMAX("Interpreter finished");
+        LOG1("Interpreted text IR:\n" << *text_ir);
+
+        // FIXME: Save to file/folder when specified
+        if(input_files.size() > 1) {
+            std::cout << "# Interpreted " << input_f << ": " << std::endl;
+        }
+        std::cout << text_ir->output();
+        std::cout << std::endl;
+
+        delete text_ir;
+        delete text_scanner;
+        delete text_stream;
+        delete text_preproc;
+    }
 
     // Cleanup
-    delete text_ir;
-    delete text_scanner;
-    delete text_stream;
-    delete text_preproc;
     delete ebel_ir;
     delete ebel_scanner;
     delete ebel_text;

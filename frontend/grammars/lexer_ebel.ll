@@ -10,7 +10,7 @@
     
 #include <string>
 #include "scanner_ebel.hpp"
-#include <iostream>
+#include "compiler.hpp"
 
 // Define custom lex method
 #undef YY_DECL
@@ -65,9 +65,15 @@ SPACE   [ \t]
                                     loc->lines();
                                     return token::NEWLINE;
                                 }
-[a-zA-Z0-9_]+                   {   /* TODO: Call error */
-                                    std::cerr << "Unknown instruction " << yytext << "\n";
+[a-zA-Z0-9_]+                   {   /* Exit because of unknown instruction */
+                                    Error::error(Error::ErrorCode::SYNTACTIC, 
+                                                 (std::string("Unknown instruction '")+std::string(yytext)
+                                                 +std::string("'")).c_str());
                                 }
-.                               {  std::cerr << "Unknown symbol " << yytext << "\n"; }
+.                               {   /* Exit because of unknwon symbol */
+                                    Error::error(Error::ErrorCode::SYNTACTIC, 
+                                                 (std::string("Unknown symbol '")+std::string(yytext)
+                                                 +std::string("'")).c_str());
+                                }
 
 %%

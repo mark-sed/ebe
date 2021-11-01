@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.8.2.
+// A Bison parser, made by GNU Bison 3.7.4.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -129,7 +129,7 @@
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YY_USE (Symbol)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
 # define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
 # define YY_STACK_PRINT()                static_cast<void> (0)
 
@@ -164,9 +164,9 @@ namespace  TextFile  {
    ParserText ::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
-  /*---------.
-  | symbol.  |
-  `---------*/
+  /*---------------.
+  | symbol kinds.  |
+  `---------------*/
 
   // basic_symbol.
   template <typename Base>
@@ -193,14 +193,12 @@ namespace  TextFile  {
 
 
 
-
   template <typename Base>
    ParserText ::symbol_kind_type
    ParserText ::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
-
 
   template <typename Base>
   bool
@@ -232,30 +230,28 @@ namespace  TextFile  {
   }
 
   // by_kind.
-   ParserText ::by_kind::by_kind () YY_NOEXCEPT
+   ParserText ::by_kind::by_kind ()
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-   ParserText ::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
+   ParserText ::by_kind::by_kind (by_kind&& that)
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-   ParserText ::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
+   ParserText ::by_kind::by_kind (const by_kind& that)
     : kind_ (that.kind_)
   {}
 
-   ParserText ::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
+   ParserText ::by_kind::by_kind (token_kind_type t)
     : kind_ (yytranslate_ (t))
   {}
 
-
-
   void
-   ParserText ::by_kind::clear () YY_NOEXCEPT
+   ParserText ::by_kind::clear ()
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
@@ -273,13 +269,11 @@ namespace  TextFile  {
     return kind_;
   }
 
-
    ParserText ::symbol_kind_type
    ParserText ::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
-
 
 
   // by_state.
@@ -426,7 +420,7 @@ namespace  TextFile  {
    ParserText ::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
-    YY_USE (yyoutput);
+    YYUSE (yyoutput);
     if (yysym.empty ())
       yyo << "empty symbol";
     else
@@ -435,7 +429,7 @@ namespace  TextFile  {
         yyo << (yykind < YYNTOKENS ? "token" : "nterm")
             << ' ' << yysym.name () << " ("
             << yysym.location << ": ";
-        YY_USE (yykind);
+        YYUSE (yykind);
         yyo << ')';
       }
   }
@@ -461,7 +455,7 @@ namespace  TextFile  {
   }
 
   void
-   ParserText ::yypop_ (int n) YY_NOEXCEPT
+   ParserText ::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -504,13 +498,13 @@ namespace  TextFile  {
   }
 
   bool
-   ParserText ::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
+   ParserText ::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-   ParserText ::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
+   ParserText ::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
@@ -690,41 +684,41 @@ namespace  TextFile  {
   case 6: // word: TEXT
 #line 81 "frontend/grammars/parser_text.yy"
                       { scanner->add_text(yystack_[0].value.as < std::string > ());      }
-#line 694 "frontend/parser_text.cpp"
+#line 688 "frontend/parser_text.cpp"
     break;
 
   case 7: // word: NUMBER
 #line 82 "frontend/grammars/parser_text.yy"
                       { scanner->add_number(yystack_[0].value.as < std::string > ());    }
-#line 700 "frontend/parser_text.cpp"
+#line 694 "frontend/parser_text.cpp"
     break;
 
   case 8: // word: DELIMITER
 #line 83 "frontend/grammars/parser_text.yy"
                       { scanner->add_delimiter(yystack_[0].value.as < std::string > ()); }
-#line 706 "frontend/parser_text.cpp"
+#line 700 "frontend/parser_text.cpp"
     break;
 
   case 9: // word: SYMBOL
 #line 84 "frontend/grammars/parser_text.yy"
                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
-#line 712 "frontend/parser_text.cpp"
+#line 706 "frontend/parser_text.cpp"
     break;
 
   case 10: // word: FLOAT
 #line 85 "frontend/grammars/parser_text.yy"
                       { scanner->add_float(yystack_[0].value.as < std::string > ());     }
-#line 718 "frontend/parser_text.cpp"
+#line 712 "frontend/parser_text.cpp"
     break;
 
   case 11: // word: NEWLINE
 #line 86 "frontend/grammars/parser_text.yy"
                       { scanner->add_newline();   }
-#line 724 "frontend/parser_text.cpp"
+#line 718 "frontend/parser_text.cpp"
     break;
 
 
-#line 728 "frontend/parser_text.cpp"
+#line 722 "frontend/parser_text.cpp"
 
             default:
               break;
@@ -913,10 +907,6 @@ namespace  TextFile  {
 
 
 
-
-
-
-
   const signed char  ParserText ::yypact_ninf_ = -8;
 
   const signed char  ParserText ::yytable_ninf_ = -1;
@@ -944,7 +934,7 @@ namespace  TextFile  {
   const signed char
    ParserText ::yydefgoto_[] =
   {
-       0,     8,     9,    10
+      -1,     8,     9,    10
   };
 
   const signed char
@@ -1032,7 +1022,7 @@ namespace  TextFile  {
 #endif // YYDEBUG
 
    ParserText ::symbol_kind_type
-   ParserText ::yytranslate_ (int t) YY_NOEXCEPT
+   ParserText ::yytranslate_ (int t)
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -1074,19 +1064,20 @@ namespace  TextFile  {
     if (t <= 0)
       return symbol_kind::S_YYEOF;
     else if (t <= code_max)
-      return static_cast <symbol_kind_type> (translate_table[t]);
+      return YY_CAST (symbol_kind_type, translate_table[t]);
     else
       return symbol_kind::S_YYUNDEF;
   }
 
 #line 19 "frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1085 "frontend/parser_text.cpp"
+#line 1075 "frontend/parser_text.cpp"
 
 #line 89 "frontend/grammars/parser_text.yy"
 
 
 /* Error method */
 void TextFile::ParserText::error(const location_type &l, const std::string &err_message) {
-    Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
+    // Since this should never happen, there is no need for additional information
+    Error::error(Error::ErrorCode::INTERNAL, "Somehow input file was parsed as incorrect. Please report this.");
 }

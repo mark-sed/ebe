@@ -8,7 +8,7 @@
  */
 
 /* Since new constructs are used, newer version is needed */
-%require "3.8"
+%require "3.7"
 /* Use C++ parser */
 %skeleton "lalr1.cc"
 
@@ -40,6 +40,8 @@
 /* Includes */
 %code {
     // Include compiler to use error
+    #include <sstream>
+    #include <cctype>
     #include "compiler.hpp"
     #include "scanner_ebel.hpp"
 
@@ -50,6 +52,7 @@
 
 %define api.value.type variant
 %define parse.assert
+%define parse.error verbose
 
 /* Tokens and types */
 %token END 0 "end of file"
@@ -93,5 +96,8 @@ instruction : CONCAT NUMBER     { scanner->add_concat($2);       }
 
 /* Error method */
 void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_message) {
-    Error::error(Error::ErrorCode::SYNTACTIC, err_message.c_str());
+    std::stringstream mss;
+    mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
+        << " at line " << l.begin.line << ", column " << l.begin.column;
+    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str());
 }
