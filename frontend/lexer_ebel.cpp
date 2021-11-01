@@ -802,27 +802,29 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 69 "frontend/grammars/lexer_ebel.ll"
-{   /* Exit because of unknown instruction */
+{   /* Error because of unknown instruction, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown instruction '")+std::string(yytext)
-                                                 +std::string("'")).c_str());
+                                                 +std::string("'")).c_str(), nullptr, false);
+                                    error_found(Error::ErrorCode::SYNTACTIC);
                                 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 74 "frontend/grammars/lexer_ebel.ll"
-{   /* Exit because of unknwon symbol */
+#line 75 "frontend/grammars/lexer_ebel.ll"
+{   /* Error because of unknwon symbol, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown symbol '")+std::string(yytext)
-                                                 +std::string("'")).c_str());
+                                                 +std::string("'")).c_str(), nullptr, false);
+                                    error_found(Error::ErrorCode::SYNTACTIC);
                                 }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 80 "frontend/grammars/lexer_ebel.ll"
+#line 82 "frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 825 "frontend/lexer_ebel.cpp"
+#line 827 "frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1794,5 +1796,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 80 "frontend/grammars/lexer_ebel.ll"
+#line 82 "frontend/grammars/lexer_ebel.ll"
 

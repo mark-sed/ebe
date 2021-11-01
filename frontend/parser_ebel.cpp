@@ -657,50 +657,50 @@ namespace  EbelFile  {
         {
           switch (yyn)
             {
-  case 8: // instruction: CONCAT "number"
-#line 85 "frontend/grammars/parser_ebel.yy"
+  case 10: // instruction: CONCAT "number"
+#line 86 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_concat(yystack_[0].value.as < int > ());       }
 #line 664 "frontend/parser_ebel.cpp"
     break;
 
-  case 9: // instruction: DEL
-#line 86 "frontend/grammars/parser_ebel.yy"
+  case 11: // instruction: DEL
+#line 87 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_del();            }
 #line 670 "frontend/parser_ebel.cpp"
     break;
 
-  case 10: // instruction: LOOP
-#line 87 "frontend/grammars/parser_ebel.yy"
+  case 12: // instruction: LOOP
+#line 88 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_loop();           }
 #line 676 "frontend/parser_ebel.cpp"
     break;
 
-  case 11: // instruction: NOP
-#line 88 "frontend/grammars/parser_ebel.yy"
+  case 13: // instruction: NOP
+#line 89 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_nop();            }
 #line 682 "frontend/parser_ebel.cpp"
     break;
 
-  case 12: // instruction: PASS_WORDS
-#line 89 "frontend/grammars/parser_ebel.yy"
+  case 14: // instruction: "PASS words"
+#line 90 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_pass_words();     }
 #line 688 "frontend/parser_ebel.cpp"
     break;
 
-  case 13: // instruction: PASS_LINES
-#line 90 "frontend/grammars/parser_ebel.yy"
+  case 15: // instruction: "PASS lines"
+#line 91 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_pass_lines();     }
 #line 694 "frontend/parser_ebel.cpp"
     break;
 
-  case 14: // instruction: PASS_DOCUMENTS
-#line 91 "frontend/grammars/parser_ebel.yy"
+  case 16: // instruction: "PASS documents"
+#line 92 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_pass_documents(); }
 #line 700 "frontend/parser_ebel.cpp"
     break;
 
-  case 15: // instruction: SWAP "number"
-#line 92 "frontend/grammars/parser_ebel.yy"
+  case 17: // instruction: SWAP "number"
+#line 93 "frontend/grammars/parser_ebel.yy"
                                 { scanner->add_swap(yystack_[0].value.as < int > ());         }
 #line 706 "frontend/parser_ebel.cpp"
     break;
@@ -1055,71 +1055,74 @@ namespace  EbelFile  {
   }
 
 
-  const signed char  ParserEbel ::yypact_ninf_ = -3;
+  const signed char  ParserEbel ::yypact_ninf_ = -12;
 
   const signed char  ParserEbel ::yytable_ninf_ = -1;
 
   const signed char
    ParserEbel ::yypact_[] =
   {
-       0,    -3,    -3,    -2,    -3,    -3,    -3,    -3,    -3,    -3,
-       5,    18,     1,    -3,    -3,    -3,    -3,    -3,     9,    -3
+       0,   -12,   -11,   -12,    19,   -12,   -12,   -12,   -12,   -12,
+     -12,    22,     4,    21,   -12,   -12,   -12,   -12,   -12,   -12,
+      12,     8,   -12,   -12
   };
 
   const signed char
    ParserEbel ::yydefact_[] =
   {
-       0,     2,     5,     0,     9,    10,    11,    12,    13,    14,
-       0,     0,     0,     4,     8,    15,     1,     3,     6,     7
+       0,     2,     0,     7,     0,    11,    12,    13,    14,    15,
+      16,     0,     0,     0,     6,     5,    10,    17,     1,     3,
+       0,     8,     4,     9
   };
 
   const signed char
    ParserEbel ::yypgoto_[] =
   {
-      -3,    -3,    -3,     6
+     -12,   -12,   -12,     6
   };
 
   const signed char
    ParserEbel ::yydefgoto_[] =
   {
-      -1,    11,    12,    13
+      -1,    12,    13,    14
   };
 
   const signed char
    ParserEbel ::yytable_[] =
   {
-       1,    17,    14,     2,    18,     3,     4,     5,     6,    15,
-       7,     8,     9,    10,     3,     4,     5,     6,    16,     7,
-       8,     9,    10,     0,    19
+       1,     2,    15,     3,    18,     4,     5,     6,     7,     8,
+       9,    10,    11,     4,     5,     6,     7,     8,     9,    10,
+      11,    19,    20,    16,    21,    22,    17,    23
   };
 
   const signed char
    ParserEbel ::yycheck_[] =
   {
-       0,     0,     4,     3,     3,     5,     6,     7,     8,     4,
-      10,    11,    12,    13,     5,     6,     7,     8,     0,    10,
-      11,    12,    13,    -1,    18
+       0,     1,    13,     3,     0,     5,     6,     7,     8,     9,
+      10,    11,    12,     5,     6,     7,     8,     9,    10,    11,
+      12,     0,     1,     4,     3,    13,     4,    21
   };
 
   const signed char
    ParserEbel ::yystos_[] =
   {
-       0,     0,     3,     5,     6,     7,     8,    10,    11,    12,
-      13,    15,    16,    17,     4,     4,     0,     0,     3,    17
+       0,     0,     1,     3,     5,     6,     7,     8,     9,    10,
+      11,    12,    15,    16,    17,    13,     4,     4,     0,     0,
+       1,     3,    13,    17
   };
 
   const signed char
    ParserEbel ::yyr1_[] =
   {
-       0,    14,    15,    15,    16,    16,    16,    16,    17,    17,
-      17,    17,    17,    17,    17,    17
+       0,    14,    15,    15,    15,    15,    16,    16,    16,    16,
+      17,    17,    17,    17,    17,    17,    17,    17
   };
 
   const signed char
    ParserEbel ::yyr2_[] =
   {
-       0,     2,     1,     2,     1,     1,     2,     3,     2,     1,
-       1,     1,     1,     1,     1,     2
+       0,     2,     1,     2,     3,     2,     1,     1,     2,     3,
+       2,     1,     1,     1,     1,     1,     1,     2
   };
 
 
@@ -1130,9 +1133,9 @@ namespace  EbelFile  {
   const  ParserEbel ::yytname_[] =
   {
   "\"end of file\"", "error", "\"invalid token\"", "NEWLINE",
-  "\"number\"", "CONCAT", "DEL", "LOOP", "NOP", "PASS", "PASS_WORDS",
-  "PASS_LINES", "PASS_DOCUMENTS", "SWAP", "$accept", "program", "code",
-  "instruction", YY_NULLPTR
+  "\"number\"", "CONCAT", "DEL", "LOOP", "NOP", "\"PASS words\"",
+  "\"PASS lines\"", "\"PASS documents\"", "SWAP", "'\\n'", "$accept",
+  "program", "code", "instruction", YY_NULLPTR
   };
 #endif
 
@@ -1141,8 +1144,8 @@ namespace  EbelFile  {
   const signed char
    ParserEbel ::yyrline_[] =
   {
-       0,    75,    75,    76,    79,    80,    81,    82,    85,    86,
-      87,    88,    89,    90,    91,    92
+       0,    74,    74,    75,    76,    77,    80,    81,    82,    83,
+      86,    87,    88,    89,    90,    91,    92,    93
   };
 
   void
@@ -1182,7 +1185,7 @@ namespace  EbelFile  {
     translate_table[] =
     {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+      13,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1207,10 +1210,10 @@ namespace  EbelFile  {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13
+       5,     6,     7,     8,     9,    10,    11,    12
     };
     // Last valid token kind.
-    const int code_max = 268;
+    const int code_max = 267;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -1222,9 +1225,9 @@ namespace  EbelFile  {
 
 #line 17 "frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1226 "frontend/parser_ebel.cpp"
+#line 1229 "frontend/parser_ebel.cpp"
 
-#line 95 "frontend/grammars/parser_ebel.yy"
+#line 96 "frontend/grammars/parser_ebel.yy"
 
 
 /* Error method */
@@ -1232,5 +1235,6 @@ void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_
     std::stringstream mss;
     mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
         << " at line " << scanner->loc->begin.line << ", column " << scanner->loc->begin.column;
-    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str());
+    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str(), nullptr, false);
+    scanner->error_found(Error::ErrorCode::SYNTACTIC);
 }

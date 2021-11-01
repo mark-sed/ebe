@@ -62,10 +62,9 @@
 %token DEL
 %token LOOP
 %token NOP
-%token PASS
-%token PASS_WORDS
-%token PASS_LINES
-%token PASS_DOCUMENTS
+%token PASS_WORDS "PASS words"
+%token PASS_LINES "PASS lines"
+%token PASS_DOCUMENTS "PASS documents"
 %token SWAP
 
 %locations
@@ -74,6 +73,8 @@
 
 program     : END 
             | code END
+            | code error '\n'
+            | error '\n'
             ;
 
 code        : instruction
@@ -99,5 +100,6 @@ void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_
     std::stringstream mss;
     mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
         << " at line " << scanner->loc->begin.line << ", column " << scanner->loc->begin.column;
-    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str());
+    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str(), nullptr, false);
+    scanner->error_found(Error::ErrorCode::SYNTACTIC);
 }

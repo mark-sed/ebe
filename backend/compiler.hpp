@@ -50,11 +50,21 @@ namespace Error {
      * @param msg Info message to be printed for the user
      * @param exc Exception that might hava accompanied this error or nullptr
      */
-    [[noreturn]] void error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc=nullptr);
+    void error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc=nullptr, bool exit=true);
 
+    /**
+     * Prints warning to std::cerr
+     * @param msg Message to print
+     */ 
     inline void warning(const char *msg) {
         std::cerr << "WARNING: " << msg << std::endl;
     }
+
+    /**
+     * Exits program with passed in code
+     * @param code Error code to exit with
+     */ 
+    [[noreturn]] void exit(Error::ErrorCode code);
 }
 
 /**
@@ -80,8 +90,8 @@ protected:
      * @param msg Message to be printed to the user
      * @param exc Exception that might hava accompanied this error or nullptr
      */
-    [[noreturn]] void error(Error::ErrorCode code, const char *file, long line, 
-                            long column, const char *msg, Exception::EbeException *exc=nullptr);
+    void error(Error::ErrorCode code, const char *file, long line, long column, const char *msg, 
+                Exception::EbeException *exc=nullptr, bool exit=true);
 };
 
 #endif//_COMPILER_HPP_

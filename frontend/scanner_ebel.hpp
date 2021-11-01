@@ -36,6 +36,12 @@ private:
     IR::EbelNode *current_parse;          ///< Holds program that is currently being parsed during process method
     IR::Pass *current_pass;               ///< Holds line currently being parsed during process method
     const char *current_file_name;        ///< File currently being parsed
+    /**
+     * Indicates that an error was found by lexer or parser.
+     * This is done this way to let all errors be discovered in one parse.
+     * @note This variable is set to true by error method
+     */ 
+    Error::ErrorCode error_code;
 
     /** If current pass is nullptr allocates a new one */
     void touch_pass();
@@ -62,6 +68,15 @@ public:
     void add_pass_documents();
     void add_swap(int offset);
     /** @} */
+
+    /**
+     * Should be called only by parser and lexer whan an error is found.
+     * If this method was called already with non zero code than the code won't be changed,
+     * meaning the code saves only the first non zero error code.
+     * @param code Error type that was found and printed
+     * @note Passing in NO_ERROR won't change the error to NO_ERROR
+     */ 
+    void error_found(Error::ErrorCode code);
 
     IR::EbelNode *process(std::istream *text, const char *file_name);
 };

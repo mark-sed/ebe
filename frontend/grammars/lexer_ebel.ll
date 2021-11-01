@@ -65,15 +65,17 @@ SPACE   [ \t]
                                     loc->lines();
                                     return token::NEWLINE;
                                 }
-[a-zA-Z0-9_]+                   {   /* Exit because of unknown instruction */
+[a-zA-Z0-9_]+                   {   /* Error because of unknown instruction, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown instruction '")+std::string(yytext)
-                                                 +std::string("'")).c_str());
+                                                 +std::string("'")).c_str(), nullptr, false);
+                                    error_found(Error::ErrorCode::SYNTACTIC);
                                 }
-.                               {   /* Exit because of unknwon symbol */
+.                               {   /* Error because of unknwon symbol, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown symbol '")+std::string(yytext)
-                                                 +std::string("'")).c_str());
+                                                 +std::string("'")).c_str(), nullptr, false);
+                                    error_found(Error::ErrorCode::SYNTACTIC);
                                 }
 
 %%

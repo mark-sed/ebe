@@ -18,12 +18,21 @@
 #include "instruction.hpp"
 #include "scanner.hpp"
 #include "ir.hpp"
+#include "logging.hpp"
 
 using namespace EbelFile;
 
 ScannerEbel::ScannerEbel() : Compiler("Ebel scanner"), yyFlexLexer() {
+    this->error_code = Error::ErrorCode::NO_ERROR;
     loc = new EbelFile::ParserEbel::location_type();
 }
+
+void ScannerEbel::error_found(Error::ErrorCode code) {
+    if(this->error_code == Error::ErrorCode::NO_ERROR){
+        this->error_code = code;
+    }
+}
+
 
 IR::EbelNode *ScannerEbel::process(std::istream *text, const char *file_name) {
     // Set lexer to new stream
@@ -36,9 +45,14 @@ IR::EbelNode *ScannerEbel::process(std::istream *text, const char *file_name) {
 
     auto parser = new EbelFile::ParserEbel(this);
 
-    if(parser->parse() != 0){
-        this->error(Error::ErrorCode::SYNTACTIC, file_name, 0, 0, 
-                    (std::string("Parsing failed for file ")+std::string(file_name)).c_str());
+    LOGMAX("Started parser for " << file_name);
+    // Start parsing
+    parser->parse();
+
+    // Check if parser or lexer found an error
+    if(this->error_code != Error::ErrorCode::NO_ERROR){
+        LOG1("Error while parsing, exitting");
+        Error::exit(this->error_code);
     }
 
     if(this->current_pass != nullptr) {
@@ -69,7 +83,7 @@ void ScannerEbel::add_concat(int offset) {
     // Check if pass is lines
     if(std::string(this->current_pass->get_name()) != std::string("Lines")){
         this->error(Error::SEMANTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
-                    "CONCAT can be used only in PASS lines");
+                    "CONCAT can be used only in PASS lines", nullptr, false);
     }
     this->current_pass->push_back(new Inst::CONCAT(offset));
 }

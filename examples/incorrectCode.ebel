@@ -1,0 +1,15 @@
+PASS words
+	 NOP
+	SWAP CONCAT 3
+			 # Comments are fine
+	CONCAT 5 # CONCAT in words pass not
++
+	SWAP 333333 # Also fine
+	SWAP 0008   # Leading zeros are fine as well
+
+	NOP NOP		# Instructions have to be separated by new line
+	NOPe
+	LooP
+PASS word:	# Singular is fine, but : is not
+PASS lin
+
