@@ -60,10 +60,29 @@ TEST(Scanner, ScannerText) {
 TEST(CodeScanner, ScannerEbel) {
     auto s = new EbelFile::ScannerEbel();
 
+    std::istringstream corr_code(" \
+        PASS    documents\n\
+            NOP\n\
+            SWAP 0001  # Leading zeros and comments are allowd\n\
+            \n\
+        # Comment again\n\
+        PASS word # Singular is allowed\n\
+        pass lINEs\n\
+        LooP\n\
+            CONCAT 3    # Concat is in lines, so its fine\n\
+    ");
+
+    auto program = s->process(&corr_code, "");
+    // Test for 3 passes
+    EXPECT_EQ(true, program->nodes->size() == 3);
+
     // Test parsing incorrect code
-    std::istringstream in_text("unknown");
-    /*EXPECT_EXIT(s->process(&in_text, ""), testing::ExitedWithCode(Error::ErrorCode::SYNTACTIC), 
-                "Correct syntax error exit");*/
+    std::istringstream incor_code1("unknown");
+    EXPECT_EXIT(s->process(&incor_code1, ""), testing::ExitedWithCode(Error::ErrorCode::SYNTACTIC), "");
+
+    // Test instruction context check
+    std::istringstream incor_code2("PASS words\nCONCAT 2\n");
+    EXPECT_EXIT(s->process(&incor_code2, ""), testing::ExitedWithCode(Error::ErrorCode::SEMANTIC), "");
 
     delete s;
 }

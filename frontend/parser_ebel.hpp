@@ -702,7 +702,7 @@ namespace  EbelFile  {
     END = 0,                       // "end of file"
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
-    NEWLINE = 258,                 // NEWLINE
+    NEWLINE = 258,                 // "new line"
     NUMBER = 259,                  // "number"
     CONCAT = 260,                  // CONCAT
     DEL = 261,                     // DEL
@@ -733,7 +733,7 @@ namespace  EbelFile  {
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
-        S_NEWLINE = 3,                           // NEWLINE
+        S_NEWLINE = 3,                           // "new line"
         S_NUMBER = 4,                            // "number"
         S_CONCAT = 5,                            // CONCAT
         S_DEL = 6,                               // DEL

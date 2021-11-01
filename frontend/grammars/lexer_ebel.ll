@@ -60,6 +60,12 @@ SPACE   [ \t]
 "PASS"{SPACE}+"WORD"[S]?        {   /* Pass words     */ return token::PASS_WORDS;     }
 "PASS"{SPACE}+"LINE"[S]?        {   /* Pass lines     */ return token::PASS_LINES;     }
 "PASS"{SPACE}+"DOCUMENT"[S]?    {   /* Pass documents */ return token::PASS_DOCUMENTS; }
+"PASS"                          {   /* Error: Pass without pass name */
+                                    Error::error(Error::ErrorCode::SYNTACTIC, 
+                                                 "Missing or incorrect pass name (allowed are 'words', 'lines' and 'documents')",
+                                                 nullptr, false);
+                                    error_found(Error::ErrorCode::SYNTACTIC);
+                                }
 "SWAP"{SPACE}+                  {   return token::SWAP;   }
 \n                              {
                                     loc->lines();

@@ -84,6 +84,7 @@ void ScannerEbel::add_concat(int offset) {
     if(std::string(this->current_pass->get_name()) != std::string("Lines")){
         this->error(Error::SEMANTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
                     "CONCAT can be used only in PASS lines", nullptr, false);
+        this->error_found(Error::SEMANTIC);
     }
     this->current_pass->push_back(new Inst::CONCAT(offset));
 }

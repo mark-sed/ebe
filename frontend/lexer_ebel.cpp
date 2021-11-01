@@ -358,8 +358,8 @@ int yyFlexLexer::yylex()
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 15
-#define YY_END_OF_BUFFER 16
+#define YY_NUM_RULES 16
+#define YY_END_OF_BUFFER 17
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -369,10 +369,10 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[61] =
     {   0,
-        0,    0,   16,   14,    2,   12,    1,    3,   13,   13,
-       13,   13,   13,   13,   13,    1,    1,    3,   13,   13,
-       13,   13,   13,   13,   13,   13,    5,   13,    7,   13,
-       13,   13,    6,   13,   13,   13,    0,   11,   13,    0,
+        0,    0,   17,   15,    2,   13,    1,    3,   14,   14,
+       14,   14,   14,   14,   14,    1,    1,    3,   14,   14,
+       14,   14,   14,   14,   14,   14,    5,   14,    7,   14,
+       14,   14,    6,   11,   14,   14,    0,   12,   14,    0,
         0,    0,    4,    0,    0,    0,    0,    0,    0,    0,
         9,    8,    0,    9,    8,    0,    0,   10,   10,    0
     } ;
@@ -484,9 +484,9 @@ static const flex_int16_t yy_chk[162] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[16] =
+static const flex_int32_t yy_rule_can_match_eol[17] =
     {   0,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,     };
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,     };
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
@@ -788,20 +788,30 @@ YY_RULE_SETUP
 case 11:
 YY_RULE_SETUP
 #line 64 "frontend/grammars/lexer_ebel.ll"
-{   return token::SWAP;   }
+{   /* Error: Pass without pass name */
+                                    Error::error(Error::ErrorCode::SYNTACTIC, 
+                                                 "Missing or incorrect pass name (allowed are 'words', 'lines' and 'documents')",
+                                                 nullptr, false);
+                                    error_found(Error::ErrorCode::SYNTACTIC);
+                                }
 	YY_BREAK
 case 12:
-/* rule 12 can match eol */
 YY_RULE_SETUP
-#line 65 "frontend/grammars/lexer_ebel.ll"
+#line 70 "frontend/grammars/lexer_ebel.ll"
+{   return token::SWAP;   }
+	YY_BREAK
+case 13:
+/* rule 13 can match eol */
+YY_RULE_SETUP
+#line 71 "frontend/grammars/lexer_ebel.ll"
 {
                                     loc->lines();
                                     return token::NEWLINE;
                                 }
 	YY_BREAK
-case 13:
+case 14:
 YY_RULE_SETUP
-#line 69 "frontend/grammars/lexer_ebel.ll"
+#line 75 "frontend/grammars/lexer_ebel.ll"
 {   /* Error because of unknown instruction, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown instruction '")+std::string(yytext)
@@ -809,9 +819,9 @@ YY_RULE_SETUP
                                     error_found(Error::ErrorCode::SYNTACTIC);
                                 }
 	YY_BREAK
-case 14:
+case 15:
 YY_RULE_SETUP
-#line 75 "frontend/grammars/lexer_ebel.ll"
+#line 81 "frontend/grammars/lexer_ebel.ll"
 {   /* Error because of unknwon symbol, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown symbol '")+std::string(yytext)
@@ -819,12 +829,12 @@ YY_RULE_SETUP
                                     error_found(Error::ErrorCode::SYNTACTIC);
                                 }
 	YY_BREAK
-case 15:
+case 16:
 YY_RULE_SETUP
-#line 82 "frontend/grammars/lexer_ebel.ll"
+#line 88 "frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 827 "frontend/lexer_ebel.cpp"
+#line 837 "frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1796,5 +1806,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 82 "frontend/grammars/lexer_ebel.ll"
+#line 88 "frontend/grammars/lexer_ebel.ll"
 

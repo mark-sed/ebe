@@ -1132,7 +1132,7 @@ namespace  EbelFile  {
   const char*
   const  ParserEbel ::yytname_[] =
   {
-  "\"end of file\"", "error", "\"invalid token\"", "NEWLINE",
+  "\"end of file\"", "error", "\"invalid token\"", "\"new line\"",
   "\"number\"", "CONCAT", "DEL", "LOOP", "NOP", "\"PASS words\"",
   "\"PASS lines\"", "\"PASS documents\"", "SWAP", "'\\n'", "$accept",
   "program", "code", "instruction", YY_NULLPTR

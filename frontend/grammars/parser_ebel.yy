@@ -56,7 +56,7 @@
 
 /* Tokens and types */
 %token END 0 "end of file"
-%token NEWLINE
+%token NEWLINE "new line"
 %token <int> NUMBER "number"
 %token CONCAT
 %token DEL
