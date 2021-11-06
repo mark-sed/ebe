@@ -1,6 +1,6 @@
-#line 1 "frontend/lexer_ebel.cpp"
+#line 2 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
-#line 3 "frontend/lexer_ebel.cpp"
+#line 4 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -495,7 +495,7 @@ static const flex_int32_t yy_rule_can_match_eol[17] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "frontend/grammars/lexer_ebel.ll"
+#line 1 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 /**
  * @author Marek Sedlacek
  * @date October 2021
@@ -503,7 +503,7 @@ static const flex_int32_t yy_rule_can_match_eol[17] =
  * @brief Ebel code lexems
  * Lexer file for flex tool for ebel source code.
  */
-#line 10 "frontend/grammars/lexer_ebel.ll"
+#line 10 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
     
 #include <string>
 #include "scanner_ebel.hpp"
@@ -521,11 +521,11 @@ using token = EbelFile::ParserEbel::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 524 "frontend/lexer_ebel.cpp"
+#line 525 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 /* Define what scanner class is used */
 /* Ebel code is caseless, so case can be ignored */
 /* Macros for tokens */
-#line 528 "frontend/lexer_ebel.cpp"
+#line 529 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
 #define INITIAL 0
 
@@ -657,14 +657,14 @@ YY_DECL
 		}
 
 	{
-#line 44 "frontend/grammars/lexer_ebel.ll"
+#line 44 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 
 
-#line 47 "frontend/grammars/lexer_ebel.ll"
+#line 47 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
     yylval = lval;    
 
 
-#line 667 "frontend/lexer_ebel.cpp"
+#line 668 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -733,17 +733,17 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 50 "frontend/grammars/lexer_ebel.ll"
+#line 50 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Line comment */       ; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 51 "frontend/grammars/lexer_ebel.ll"
+#line 51 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Spaces are ignored */ ; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 52 "frontend/grammars/lexer_ebel.ll"
+#line 52 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Integer */
                                     // TODO: Change to unsigned int and use Cast::to
                                     yylval->emplace<int>(atoi(yytext));
@@ -752,42 +752,42 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 57 "frontend/grammars/lexer_ebel.ll"
+#line 57 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   return token::CONCAT; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 58 "frontend/grammars/lexer_ebel.ll"
+#line 58 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   return token::DEL;    }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 59 "frontend/grammars/lexer_ebel.ll"
+#line 59 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   return token::LOOP;   }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 60 "frontend/grammars/lexer_ebel.ll"
+#line 60 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   return token::NOP;    }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 61 "frontend/grammars/lexer_ebel.ll"
+#line 61 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Pass words     */ return token::PASS_WORDS;     }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 62 "frontend/grammars/lexer_ebel.ll"
+#line 62 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Pass lines     */ return token::PASS_LINES;     }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 63 "frontend/grammars/lexer_ebel.ll"
+#line 63 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Pass documents */ return token::PASS_DOCUMENTS; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 64 "frontend/grammars/lexer_ebel.ll"
+#line 64 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Error: Pass without pass name */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  "Missing or incorrect pass name (allowed are 'words', 'lines' and 'documents')",
@@ -797,13 +797,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 70 "frontend/grammars/lexer_ebel.ll"
+#line 70 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   return token::SWAP;   }
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 71 "frontend/grammars/lexer_ebel.ll"
+#line 71 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {
                                     loc->lines();
                                     return token::NEWLINE;
@@ -811,7 +811,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 75 "frontend/grammars/lexer_ebel.ll"
+#line 75 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Error because of unknown instruction, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown instruction '")+std::string(yytext)
@@ -821,7 +821,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 81 "frontend/grammars/lexer_ebel.ll"
+#line 81 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Error because of unknwon symbol, but don't exit yet */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  (std::string("Unknown symbol '")+std::string(yytext)
@@ -831,10 +831,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 88 "frontend/grammars/lexer_ebel.ll"
+#line 88 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 837 "frontend/lexer_ebel.cpp"
+#line 838 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1806,5 +1806,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 88 "frontend/grammars/lexer_ebel.ll"
+#line 88 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 

@@ -2,9 +2,9 @@
 #define eeHEADER_H 1
 #define eeIN_HEADER 1
 
-#line 5 "frontend/lexer_ebel.hpp"
+#line 6 "frontend/lexer_ebel.hpp"
 
-#line 7 "frontend/lexer_ebel.hpp"
+#line 8 "frontend/lexer_ebel.hpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -444,9 +444,9 @@ static int yy_flex_strlen ( const char * );
 #undef yyTABLES_NAME
 #endif
 
-#line 88 "frontend/grammars/lexer_ebel.ll"
+#line 88 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 
 
-#line 450 "frontend/lexer_ebel.hpp"
+#line 451 "frontend/lexer_ebel.hpp"
 #undef eeIN_HEADER
 #endif /* eeHEADER_H */

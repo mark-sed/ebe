@@ -1,6 +1,6 @@
-#line 1 "frontend/lexer_text.cpp"
+#line 2 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
-#line 3 "frontend/lexer_text.cpp"
+#line 4 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -406,7 +406,7 @@ static const flex_int16_t yy_chk[31] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "frontend/grammars/lexer_text.ll"
+#line 1 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 /**
  * @author Marek Sedlacek
  * @date October 2021
@@ -414,7 +414,7 @@ static const flex_int16_t yy_chk[31] =
  * @brief Text file lexems
  * Lexer file for flex tool for text file format.
  */
-#line 10 "frontend/grammars/lexer_text.ll"
+#line 10 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 
 #include <string>
 #include "scanner_text.hpp"
@@ -434,11 +434,11 @@ using token = TextFile::ParserText::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 437 "frontend/lexer_text.cpp"
+#line 438 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 /* Define what scanner class is used */
 /* Macros for symbol types */
 /* TODO: Add special characters from all possible languages */
-#line 441 "frontend/lexer_text.cpp"
+#line 442 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 #define INITIAL 0
 
@@ -570,14 +570,14 @@ YY_DECL
 		}
 
 	{
-#line 45 "frontend/grammars/lexer_text.ll"
+#line 45 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 
 
-#line 48 "frontend/grammars/lexer_text.ll"
+#line 48 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
     yylval = lval;    
 
 
-#line 580 "frontend/lexer_text.cpp"
+#line 581 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -636,7 +636,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 51 "frontend/grammars/lexer_text.ll"
+#line 51 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Delimiters
                         yylval->build<std::string>(yytext);
                         return token::DELIMITER;
@@ -644,7 +644,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 56 "frontend/grammars/lexer_text.ll"
+#line 56 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Float in scientific notation
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
@@ -652,7 +652,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 61 "frontend/grammars/lexer_text.ll"
+#line 61 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Float
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
@@ -660,7 +660,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 66 "frontend/grammars/lexer_text.ll"
+#line 66 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Number
                         yylval->build<std::string>(yytext); 
                         return token::NUMBER; 
@@ -668,7 +668,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 71 "frontend/grammars/lexer_text.ll"
+#line 71 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Text
                         yylval->build<std::string>(yytext);
                         return token::TEXT;
@@ -677,7 +677,7 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 76 "frontend/grammars/lexer_text.ll"
+#line 76 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // New line
                         loc->lines();
                         return token::NEWLINE;
@@ -685,7 +685,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 81 "frontend/grammars/lexer_text.ll"
+#line 81 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Anything else is symbol
                         yylval->build<std::string>(yytext); 
                         return token::SYMBOL; 
@@ -693,10 +693,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 85 "frontend/grammars/lexer_text.ll"
+#line 85 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 699 "frontend/lexer_text.cpp"
+#line 700 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1659,6 +1659,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 85 "frontend/grammars/lexer_text.ll"
+#line 85 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 
 

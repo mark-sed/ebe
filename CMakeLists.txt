@@ -91,6 +91,16 @@ else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
 
-# TODO:
-# bison -d frontend/grammars/parser_text.yy -o frontend/parser_text.cpp
-# flex --outfile=frontend/lexer_text.cpp --header-file=frontend/lexer_text.hpp frontend/grammars/lexer_text.ll
+# Rebuilding lexer and parser when files don't exist and flex and bison are present
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
+if(BISON_FOUND)
+    if(FLEX_FOUND)
+        bison_target(parser_text ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/parser_text.yy ${CMAKE_CURRENT_SOURCE_DIR}/frontend/parser_text.cpp)
+        flex_target(lexer_text ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/lexer_text.ll ${CMAKE_CURRENT_SOURCE_DIR}/frontend/lexer_text.cpp COMPILE_FLAGS "--header-file=frontend/lexer_text.hpp")
+        ADD_FLEX_BISON_DEPENDENCY(lexer_text parser_text)
+        bison_target(parser_ebel ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/parser_ebel.yy ${CMAKE_CURRENT_SOURCE_DIR}/frontend/parser_ebel.cpp COMPILE_FLAGS "-p ee")
+        flex_target(lexer_ebel ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/lexer_ebel.ll ${CMAKE_CURRENT_SOURCE_DIR}/frontend/lexer_ebel.cpp COMPILE_FLAGS "-P ee --header-file=frontend/lexer_ebel.hpp")
+        ADD_FLEX_BISON_DEPENDENCY(lexer_ebel parser_ebel)
+    endif(FLEX_FOUND)
+endif (BISON_FOUND)

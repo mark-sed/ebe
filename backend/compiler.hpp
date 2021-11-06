@@ -49,6 +49,7 @@ namespace Error {
      * @param code Code of an error that occured
      * @param msg Info message to be printed for the user
      * @param exc Exception that might hava accompanied this error or nullptr
+     * @param exit If true (default), then after the message is printed program exits with code
      */
     void error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc=nullptr, bool exit=true);
 
@@ -89,6 +90,7 @@ protected:
      * @param column Column at which the error occured
      * @param msg Message to be printed to the user
      * @param exc Exception that might hava accompanied this error or nullptr
+     * @param exit If true (default), then after the message is printed program exits with code
      */
     void error(Error::ErrorCode code, const char *file, long line, long column, const char *msg, 
                 Exception::EbeException *exc=nullptr, bool exit=true);
