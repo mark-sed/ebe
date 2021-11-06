@@ -146,12 +146,20 @@ namespace IR {
         PassEnvironment() : loop_inst{nullptr}, reprocess_obj{false} {};
     };
 
+    enum class PassType {
+        EXPRESSION,
+        WORDS,
+        LINES,
+        DOCUMENTS
+    };
+
     /**
      * Abstract class for all passes
      */
     class Pass {
     public:
         const char *pass_name;                       ///< Name of the pass (needed for error printing)
+        PassType type;                               ///< Pass type ID
         std::vector<Inst::Instruction *> *pipeline;  ///< Pipeline of instructions
         PassEnvironment env;
     private:
@@ -161,7 +169,7 @@ namespace IR {
          * Constructor
          * @param pass_name Name of the pass that inherits this class
          */
-        Pass(const char *pass_name);
+        Pass(PassType type);
     public:
         /** Destructor */
         virtual ~Pass();
@@ -192,6 +200,20 @@ namespace IR {
          * Getter for pass name
          */ 
         const char *get_name() { return this->pass_name; }
+
+        /** Getter for pass type */
+        PassType get_type() { return this->type; }
+    };
+
+    /**
+     * Pass over current word
+     */
+    class PassExpression : public Pass {
+    public:
+        /** Constructor */
+        PassExpression();
+
+        void process(IR::Node *text) override;
     };
 
     /**

@@ -175,7 +175,19 @@ std::string Node::output(){
     return out.str();
 }
 
-Pass::Pass(const char *pass_name) : pass_name{pass_name}, env{} {
+Pass::Pass(PassType type) : type{type}, env{} {
+    if(type == PassType::EXPRESSION){
+        this->pass_name = "Expression";
+    }
+    else if(type == PassType::WORDS) {
+        this->pass_name = "Words";
+    }
+    else if(type == PassType::LINES) {
+        this->pass_name = "Lines";
+    }
+    else {
+        this->pass_name = "Documents";
+    }
     this->pipeline = new std::vector<Inst::Instruction *>();
 }
 
@@ -194,7 +206,15 @@ void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
     this->pipeline = pipeline;
 }
 
-PassWords::PassWords() : Pass("Words") {
+PassExpression::PassExpression() : Pass(PassType::EXPRESSION) {
+
+}
+
+void PassExpression::process(IR::Node *text) {
+    // TODO: 
+}
+
+PassWords::PassWords() : Pass(PassType::WORDS) {
 
 }
 
@@ -251,7 +271,7 @@ void PassWords::process(IR::Node *text) {
     LOG1("Word pass processing done");
 }
 
-PassLines::PassLines() : Pass("Lines") {
+PassLines::PassLines() : Pass(PassType::LINES) {
 
 }
 
@@ -304,7 +324,7 @@ void PassLines::process(IR::Node *text) {
     LOG1("Processing done");
 }
 
-PassDocuments::PassDocuments() : Pass("Documents") {
+PassDocuments::PassDocuments() : Pass(PassType::DOCUMENTS) {
     Error::warning("Document pass is not yet implemented");
 }
 

@@ -720,10 +720,11 @@ namespace  EbelFile  {
     DEL = 261,                     // DEL
     LOOP = 262,                    // LOOP
     NOP = 263,                     // NOP
-    PASS_WORDS = 264,              // "PASS words"
-    PASS_LINES = 265,              // "PASS lines"
-    PASS_DOCUMENTS = 266,          // "PASS documents"
-    SWAP = 267                     // SWAP
+    PASS_EXPRESSION = 264,         // "PASS expression"
+    PASS_WORDS = 265,              // "PASS words"
+    PASS_LINES = 266,              // "PASS lines"
+    PASS_DOCUMENTS = 267,          // "PASS documents"
+    SWAP = 268                     // SWAP
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -740,7 +741,7 @@ namespace  EbelFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 14, ///< Number of tokens.
+        YYNTOKENS = 15, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -751,15 +752,16 @@ namespace  EbelFile  {
         S_DEL = 6,                               // DEL
         S_LOOP = 7,                              // LOOP
         S_NOP = 8,                               // NOP
-        S_PASS_WORDS = 9,                        // "PASS words"
-        S_PASS_LINES = 10,                       // "PASS lines"
-        S_PASS_DOCUMENTS = 11,                   // "PASS documents"
-        S_SWAP = 12,                             // SWAP
-        S_13_n_ = 13,                            // '\n'
-        S_YYACCEPT = 14,                         // $accept
-        S_program = 15,                          // program
-        S_code = 16,                             // code
-        S_instruction = 17                       // instruction
+        S_PASS_EXPRESSION = 9,                   // "PASS expression"
+        S_PASS_WORDS = 10,                       // "PASS words"
+        S_PASS_LINES = 11,                       // "PASS lines"
+        S_PASS_DOCUMENTS = 12,                   // "PASS documents"
+        S_SWAP = 13,                             // SWAP
+        S_14_n_ = 14,                            // '\n'
+        S_YYACCEPT = 15,                         // $accept
+        S_program = 16,                          // program
+        S_code = 17,                             // code
+        S_instruction = 18                       // instruction
       };
     };
 
@@ -1166,6 +1168,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_PASS_EXPRESSION (location_type l)
+      {
+        return symbol_type (token::PASS_EXPRESSION, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_PASS_EXPRESSION (const location_type& l)
+      {
+        return symbol_type (token::PASS_EXPRESSION, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_PASS_WORDS (location_type l)
       {
         return symbol_type (token::PASS_WORDS, std::move (l));
@@ -1553,9 +1570,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 27,     ///< Last index in yytable_.
+      yylast_ = 29,     ///< Last index in yytable_.
       yynnts_ = 4,  ///< Number of nonterminal symbols.
-      yyfinal_ = 18 ///< Termination state number.
+      yyfinal_ = 19 ///< Termination state number.
     };
 
 
@@ -1567,7 +1584,7 @@ switch (yykind)
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1571 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 1588 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 
 

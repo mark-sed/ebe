@@ -36,6 +36,4 @@ public:
 };
 
 
-
-
 #endif//_TREE_HPP_

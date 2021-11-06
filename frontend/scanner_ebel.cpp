@@ -81,7 +81,7 @@ void ScannerEbel::touch_pass() {
 void ScannerEbel::add_concat(int offset) {
     this->touch_pass();
     // Check if pass is lines
-    if(std::string(this->current_pass->get_name()) != std::string("Lines")){
+    if(this->current_pass->get_type() != IR::PassType::LINES){
         this->error(Error::SEMANTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
                     "CONCAT can be used only in PASS lines", nullptr, false);
         this->error_found(Error::SEMANTIC);
@@ -102,6 +102,13 @@ void ScannerEbel::add_loop() {
 void ScannerEbel::add_nop() {
     this->touch_pass();
     this->current_pass->push_back(new Inst::NOP());
+}
+
+void ScannerEbel::add_pass_expression() {
+    if(this->current_pass) {
+        this->current_parse->push_back(this->current_pass);
+    }
+    this->current_pass = new IR::PassExpression();
 }
 
 void ScannerEbel::add_pass_words() {

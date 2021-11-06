@@ -62,6 +62,7 @@
 %token DEL
 %token LOOP
 %token NOP
+%token PASS_EXPRESSION "PASS expression"
 %token PASS_WORDS "PASS words"
 %token PASS_LINES "PASS lines"
 %token PASS_DOCUMENTS "PASS documents"
@@ -83,14 +84,15 @@ code        : instruction
             | code NEWLINE instruction
             ;
 
-instruction : CONCAT NUMBER     { scanner->add_concat($2);       }
-            | DEL               { scanner->add_del();            }
-            | LOOP              { scanner->add_loop();           }
-            | NOP               { scanner->add_nop();            }
-            | PASS_WORDS        { scanner->add_pass_words();     }
-            | PASS_LINES        { scanner->add_pass_lines();     }
-            | PASS_DOCUMENTS    { scanner->add_pass_documents(); }
-            | SWAP NUMBER       { scanner->add_swap($2);         }
+instruction : CONCAT NUMBER     { scanner->add_concat($2);        }
+            | DEL               { scanner->add_del();             }
+            | LOOP              { scanner->add_loop();            }
+            | NOP               { scanner->add_nop();             }
+            | PASS_EXPRESSION   { scanner->add_pass_expression(); }
+            | PASS_WORDS        { scanner->add_pass_words();      }
+            | PASS_LINES        { scanner->add_pass_lines();      }
+            | PASS_DOCUMENTS    { scanner->add_pass_documents();  }
+            | SWAP NUMBER       { scanner->add_swap($2);          }
             ;
 
 %%

@@ -63,6 +63,7 @@ public:
     void add_del();
     void add_loop();
     void add_nop();
+    void add_pass_expression();
     void add_pass_words();
     void add_pass_lines();
     void add_pass_documents();

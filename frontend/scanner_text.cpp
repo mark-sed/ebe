@@ -124,5 +124,8 @@ void ScannerText::add_expr(Expr::Expression *e) {
     this->touch_line();
     std::stringstream ss;
     expr2strs(ss, e);
+    // TODO: Most likely the expression has to be reparsed and made into Pass Expression 
+    //   filled with the instructions already so that reparsing isn't done multiple times
+    //   in engine. Possibly the pass could be inside Expr::Expression or replace it even.
     current_line->push_back(new IR::Word(ss.str(), IR::Type::EXPRESSION, e));
 }

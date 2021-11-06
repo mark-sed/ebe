@@ -57,9 +57,10 @@ SPACE   [ \t]
 "DEL"                           {   return token::DEL;    }
 "LOOP"                          {   return token::LOOP;   }
 "NOP"                           {   return token::NOP;    }
-"PASS"{SPACE}+"WORD"[S]?        {   /* Pass words     */ return token::PASS_WORDS;     }
-"PASS"{SPACE}+"LINE"[S]?        {   /* Pass lines     */ return token::PASS_LINES;     }
-"PASS"{SPACE}+"DOCUMENT"[S]?    {   /* Pass documents */ return token::PASS_DOCUMENTS; }
+"PASS"{SPACE}+"EXPRESSION"[S]?  {   /* Pass expression*/ return token::PASS_EXPRESSION; }
+"PASS"{SPACE}+"WORD"[S]?        {   /* Pass words     */ return token::PASS_WORDS;      }
+"PASS"{SPACE}+"LINE"[S]?        {   /* Pass lines     */ return token::PASS_LINES;      }
+"PASS"{SPACE}+"DOCUMENT"[S]?    {   /* Pass documents */ return token::PASS_DOCUMENTS;  }
 "PASS"                          {   /* Error: Pass without pass name */
                                     Error::error(Error::ErrorCode::SYNTACTIC, 
                                                  "Missing or incorrect pass name (allowed are 'words', 'lines' and 'documents')",
