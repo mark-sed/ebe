@@ -31,6 +31,8 @@ set(SOURCES
     frontend/scanner.cpp
     gp/gp.cpp
     midend/ir.cpp
+    midend/tree.cpp
+    midend/expression.cpp
     utils/arg_parser.cpp
     utils/exceptions.cpp
     utils/logging.cpp

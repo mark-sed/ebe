@@ -33,6 +33,7 @@ const char *IR::get_type_name(Type type) {
         "float",
         "delim",
         "symbol",
+        "expression",
         "empty"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
@@ -42,13 +43,20 @@ const char *IR::get_type_name(Type type) {
     return "none";
 }
 
-Word::Word(std::string text, Type type) : text{text}, type{type} {
+Word::Word(std::string text, Type type, Expr::Expression *expr) : text{text}, type{type}, expr{expr} {
 
 }
 
 Word::Word(const Word &other){
+    // FIXME: This might not work when expr is set (differently written expr, but same value)
     this->text = other.text;
     this->type = other.type;
+}
+
+Word::~Word() {
+    if(this->expr != nullptr){
+        delete this->expr;
+    }
 }
 
 Word& Word::operator=(const Word &other){
@@ -77,6 +85,7 @@ Node::~Node() {
         delete line;
     }
     delete nodes;
+    
 }
 
 Node::Node(const Node &other){
@@ -239,6 +248,7 @@ void PassWords::process(IR::Node *text) {
             }
         }
     }
+    LOG1("Word pass processing done");
 }
 
 PassLines::PassLines() : Pass("Lines") {
@@ -291,7 +301,7 @@ void PassLines::process(IR::Node *text) {
             env.reprocess_obj = false;
         }
     }
-    
+    LOG1("Processing done");
 }
 
 PassDocuments::PassDocuments() : Pass("Documents") {

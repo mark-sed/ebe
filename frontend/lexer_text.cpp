@@ -171,8 +171,27 @@ extern int yyleng;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
     
-    #define YY_LESS_LINENO(n)
-    #define YY_LINENO_REWIND_TO(ptr)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex.
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                int yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
+    #define YY_LINENO_REWIND_TO(dst) \
+            do {\
+                const char *p;\
+                for ( p = yy_cp-1; p >= (dst); --p)\
+                    if ( *p == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -321,8 +340,8 @@ int yyFlexLexer::yylex()
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 8
-#define YY_END_OF_BUFFER 9
+#define YY_NUM_RULES 20
+#define YY_END_OF_BUFFER 21
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -330,74 +349,92 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[17] =
+static const flex_int16_t yy_accept[31] =
     {   0,
-        0,    0,    9,    7,    1,    6,    4,    5,    0,    4,
-        5,    3,    0,    0,    2,    0
+        0,    0,   21,   19,   12,   18,   13,   19,    9,    5,
+       10,   11,    6,    3,    7,    8,   16,   17,    4,   19,
+        2,    0,   16,   17,    1,   15,    0,    0,   14,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
-        2,    2,    2,    1,    1,    1,    1,    1,    1,    1,
+        4,    4,    4,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    4,    2,    4,    5,    1,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    2,    2,    1,
-        1,    1,    1,    1,    7,    7,    7,    7,    8,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        1,    1,    1,    1,    7,    1,    7,    7,    7,    7,
+        1,    2,    5,    1,    1,    6,    7,    1,    1,    8,
+        9,   10,   11,    4,   12,   13,   14,   15,   15,   15,
+       15,   15,   15,   15,   15,   15,   15,    4,    4,    1,
+        1,    1,    1,    1,   16,   16,   16,   16,   17,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+        1,    1,    1,   18,   16,    1,   16,   16,   16,   16,
 
-        8,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    1,    1,    1,    1,    1,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+       17,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   19,    1,   20,    1,    1,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
 
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
-        7,    7,    7,    1,    1,    1,    1,    1,    1,    1,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
+       16,   16,   16,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[9] =
+static const YY_CHAR yy_meta[21] =
     {   0,
-        1,    1,    1,    1,    1,    2,    2,    2
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        2,    2,    1,    1,    3,    4,    4,    1,    1,    1
     } ;
 
-static const flex_int16_t yy_base[18] =
+static const flex_int16_t yy_base[33] =
     {   0,
-        0,    0,   21,   22,   22,   22,    4,    0,   14,    0,
-        0,    7,   12,   13,   11,   22,   12
+        0,    0,   37,   38,   38,   38,   38,   16,   38,   38,
+       38,   38,   38,   38,   38,   38,    8,    0,   38,   30,
+       38,   19,    0,    0,   38,   11,   18,   12,    7,   38,
+       26,   29
     } ;
 
-static const flex_int16_t yy_def[18] =
+static const flex_int16_t yy_def[33] =
     {   0,
-       16,    1,   16,   16,   16,   16,   16,   17,   16,    7,
-       17,   16,   16,   16,   16,    0,   16
+       30,    1,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   31,   30,   30,
+       30,   30,   17,   31,   30,   30,   32,   30,   30,    0,
+       30,   30
     } ;
 
-static const flex_int16_t yy_nxt[31] =
+static const flex_int16_t yy_nxt[59] =
     {   0,
-        4,    5,    6,    4,    5,    7,    8,    8,    9,   10,
-       11,   11,   12,   11,   13,   14,   15,   15,   15,   12,
-       16,    3,   16,   16,   16,   16,   16,   16,   16,   16
+        4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
+       14,   15,    7,   16,   17,   18,   18,   19,   20,    4,
+       22,   29,   23,   24,   24,   26,   29,   27,   24,   24,
+       28,   28,   29,   26,   25,   21,   30,    3,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30
     } ;
 
-static const flex_int16_t yy_chk[31] =
+static const flex_int16_t yy_chk[59] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    7,    7,
-        7,    7,   12,   17,   12,   13,   15,   13,   14,    9,
-        3,   16,   16,   16,   16,   16,   16,   16,   16,   16
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+       17,   29,   17,   17,   17,   26,   28,   26,   31,   31,
+       32,   32,   27,   22,   20,    8,    3,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30
     } ;
+
+/* Table of booleans, true if rule could match eol. */
+static const flex_int32_t yy_rule_can_match_eol[21] =
+    {   0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
+    0,     };
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
@@ -423,9 +460,6 @@ static const flex_int16_t yy_chk[31] =
 #undef  YY_DECL
 #define YY_DECL int TextFile::ScannerText::yylex(TextFile::ParserText::semantic_type * const lval, TextFile::ParserText::location_type *location)
 
-// Even though the input cannot be incorrect, still add location info
-// Could be useful for debugging
-// TODO: Remove location info?
 #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 
 // Typedef to shorten scope
@@ -434,11 +468,10 @@ using token = TextFile::ParserText::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 438 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 472 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 /* Define what scanner class is used */
 /* Macros for symbol types */
-/* TODO: Add special characters from all possible languages */
-#line 442 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 475 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 #define INITIAL 0
 
@@ -570,14 +603,14 @@ YY_DECL
 		}
 
 	{
+#line 42 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+
+
 #line 45 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
-
-
-#line 48 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
     yylval = lval;    
 
 
-#line 581 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 614 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -604,13 +637,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 17 )
+				if ( yy_current_state >= 31 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 22 );
+		while ( yy_base[yy_current_state] != 38 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -622,6 +655,16 @@ yy_find_action:
 			}
 
 		YY_DO_BEFORE_ACTION;
+
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			int yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					
+    yylineno++;
+;
+			}
 
 do_action:	/* This label is used only to access EOF actions. */
 
@@ -636,67 +679,138 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 51 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 48 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   // Expression starts
+                        expr_start();
+                        return token::EXPR_BEGIN;
+                    }
+	YY_BREAK
+case 2:
+YY_RULE_SETUP
+#line 52 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   // Expression ends
+                        expr_end();
+                        return token::EXPR_END;
+                    }
+	YY_BREAK
+case 3:
+YY_RULE_SETUP
+#line 56 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::PLUS; }
+	YY_BREAK
+case 4:
+YY_RULE_SETUP
+#line 57 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::POW; }
+	YY_BREAK
+case 5:
+YY_RULE_SETUP
+#line 58 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::MOD; }
+	YY_BREAK
+case 6:
+YY_RULE_SETUP
+#line 59 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::IMUL; }
+	YY_BREAK
+case 7:
+YY_RULE_SETUP
+#line 60 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::MINUS; }
+	YY_BREAK
+case 8:
+YY_RULE_SETUP
+#line 61 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::IDIV; }
+	YY_BREAK
+case 9:
+YY_RULE_SETUP
+#line 62 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::VAR; }
+	YY_BREAK
+case 10:
+YY_RULE_SETUP
+#line 63 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::LPAR; }
+	YY_BREAK
+case 11:
+YY_RULE_SETUP
+#line 64 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   yylval->build<std::string>(yytext); return token::RPAR; }
+	YY_BREAK
+case 12:
+YY_RULE_SETUP
+#line 65 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+{   // Whitespace is supposed to be ignored in expression
+                        if(!is_in_expr()){
+                            yylval->build<std::string>(yytext);
+                            return token::DELIMITER;
+                        }
+                    }
+	YY_BREAK
+case 13:
+YY_RULE_SETUP
+#line 71 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Delimiters
                         yylval->build<std::string>(yytext);
                         return token::DELIMITER;
                     }
 	YY_BREAK
-case 2:
+case 14:
 YY_RULE_SETUP
-#line 56 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 76 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Float in scientific notation
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
                                 }
 	YY_BREAK
-case 3:
+case 15:
 YY_RULE_SETUP
-#line 61 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 81 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Float
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
                                 }
 	YY_BREAK
-case 4:
+case 16:
 YY_RULE_SETUP
-#line 66 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 86 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Number
                         yylval->build<std::string>(yytext); 
                         return token::NUMBER; 
                     }
 	YY_BREAK
-case 5:
+case 17:
 YY_RULE_SETUP
-#line 71 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 91 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Text
                         yylval->build<std::string>(yytext);
                         return token::TEXT;
                     }
 	YY_BREAK
-case 6:
-/* rule 6 can match eol */
+case 18:
+/* rule 18 can match eol */
 YY_RULE_SETUP
-#line 76 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 96 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // New line
                         loc->lines();
                         return token::NEWLINE;
                     }
 	YY_BREAK
-case 7:
+case 19:
 YY_RULE_SETUP
-#line 81 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 101 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Anything else is symbol
                         yylval->build<std::string>(yytext); 
                         return token::SYMBOL; 
                     }
 	YY_BREAK
-case 8:
+case 20:
 YY_RULE_SETUP
-#line 85 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 105 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 700 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 814 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1113,7 +1227,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 17 )
+			if ( yy_current_state >= 31 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1141,11 +1255,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 17 )
+		if ( yy_current_state >= 31 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 16);
+	yy_is_jam = (yy_current_state == 30);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1182,6 +1296,10 @@ int yyFlexLexer::yy_get_next_buffer()
 		}
 
 	*--yy_cp = (char) c;
+
+    if ( c == '\n' ){
+        --yylineno;
+    }
 
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
@@ -1252,6 +1370,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		
+    yylineno++;
+;
 
 	return c;
 }
@@ -1659,6 +1782,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 85 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 105 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 
 

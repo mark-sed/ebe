@@ -22,6 +22,7 @@
 #include "ir.hpp"
 #include "scanner.hpp"
 #include "parser_text.hpp"
+#include "expression.hpp"
 
 /**
  * Namespace for lexers and parsers used by flex and bison/yacc.
@@ -34,14 +35,31 @@ namespace TextFile {
 class ScannerText : public Scanner, public yyFlexLexer {
 private:
     TextFile::ParserText::semantic_type *yylval = nullptr;
-    TextFile::ParserText::location_type *loc = nullptr;
+    bool inside_expression = false;
 
     IR::Node *current_parse;              ///< Holds node that is currently being parsed during process method
     std::list<IR::Word *> *current_line;  ///< Holds line currently being parsed during process method
 
     /** If current line is nullptr allocates a new one */
     void touch_line();
+
+    /** 
+     * Used by the lexer to denot that expression might start now
+     */ 
+    void expr_start();
+
+    /**
+     * Used by lexer to denote that an expression ends
+     */ 
+    void expr_end();
+
+    /**
+     * Used by the lexer to tell it if it is currently inside of an expression
+     * @return true if currently it's inside of an expression
+     */ 
+    bool is_in_expr();
 public:
+    TextFile::ParserText::location_type *loc = nullptr;
     ScannerText();
 
     virtual int yylex(TextFile::ParserText::semantic_type *const lval,
@@ -59,6 +77,7 @@ public:
     void add_symbol(const std::string &v);
     void add_float(const std::string &v);
     void add_newline();
+    void add_expr(Expr::Expression *e);
     /** @} */
 
     IR::Node *process(std::istream *text, const char *file_name) override;

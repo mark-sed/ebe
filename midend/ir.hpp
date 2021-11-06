@@ -19,6 +19,10 @@
 #include "instruction.hpp"
 #include "engine.hpp"
 #include "gp.hpp"
+#include "tree.hpp"
+#include "expression.hpp"
+
+#include <iostream>
 
 // Forward declarations
 namespace Inst {
@@ -30,8 +34,6 @@ namespace GP {
 }
 
 struct GPEngineParams;
-
-#include <iostream>
 
 /**
  * Namespace for intermediate representation (IR) resources
@@ -47,7 +49,8 @@ namespace IR {
         NUMBER,     ///< Whole number
         FLOAT,      ///< Real number
         DELIMITER,  ///< Separating character
-        SYMBOL,     ///< Symbol such as '$' for example
+        SYMBOL,     ///< Symbol such as '#' for example
+        EXPRESSION, ///< Expression
         EMPTY,      ///< Empty symbol for empty line
     };
 
@@ -67,15 +70,19 @@ namespace IR {
     public:
         std::string text;  ///< Text represantation of the word (as was in the file)
         Type type;         ///< Type parsed type of the word
+        Expr::Expression *expr = nullptr;
 
         /**
-         * Constructor
+         * Constructor 
          * @param text Words text representation
          * @param type Words parsed type
+         * @param expr Node's expression as a syntactic tree
          */
-        Word(std::string text, Type type);
+        Word(std::string text, Type type, Expr::Expression *expr=nullptr);
         /** Copy constructor */
         Word(const Word &other);
+        /** Destructor, frees expr when allocated */
+        ~Word();
 
         /** Copy operator */
         Word& operator=(const Word &other);

@@ -62,6 +62,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
         LOG3(iter << ". iteration started");
         // Eval population
         auto perfect_pheno = this->evaluate();
+        LOG1("P: " << perfect_pheno);
         if(perfect_pheno){
             // 100 % precision found, return
             if(precision){

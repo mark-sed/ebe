@@ -11,10 +11,12 @@
  */
 
 #include <istream>
+#include <sstream>
 #include "scanner_text.hpp"
 #include "parser_text.hpp"
 #include "scanner.hpp"
 #include "ir.hpp"
+#include "expression.hpp"
 
 #include <iostream>
 
@@ -59,6 +61,19 @@ void ScannerText::touch_line() {
     }
 }
 
+void ScannerText::expr_start() {
+    // FIXME: Check if expressions are allowed
+    this->inside_expression = true;
+}
+
+void ScannerText::expr_end() {
+    this->inside_expression = false;
+}
+
+bool ScannerText::is_in_expr() {
+    return this->inside_expression;
+}
+
 void ScannerText::add_text(const std::string &v) {
     this->touch_line();
     current_line->push_back(new IR::Word(v, IR::Type::TEXT));
@@ -93,4 +108,21 @@ void ScannerText::add_newline() {
     this->current_parse->push_back(this->current_line);
     // Reset current line to force creating new one on input
     this->current_line = nullptr;
+}
+
+static void expr2strs(std::stringstream &ss, const Expr::Expression *e) {
+    if(e->children.size() > 0) {
+        expr2strs(ss, &e->children[0]);
+    }
+    ss << e->value.text;
+    if(e->children.size() > 1) {
+        expr2strs(ss, &e->children[1]);
+    }
+}
+
+void ScannerText::add_expr(Expr::Expression *e) {
+    this->touch_line();
+    std::stringstream ss;
+    expr2strs(ss, e);
+    current_line->push_back(new IR::Word(ss.str(), IR::Type::EXPRESSION, e));
 }

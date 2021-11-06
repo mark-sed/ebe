@@ -51,6 +51,11 @@
         class ScannerText;
     }
 
+    #include "expression.hpp"
+    #include "tree.hpp"
+
+    using namespace Expr;
+
     #ifndef YY_NULLPTR
         #if defined __cplusplus && 201103L <= __cplusplus
             #define YY_NULLPTR nullptr
@@ -59,7 +64,7 @@
         #endif
     #endif
 
-#line 63 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 68 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -200,7 +205,7 @@
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 namespace  TextFile  {
-#line 204 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 209 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
   /// A point in a source file.
@@ -660,12 +665,27 @@ namespace  TextFile  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // varexpr
+      char dummy1[sizeof (Expr::Expression)];
+
+      // expr
+      char dummy2[sizeof (int)];
+
       // TEXT
       // NUMBER
       // DELIMITER
       // SYMBOL
       // FLOAT
-      char dummy1[sizeof (std::string)];
+      // "("
+      // ")"
+      // "$"
+      // "+"
+      // "*"
+      // "-"
+      // "/"
+      // "%"
+      // "^"
+      char dummy3[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -719,11 +739,22 @@ namespace  TextFile  {
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
     NEWLINE = 258,                 // NEWLINE
-    TEXT = 259,                    // TEXT
-    NUMBER = 260,                  // NUMBER
-    DELIMITER = 261,               // DELIMITER
-    SYMBOL = 262,                  // SYMBOL
-    FLOAT = 263                    // FLOAT
+    EXPR_BEGIN = 259,              // EXPR_BEGIN
+    EXPR_END = 260,                // EXPR_END
+    TEXT = 261,                    // TEXT
+    NUMBER = 262,                  // NUMBER
+    DELIMITER = 263,               // DELIMITER
+    SYMBOL = 264,                  // SYMBOL
+    FLOAT = 265,                   // FLOAT
+    LPAR = 266,                    // "("
+    RPAR = 267,                    // ")"
+    VAR = 268,                     // "$"
+    PLUS = 269,                    // "+"
+    IMUL = 270,                    // "*"
+    MINUS = 271,                   // "-"
+    IDIV = 272,                    // "/"
+    MOD = 273,                     // "%"
+    POW = 274                      // "^"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -740,21 +771,34 @@ namespace  TextFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 9, ///< Number of tokens.
+        YYNTOKENS = 20, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "EOF"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_NEWLINE = 3,                           // NEWLINE
-        S_TEXT = 4,                              // TEXT
-        S_NUMBER = 5,                            // NUMBER
-        S_DELIMITER = 6,                         // DELIMITER
-        S_SYMBOL = 7,                            // SYMBOL
-        S_FLOAT = 8,                             // FLOAT
-        S_YYACCEPT = 9,                          // $accept
-        S_text_file = 10,                        // text_file
-        S_sentence = 11,                         // sentence
-        S_word = 12                              // word
+        S_EXPR_BEGIN = 4,                        // EXPR_BEGIN
+        S_EXPR_END = 5,                          // EXPR_END
+        S_TEXT = 6,                              // TEXT
+        S_NUMBER = 7,                            // NUMBER
+        S_DELIMITER = 8,                         // DELIMITER
+        S_SYMBOL = 9,                            // SYMBOL
+        S_FLOAT = 10,                            // FLOAT
+        S_LPAR = 11,                             // "("
+        S_RPAR = 12,                             // ")"
+        S_VAR = 13,                              // "$"
+        S_PLUS = 14,                             // "+"
+        S_IMUL = 15,                             // "*"
+        S_MINUS = 16,                            // "-"
+        S_IDIV = 17,                             // "/"
+        S_MOD = 18,                              // "%"
+        S_POW = 19,                              // "^"
+        S_YYACCEPT = 20,                         // $accept
+        S_text_file = 21,                        // text_file
+        S_sentence = 22,                         // sentence
+        S_word = 23,                             // word
+        S_varexpr = 24,                          // varexpr
+        S_expr = 25                              // expr
       };
     };
 
@@ -791,11 +835,28 @@ namespace  TextFile  {
       {
         switch (this->kind ())
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.move< Expr::Expression > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.move< int > (std::move (that.value));
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.move< std::string > (std::move (that.value));
         break;
 
@@ -818,6 +879,34 @@ namespace  TextFile  {
 #else
       basic_symbol (typename Base::kind_type t, const location_type& l)
         : Base (t)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, Expr::Expression&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const Expr::Expression& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, int&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const int& v, const location_type& l)
+        : Base (t)
+        , value (v)
         , location (l)
       {}
 #endif
@@ -860,11 +949,28 @@ namespace  TextFile  {
         // Value type destructor.
 switch (yykind)
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.template destroy< Expr::Expression > ();
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.template destroy< int > ();
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.template destroy< std::string > ();
         break;
 
@@ -875,14 +981,11 @@ switch (yykind)
         Base::clear ();
       }
 
-#if YYDEBUG || 0
       /// The user-facing name of this symbol.
-      const char *name () const YY_NOEXCEPT
+      std::string name () const YY_NOEXCEPT
       {
         return  ParserText ::symbol_name (this->kind ());
       }
-#endif // #if YYDEBUG || 0
-
 
       /// Backward compatibility (Bison 3.6).
       symbol_kind_type type_get () const YY_NOEXCEPT;
@@ -969,7 +1072,7 @@ switch (yykind)
       {
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::END
-                   || (token::YYerror <= tok && tok <= token::NEWLINE));
+                   || (token::YYerror <= tok && tok <= token::EXPR_END));
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -981,7 +1084,7 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::TEXT <= tok && tok <= token::FLOAT));
+        YY_ASSERT ((token::TEXT <= tok && tok <= token::POW));
 #endif
       }
     };
@@ -1027,12 +1130,9 @@ switch (yykind)
     /// Report a syntax error.
     void error (const syntax_error& err);
 
-#if YYDEBUG || 0
     /// The user-facing name of the symbol whose (internal) number is
     /// YYSYMBOL.  No bounds checking.
-    static const char *symbol_name (symbol_kind_type yysymbol);
-#endif // #if YYDEBUG || 0
-
+    static std::string symbol_name (symbol_kind_type yysymbol);
 
     // Implementation of make_symbol for each token kind.
 #if 201103L <= YY_CPLUSPLUS
@@ -1093,6 +1193,36 @@ switch (yykind)
       make_NEWLINE (const location_type& l)
       {
         return symbol_type (token::NEWLINE, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_EXPR_BEGIN (location_type l)
+      {
+        return symbol_type (token::EXPR_BEGIN, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_EXPR_BEGIN (const location_type& l)
+      {
+        return symbol_type (token::EXPR_BEGIN, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_EXPR_END (location_type l)
+      {
+        return symbol_type (token::EXPR_END, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_EXPR_END (const location_type& l)
+      {
+        return symbol_type (token::EXPR_END, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1170,7 +1300,160 @@ switch (yykind)
         return symbol_type (token::FLOAT, v, l);
       }
 #endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_LPAR (std::string v, location_type l)
+      {
+        return symbol_type (token::LPAR, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_LPAR (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::LPAR, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_RPAR (std::string v, location_type l)
+      {
+        return symbol_type (token::RPAR, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_RPAR (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::RPAR, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_VAR (std::string v, location_type l)
+      {
+        return symbol_type (token::VAR, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_VAR (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::VAR, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PLUS (std::string v, location_type l)
+      {
+        return symbol_type (token::PLUS, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_PLUS (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::PLUS, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_IMUL (std::string v, location_type l)
+      {
+        return symbol_type (token::IMUL, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_IMUL (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::IMUL, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_MINUS (std::string v, location_type l)
+      {
+        return symbol_type (token::MINUS, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_MINUS (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::MINUS, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_IDIV (std::string v, location_type l)
+      {
+        return symbol_type (token::IDIV, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_IDIV (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::IDIV, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_MOD (std::string v, location_type l)
+      {
+        return symbol_type (token::MOD, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_MOD (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::MOD, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_POW (std::string v, location_type l)
+      {
+        return symbol_type (token::POW, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_POW (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::POW, v, l);
+      }
+#endif
 
+
+    class context
+    {
+    public:
+      context (const  ParserText & yyparser, const symbol_type& yyla);
+      const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
+      symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
+      const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
+
+      /// Put in YYARG at most YYARGN of the expected tokens, and return the
+      /// number of tokens stored in YYARG.  If YYARG is null, return the
+      /// number of expected tokens (guaranteed to be less than YYNTOKENS).
+      int expected_tokens (symbol_kind_type yyarg[], int yyargn) const;
+
+    private:
+      const  ParserText & yyparser_;
+      const symbol_type& yyla_;
+    };
 
   private:
 #if YY_CPLUSPLUS < 201103L
@@ -1184,6 +1467,13 @@ switch (yykind)
     /// Stored state numbers (used for stacks).
     typedef signed char state_type;
 
+    /// The arguments of the error message.
+    int yy_syntax_error_arguments_ (const context& yyctx,
+                                    symbol_kind_type yyarg[], int yyargn) const;
+
+    /// Generate an error message.
+    /// \param yyctx     the context in which the error occurred.
+    virtual std::string yysyntax_error_ (const context& yyctx) const;
     /// Compute post-reduction state.
     /// \param yystate   the current state
     /// \param yysym     the nonterminal to push on the stack
@@ -1205,10 +1495,11 @@ switch (yykind)
     /// are valid, yet not members of the token_kind_type enum.
     static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
 
-#if YYDEBUG || 0
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *yystr);
+
     /// For a symbol, its name in clear.
     static const char* const yytname_[];
-#endif // #if YYDEBUG || 0
 
 
     // Tables.
@@ -1247,7 +1538,7 @@ switch (yykind)
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const signed char yyrline_[];
+    static const unsigned char yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -1474,9 +1765,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 17,     ///< Last index in yytable_.
-      yynnts_ = 4,  ///< Number of nonterminal symbols.
-      yyfinal_ = 11 ///< Termination state number.
+      yylast_ = 113,     ///< Last index in yytable_.
+      yynnts_ = 6,  ///< Number of nonterminal symbols.
+      yyfinal_ = 25 ///< Termination state number.
     };
 
 
@@ -1488,7 +1779,7 @@ switch (yykind)
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1492 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 1783 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
 
