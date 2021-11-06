@@ -14,6 +14,7 @@
 #include <iostream>
 #include "compiler.hpp"
 #include "exceptions.hpp"
+#include "logging.hpp"
 
 const char *Error::get_code_name(Error::ErrorCode code){
     const char *NAMES[] = {
@@ -33,7 +34,7 @@ const char *Error::get_code_name(Error::ErrorCode code){
     return "Unknown";
 }
 
-[[noreturn]] void Error::error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc){
+void Error::error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc, bool exit){
     std::cerr << "ERROR (" << Error::get_code_name(code); 
     if(exc == nullptr) {
         std::cerr << "): " << msg << "!" << std::endl;
@@ -41,13 +42,15 @@ const char *Error::get_code_name(Error::ErrorCode code){
     else {
         std::cerr << exc->get_type() << "): " << msg << "!" << exc->what() << "." << std::endl;
     }
-    std::exit(code);
+    if(exit){
+        Error::exit(code);
+    }
 }
 
 
-[[noreturn]] void Compiler::error(Error::ErrorCode code, const char *file, 
+void Compiler::error(Error::ErrorCode code, const char *file, 
                                   long line, long column, const char *msg,
-                                  Exception::EbeException *exc){
+                                  Exception::EbeException *exc, bool exit){
     if(file)
         // Dont print name if it is nullptr
         std::cerr << file;
@@ -65,6 +68,13 @@ const char *Error::get_code_name(Error::ErrorCode code){
     else {
         std::cerr << ", " << exc->get_type() << "): " << msg << "! " << exc->what() << "." << std::endl;
     }
+    if(exit){
+        Error::exit(code);
+    }
+}
+
+[[noreturn]] void Error::exit(Error::ErrorCode code) {
+    LOG1("Exiting program with code " << code);
     std::exit(code);
 }
 

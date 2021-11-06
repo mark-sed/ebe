@@ -970,7 +970,11 @@ EXCLUDE_SYMLINKS       = NO
 
 EXCLUDE_PATTERNS       = */docs/* \
                          */tests/* \
-                         */build/*
+                         */build/* \
+                         */frontend/location.hh \
+                         */frontend/parser_* \
+                         */frontend/lexer_* \
+                         */frontend/FlexLexer.h
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the

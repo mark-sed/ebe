@@ -1,0 +1,225 @@
+Terminals unused in grammar
+
+    PASS
+
+
+Grammar
+
+    0 $accept: program "end of file"
+
+    1 program: "end of file"
+    2        | code "end of file"
+
+    3 code: instruction
+    4     | NEWLINE
+    5     | code NEWLINE
+    6     | code NEWLINE instruction
+
+    7 instruction: CONCAT NUMBER
+    8            | DEL
+    9            | LOOP
+   10            | NOP
+   11            | PASS_WORDS
+   12            | PASS_LINES
+   13            | PASS_DOCUMENTS
+   14            | SWAP NUMBER
+
+
+Terminals, with rules where they appear
+
+    "end of file" (0) 0 1 2
+    error (256)
+    NEWLINE (258) 4 5 6
+    NUMBER <int> (259) 7 14
+    CONCAT (260) 7
+    DEL (261) 8
+    LOOP (262) 9
+    NOP (263) 10
+    PASS (264)
+    PASS_WORDS (265) 11
+    PASS_LINES (266) 12
+    PASS_DOCUMENTS (267) 13
+    SWAP (268) 14
+
+
+Nonterminals, with rules where they appear
+
+    $accept (14)
+        on left: 0
+    program (15)
+        on left: 1 2
+        on right: 0
+    code (16)
+        on left: 3 4 5 6
+        on right: 2 5 6
+    instruction (17)
+        on left: 7 8 9 10 11 12 13 14
+        on right: 3 6
+
+
+State 0
+
+    0 $accept: • program "end of file"
+
+    "end of file"   shift, and go to state 1
+    NEWLINE         shift, and go to state 2
+    CONCAT          shift, and go to state 3
+    DEL             shift, and go to state 4
+    LOOP            shift, and go to state 5
+    NOP             shift, and go to state 6
+    PASS_WORDS      shift, and go to state 7
+    PASS_LINES      shift, and go to state 8
+    PASS_DOCUMENTS  shift, and go to state 9
+    SWAP            shift, and go to state 10
+
+    program      go to state 11
+    code         go to state 12
+    instruction  go to state 13
+
+
+State 1
+
+    1 program: "end of file" •
+
+    $default  reduce using rule 1 (program)
+
+
+State 2
+
+    4 code: NEWLINE •
+
+    $default  reduce using rule 4 (code)
+
+
+State 3
+
+    7 instruction: CONCAT • NUMBER
+
+    NUMBER  shift, and go to state 14
+
+
+State 4
+
+    8 instruction: DEL •
+
+    $default  reduce using rule 8 (instruction)
+
+
+State 5
+
+    9 instruction: LOOP •
+
+    $default  reduce using rule 9 (instruction)
+
+
+State 6
+
+   10 instruction: NOP •
+
+    $default  reduce using rule 10 (instruction)
+
+
+State 7
+
+   11 instruction: PASS_WORDS •
+
+    $default  reduce using rule 11 (instruction)
+
+
+State 8
+
+   12 instruction: PASS_LINES •
+
+    $default  reduce using rule 12 (instruction)
+
+
+State 9
+
+   13 instruction: PASS_DOCUMENTS •
+
+    $default  reduce using rule 13 (instruction)
+
+
+State 10
+
+   14 instruction: SWAP • NUMBER
+
+    NUMBER  shift, and go to state 15
+
+
+State 11
+
+    0 $accept: program • "end of file"
+
+    "end of file"  shift, and go to state 16
+
+
+State 12
+
+    2 program: code • "end of file"
+    5 code: code • NEWLINE
+    6     | code • NEWLINE instruction
+
+    "end of file"  shift, and go to state 17
+    NEWLINE        shift, and go to state 18
+
+
+State 13
+
+    3 code: instruction •
+
+    $default  reduce using rule 3 (code)
+
+
+State 14
+
+    7 instruction: CONCAT NUMBER •
+
+    $default  reduce using rule 7 (instruction)
+
+
+State 15
+
+   14 instruction: SWAP NUMBER •
+
+    $default  reduce using rule 14 (instruction)
+
+
+State 16
+
+    0 $accept: program "end of file" •
+
+    $default  accept
+
+
+State 17
+
+    2 program: code "end of file" •
+
+    $default  reduce using rule 2 (program)
+
+
+State 18
+
+    5 code: code NEWLINE •
+    6     | code NEWLINE • instruction
+
+    CONCAT          shift, and go to state 3
+    DEL             shift, and go to state 4
+    LOOP            shift, and go to state 5
+    NOP             shift, and go to state 6
+    PASS_WORDS      shift, and go to state 7
+    PASS_LINES      shift, and go to state 8
+    PASS_DOCUMENTS  shift, and go to state 9
+    SWAP            shift, and go to state 10
+
+    $default  reduce using rule 5 (code)
+
+    instruction  go to state 19
+
+
+State 19
+
+    6 code: code NEWLINE instruction •
+
+    $default  reduce using rule 6 (code)

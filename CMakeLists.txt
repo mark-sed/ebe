@@ -21,6 +21,12 @@ set(SOURCES
     engine/engine.cpp
     engine/engine_jenn.cpp
     engine/engine_miRANDa.cpp
+    frontend/lexer_text.cpp
+    frontend/parser_text.cpp
+    frontend/scanner_text.cpp
+    frontend/lexer_ebel.cpp
+    frontend/parser_ebel.cpp
+    frontend/scanner_ebel.cpp
     frontend/preprocessor.cpp
     frontend/scanner.cpp
     gp/gp.cpp
@@ -35,8 +41,8 @@ set(SOURCES
 # Test source files
 set(TEST_SRCS
     tests/test_utils.cpp
-    tests/test_scanner.cpp
     tests/test_interpreter.cpp
+    tests/test_scanner.cpp
 )
 
 # Enable gtest
@@ -84,3 +90,17 @@ if(DOXYGEN_FOUND)
 else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
+
+# Rebuilding lexer and parser when files don't exist and flex and bison are present
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
+if(BISON_FOUND)
+    if(FLEX_FOUND)
+        bison_target(parser_text ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/parser_text.yy ${CMAKE_CURRENT_SOURCE_DIR}/frontend/parser_text.cpp)
+        flex_target(lexer_text ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/lexer_text.ll ${CMAKE_CURRENT_SOURCE_DIR}/frontend/lexer_text.cpp COMPILE_FLAGS "--header-file=frontend/lexer_text.hpp")
+        ADD_FLEX_BISON_DEPENDENCY(lexer_text parser_text)
+        bison_target(parser_ebel ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/parser_ebel.yy ${CMAKE_CURRENT_SOURCE_DIR}/frontend/parser_ebel.cpp COMPILE_FLAGS "-p ee")
+        flex_target(lexer_ebel ${CMAKE_CURRENT_SOURCE_DIR}/frontend/grammars/lexer_ebel.ll ${CMAKE_CURRENT_SOURCE_DIR}/frontend/lexer_ebel.cpp COMPILE_FLAGS "-P ee --header-file=frontend/lexer_ebel.hpp")
+        ADD_FLEX_BISON_DEPENDENCY(lexer_ebel parser_ebel)
+    endif(FLEX_FOUND)
+endif (BISON_FOUND)

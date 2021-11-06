@@ -13,6 +13,7 @@
 #ifndef _PREPROCESSOR_HPP_
 #define _PREPROCESSOR_HPP_
 
+#include <istream>
 #include <vector>
 #include "compiler.hpp"
 
@@ -30,28 +31,13 @@ public:
     Preprocessor(char delim='\n');
 
     /**
-     * Preprocessing for example file
+     * @brief Preprocessing for file.
+     * Opens passed in file as an input stream. 
+     * If nullptr is passed in, then std::cin is returned.
      * @param file_name Path to the file
-     * @return Processed example file in vector form
-     * @note New line symbol is left in
+     * @return Passed in file or std::cin as an input stream
      */
-    std::vector<std::string> *process(const char *file_name);
-};
-
-/**
- * Preprocessor for ebel source files
- */
-class EbelPreprocessor : public Compiler {
-public:
-    /** Constructor **/
-    EbelPreprocessor();
-
-    /**
-     * Preprocessing for ebel file
-     * @param file_name Path to the file
-     * @return Processed ebel file in vector form
-     */
-    std::vector<std::string> *process(const char *file_name);
+    std::istream *process(const char *file_name);
 };
 
 #endif//_PREPROCESSOR_HPP_
