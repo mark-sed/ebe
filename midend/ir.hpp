@@ -168,7 +168,7 @@ namespace IR {
     protected:
         /** 
          * Constructor
-         * @param pass_name Name of the pass that inherits this class
+         * @param type Name of the pass that inherits this class
          */
         Pass(PassType type);
     public:
