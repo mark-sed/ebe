@@ -45,13 +45,14 @@ namespace IR {
      * @note Every new datatype's name should be added to the get_type_name function
      */
     enum Type {
-        TEXT,       ///< Word which is not number not special character
+        TEXT = 0,   ///< Word which is not number not special character
         NUMBER,     ///< Whole number
         FLOAT,      ///< Real number
         DELIMITER,  ///< Separating character
         SYMBOL,     ///< Symbol such as '#' for example
         EXPRESSION, ///< Expression
         EMPTY,      ///< Empty symbol for empty line
+        DERIVED     ///< Type used for automatically deriving the type (for expressions)
     };
 
     /**

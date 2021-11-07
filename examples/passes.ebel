@@ -1,0 +1,10 @@
+PASS NUMBER expression
+RETURN
+PASS EMPTY expression
+RETURN NOP
+PASS FLOAT expression
+RETURN SWAP 2
+PASS TEXT expression
+RETURN DEL
+PASS expression
+RETURN NOP

@@ -25,6 +25,8 @@
         class ScannerEbel;
     }
 
+    #include "ir.hpp"
+
     #ifndef YY_NULLPTR
         #if defined __cplusplus && 201103L <= __cplusplus
             #define YY_NULLPTR nullptr
@@ -45,6 +47,8 @@
     #include "compiler.hpp"
     #include "scanner_ebel.hpp"
 
+    #include <iostream>
+
     // Set correct token method
     #undef yylex
     #define yylex scanner->eelex
@@ -57,16 +61,28 @@
 /* Tokens and types */
 %token END 0 "end of file"
 %token NEWLINE "new line"
-%token <int> NUMBER "number"
+%token <int> INT "number"
 %token CONCAT
 %token DEL
 %token LOOP
 %token NOP
-%token PASS_EXPRESSION "PASS expression"
-%token PASS_WORDS "PASS words"
-%token PASS_LINES "PASS lines"
-%token PASS_DOCUMENTS "PASS documents"
+%token PASS
 %token SWAP
+%token RETURN
+
+%token WORDS "words"
+%token LINES "lines"
+%token DOCUMENTS "documents"
+%token EXPRESSION "expression"
+
+%token TEXT
+%token NUMBER
+%token FLOAT
+%token DELIMITER
+%token SYMBOL
+%token EMPTY
+
+%type <IR::Type> type
 
 %locations
 
@@ -79,29 +95,39 @@ program     : END
             ;
 
 code        : instruction
+            | pass
             | NEWLINE
             | code NEWLINE
             | code NEWLINE instruction
+            | code NEWLINE pass
             ;
 
-instruction : CONCAT NUMBER     { scanner->add_concat($2);        }
-            | DEL               { scanner->add_del();             }
-            | LOOP              { scanner->add_loop();            }
-            | NOP               { scanner->add_nop();             }
-            | PASS_EXPRESSION   { scanner->add_pass_expression(); }
-            | PASS_WORDS        { scanner->add_pass_words();      }
-            | PASS_LINES        { scanner->add_pass_lines();      }
-            | PASS_DOCUMENTS    { scanner->add_pass_documents();  }
-            | SWAP NUMBER       { scanner->add_swap($2);          }
+instruction : CONCAT INT           { scanner->add_concat($2);          }
+            | DEL                  { scanner->add_del();               }
+            | LOOP                 { scanner->add_loop();              }
+            | NOP                  { scanner->add_nop();               }
+            | SWAP INT             { scanner->add_swap($2);            }
+            | RETURN instruction   { scanner->add_return();            }
+            | RETURN               { scanner->add_return(); scanner->add_nop(); }
+            ;
+
+pass        : PASS type EXPRESSION { scanner->add_pass_expression($2); }
+            | PASS EXPRESSION      { scanner->add_pass_expression(IR::Type::DERIVED); }
+            | PASS WORDS           { scanner->add_pass_words();        }
+            | PASS LINES           { scanner->add_pass_lines();        }
+            | PASS DOCUMENTS       { scanner->add_pass_documents();    }
+
+type        : TEXT      { $$ = IR::Type::TEXT;      }
+            | NUMBER    { $$ = IR::Type::NUMBER;    }
+            | FLOAT     { $$ = IR::Type::FLOAT;     }
+            | DELIMITER { $$ = IR::Type::DELIMITER; }
+            | SYMBOL    { $$ = IR::Type::SYMBOL;    }
+            | EMPTY     { $$ = IR::Type::EMPTY;     }
             ;
 
 %%
 
 /* Error method */
 void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_message) {
-    std::stringstream mss;
-    mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
-        << " at line " << scanner->loc->begin.line << ", column " << scanner->loc->begin.column;
-    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str(), nullptr, false);
-    scanner->error_found(Error::ErrorCode::SYNTACTIC);
+    scanner->sub_error(Error::ErrorCode::SYNTACTIC, err_message);
 }

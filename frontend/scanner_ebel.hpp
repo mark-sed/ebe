@@ -35,6 +35,7 @@ private:
 
     IR::EbelNode *current_parse;          ///< Holds program that is currently being parsed during process method
     IR::Pass *current_pass;               ///< Holds line currently being parsed during process method
+    IR::Pass *parent_pass;                ///< Hold parent pass to current pass (used for expressions)
     const char *current_file_name;        ///< File currently being parsed
     /**
      * Indicates that an error was found by lexer or parser.
@@ -63,11 +64,12 @@ public:
     void add_del();
     void add_loop();
     void add_nop();
-    void add_pass_expression();
+    void add_pass_expression(IR::Type type);
     void add_pass_words();
     void add_pass_lines();
     void add_pass_documents();
     void add_swap(int offset);
+    void add_return();
     /** @} */
 
     /**
@@ -78,6 +80,13 @@ public:
      * @note Passing in NO_ERROR won't change the error to NO_ERROR
      */ 
     void error_found(Error::ErrorCode code);
+
+    /**
+     * Error handeling from parser and lexer
+     * @param code Error code to report
+     * @param err_message Error message
+     */ 
+    void sub_error(Error::ErrorCode code, const std::string &err_message);
 
     IR::EbelNode *process(std::istream *text, const char *file_name);
 };

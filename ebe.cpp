@@ -150,7 +150,7 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     auto ebel_scanner = new EbelFile::ScannerEbel();
     LOGMAX("Ebel scanner started");
     auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
-    LOG2("Ebel IR:\n" << *ebel_ir);
+    LOG1("Ebel IR:\n" << *ebel_ir);
     LOGMAX("Ebel scanner finished");
 
     // Interpret initialization

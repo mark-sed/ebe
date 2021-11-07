@@ -51,38 +51,38 @@ SPACE   [ \t]
 {NUM}+                          {   /* Integer */
                                     // TODO: Change to unsigned int and use Cast::to
                                     yylval->emplace<int>(atoi(yytext));
-                                    return token::NUMBER;
+                                    return token::INT;
                                 }
-"CONCAT"{SPACE}+                {   return token::CONCAT; }
-"DEL"                           {   return token::DEL;    }
-"LOOP"                          {   return token::LOOP;   }
-"NOP"                           {   return token::NOP;    }
-"PASS"{SPACE}+"EXPRESSION"[S]?  {   /* Pass expression*/ return token::PASS_EXPRESSION; }
-"PASS"{SPACE}+"WORD"[S]?        {   /* Pass words     */ return token::PASS_WORDS;      }
-"PASS"{SPACE}+"LINE"[S]?        {   /* Pass lines     */ return token::PASS_LINES;      }
-"PASS"{SPACE}+"DOCUMENT"[S]?    {   /* Pass documents */ return token::PASS_DOCUMENTS;  }
-"PASS"                          {   /* Error: Pass without pass name */
-                                    Error::error(Error::ErrorCode::SYNTACTIC, 
-                                                 "Missing or incorrect pass name (allowed are 'words', 'lines' and 'documents')",
-                                                 nullptr, false);
-                                    error_found(Error::ErrorCode::SYNTACTIC);
-                                }
-"SWAP"{SPACE}+                  {   return token::SWAP;   }
+"CONCAT"{SPACE}+                {   return token::CONCAT;     }
+"DEL"                           {   return token::DEL;        }
+"LOOP"                          {   return token::LOOP;       }
+"NOP"                           {   return token::NOP;        }
+"PASS"{SPACE}+                  {   return token::PASS;       }
+"WORD"[S]?                      {   return token::WORDS;      }
+"LINE"[S]?                      {   return token::LINES;      }
+"DOCUMENT"[S]?                  {   return token::DOCUMENTS;  }
+"EXPRESSION"[S]?                {   return token::EXPRESSION; }
+"SWAP"{SPACE}+                  {   return token::SWAP;       }
+"RETURN"                        {   return token::RETURN;     }
+
+"TEXT"{SPACE}+                  {   return token::TEXT;       }
+"NUMBER"{SPACE}+                {   return token::NUMBER;     }
+"FLOAT"{SPACE}+                 {   return token::FLOAT;      }
+"DELIMITER"{SPACE}+             {   return token::DELIMITER;  }
+"SYMBOL"{SPACE}+                {   return token::SYMBOL;     }
+"EMPTY"{SPACE}+                 {   return token::EMPTY;      }
+
 \n                              {
                                     loc->lines();
                                     return token::NEWLINE;
                                 }
 [a-zA-Z0-9_]+                   {   /* Error because of unknown instruction, but don't exit yet */
-                                    Error::error(Error::ErrorCode::SYNTACTIC, 
-                                                 (std::string("Unknown instruction '")+std::string(yytext)
-                                                 +std::string("'")).c_str(), nullptr, false);
-                                    error_found(Error::ErrorCode::SYNTACTIC);
+                                    sub_error(Error::ErrorCode::SYNTACTIC, std::string("Unknown instruction '")
+                                                +std::string(yytext) +std::string("'"));
                                 }
 .                               {   /* Error because of unknwon symbol, but don't exit yet */
-                                    Error::error(Error::ErrorCode::SYNTACTIC, 
-                                                 (std::string("Unknown symbol '")+std::string(yytext)
-                                                 +std::string("'")).c_str(), nullptr, false);
-                                    error_found(Error::ErrorCode::SYNTACTIC);
+                                    sub_error(Error::ErrorCode::SYNTACTIC, std::string("Unknown symbol '")
+                                                +std::string(yytext)+std::string("'"));
                                 }
 
 %%

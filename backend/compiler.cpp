@@ -37,10 +37,10 @@ const char *Error::get_code_name(Error::ErrorCode code){
 void Error::error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc, bool exit){
     std::cerr << "ERROR (" << Error::get_code_name(code); 
     if(exc == nullptr) {
-        std::cerr << "): " << msg << "!" << std::endl;
+        std::cerr << "): " << msg << "." << std::endl;
     }
     else {
-        std::cerr << exc->get_type() << "): " << msg << "!" << exc->what() << "." << std::endl;
+        std::cerr << exc->get_type() << "): " << msg << "." << exc->what() << "." << std::endl;
     }
     if(exit){
         Error::exit(code);
@@ -63,7 +63,7 @@ void Compiler::error(Error::ErrorCode code, const char *file,
     // FIXME: unit_name probably should not be printed to users
     std::cerr << ":[" << unit_name << "]: ERROR (" << Error::get_code_name(code);
     if(exc == nullptr) {
-        std::cerr << "): " << msg << "!" << std::endl;
+        std::cerr << "): " << msg << "." << std::endl;
     }
     else {
         std::cerr << ", " << exc->get_type() << "): " << msg << "! " << exc->what() << "." << std::endl;

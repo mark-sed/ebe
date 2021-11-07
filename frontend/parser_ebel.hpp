@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.8.2.
+// A Bison parser, made by GNU Bison 3.7.4.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -51,6 +51,8 @@
         class ScannerEbel;
     }
 
+    #include "ir.hpp"
+
     #ifndef YY_NULLPTR
         #if defined __cplusplus && 201103L <= __cplusplus
             #define YY_NULLPTR nullptr
@@ -59,7 +61,7 @@
         #endif
     #endif
 
-#line 63 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 65 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -130,23 +132,17 @@
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YY_USE(E) ((void) (E))
+# define YYUSE(E) ((void) (E))
 #else
-# define YY_USE(E) /* empty */
+# define YYUSE(E) /* empty */
 #endif
 
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
-# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
-#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
-    _Pragma ("GCC diagnostic push")                                     \
-    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
-# else
-#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -200,7 +196,7 @@
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 namespace  EbelFile  {
-#line 204 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 200 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 
   /// A point in a source file.
@@ -450,32 +446,27 @@ namespace  EbelFile  {
   class  ParserEbel 
   {
   public:
-#ifdef YYSTYPE
-# ifdef __GNUC__
-#  pragma GCC message "bison: do not #define YYSTYPE in C++, use %define api.value.type"
-# endif
-    typedef YYSTYPE value_type;
-#else
+#ifndef YYSTYPE
   /// A buffer to store and retrieve objects.
   ///
   /// Sort of a variant, but does not keep track of the nature
   /// of the stored data, since that knowledge is available
   /// via the current parser state.
-  class value_type
+  class semantic_type
   {
   public:
     /// Type of *this.
-    typedef value_type self_type;
+    typedef semantic_type self_type;
 
     /// Empty construction.
-    value_type () YY_NOEXCEPT
-      : yyraw_ ()
+    semantic_type () YY_NOEXCEPT
+      : yybuffer_ ()
       , yytypeid_ (YY_NULLPTR)
     {}
 
     /// Construct and fill.
     template <typename T>
-    value_type (YY_RVREF (T) t)
+    semantic_type (YY_RVREF (T) t)
       : yytypeid_ (&typeid (T))
     {
       YY_ASSERT (sizeof (T) <= size);
@@ -484,13 +475,13 @@ namespace  EbelFile  {
 
 #if 201103L <= YY_CPLUSPLUS
     /// Non copyable.
-    value_type (const self_type&) = delete;
+    semantic_type (const self_type&) = delete;
     /// Non copyable.
     self_type& operator= (const self_type&) = delete;
 #endif
 
     /// Destruction, allowed only if empty.
-    ~value_type () YY_NOEXCEPT
+    ~semantic_type () YY_NOEXCEPT
     {
       YY_ASSERT (!yytypeid_);
     }
@@ -634,7 +625,7 @@ namespace  EbelFile  {
   private:
 #if YY_CPLUSPLUS < 201103L
     /// Non copyable.
-    value_type (const self_type&);
+    semantic_type (const self_type&);
     /// Non copyable.
     self_type& operator= (const self_type&);
 #endif
@@ -644,7 +635,7 @@ namespace  EbelFile  {
     T*
     yyas_ () YY_NOEXCEPT
     {
-      void *yyp = yyraw_;
+      void *yyp = yybuffer_.yyraw;
       return static_cast<T*> (yyp);
      }
 
@@ -653,15 +644,18 @@ namespace  EbelFile  {
     const T*
     yyas_ () const YY_NOEXCEPT
     {
-      const void *yyp = yyraw_;
+      const void *yyp = yybuffer_.yyraw;
       return static_cast<const T*> (yyp);
      }
 
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // type
+      char dummy1[sizeof (IR::Type)];
+
       // "number"
-      char dummy1[sizeof (int)];
+      char dummy2[sizeof (int)];
     };
 
     /// The size of the largest semantic type.
@@ -671,19 +665,18 @@ namespace  EbelFile  {
     union
     {
       /// Strongest alignment constraints.
-      long double yyalign_me_;
+      long double yyalign_me;
       /// A buffer large enough to store any of the semantic values.
-      char yyraw_[size];
-    };
+      char yyraw[size];
+    } yybuffer_;
 
     /// Whether the content is built: if defined, the name of the stored type.
     const std::type_info *yytypeid_;
   };
 
+#else
+    typedef YYSTYPE semantic_type;
 #endif
-    /// Backward compatibility (Bison 3.8).
-    typedef value_type semantic_type;
-
     /// Symbol locations.
     typedef location location_type;
 
@@ -715,23 +708,31 @@ namespace  EbelFile  {
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
     NEWLINE = 258,                 // "new line"
-    NUMBER = 259,                  // "number"
+    INT = 259,                     // "number"
     CONCAT = 260,                  // CONCAT
     DEL = 261,                     // DEL
     LOOP = 262,                    // LOOP
     NOP = 263,                     // NOP
-    PASS_EXPRESSION = 264,         // "PASS expression"
-    PASS_WORDS = 265,              // "PASS words"
-    PASS_LINES = 266,              // "PASS lines"
-    PASS_DOCUMENTS = 267,          // "PASS documents"
-    SWAP = 268                     // SWAP
+    PASS = 264,                    // PASS
+    SWAP = 265,                    // SWAP
+    RETURN = 266,                  // RETURN
+    WORDS = 267,                   // "words"
+    LINES = 268,                   // "lines"
+    DOCUMENTS = 269,               // "documents"
+    EXPRESSION = 270,              // "expression"
+    TEXT = 271,                    // TEXT
+    NUMBER = 272,                  // NUMBER
+    FLOAT = 273,                   // FLOAT
+    DELIMITER = 274,               // DELIMITER
+    SYMBOL = 275,                  // SYMBOL
+    EMPTY = 276                    // EMPTY
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
     };
 
     /// Token kind, as returned by yylex.
-    typedef token::token_kind_type token_kind_type;
+    typedef token::yytokentype token_kind_type;
 
     /// Backward compatibility alias (Bison 3.6).
     typedef token_kind_type token_type;
@@ -741,27 +742,37 @@ namespace  EbelFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 15, ///< Number of tokens.
+        YYNTOKENS = 23, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_NEWLINE = 3,                           // "new line"
-        S_NUMBER = 4,                            // "number"
+        S_INT = 4,                               // "number"
         S_CONCAT = 5,                            // CONCAT
         S_DEL = 6,                               // DEL
         S_LOOP = 7,                              // LOOP
         S_NOP = 8,                               // NOP
-        S_PASS_EXPRESSION = 9,                   // "PASS expression"
-        S_PASS_WORDS = 10,                       // "PASS words"
-        S_PASS_LINES = 11,                       // "PASS lines"
-        S_PASS_DOCUMENTS = 12,                   // "PASS documents"
-        S_SWAP = 13,                             // SWAP
-        S_14_n_ = 14,                            // '\n'
-        S_YYACCEPT = 15,                         // $accept
-        S_program = 16,                          // program
-        S_code = 17,                             // code
-        S_instruction = 18                       // instruction
+        S_PASS = 9,                              // PASS
+        S_SWAP = 10,                             // SWAP
+        S_RETURN = 11,                           // RETURN
+        S_WORDS = 12,                            // "words"
+        S_LINES = 13,                            // "lines"
+        S_DOCUMENTS = 14,                        // "documents"
+        S_EXPRESSION = 15,                       // "expression"
+        S_TEXT = 16,                             // TEXT
+        S_NUMBER = 17,                           // NUMBER
+        S_FLOAT = 18,                            // FLOAT
+        S_DELIMITER = 19,                        // DELIMITER
+        S_SYMBOL = 20,                           // SYMBOL
+        S_EMPTY = 21,                            // EMPTY
+        S_22_n_ = 22,                            // '\n'
+        S_YYACCEPT = 23,                         // $accept
+        S_program = 24,                          // program
+        S_code = 25,                             // code
+        S_instruction = 26,                      // instruction
+        S_pass = 27,                             // pass
+        S_type = 28                              // type
       };
     };
 
@@ -784,7 +795,7 @@ namespace  EbelFile  {
       typedef Base super_type;
 
       /// Default constructor.
-      basic_symbol () YY_NOEXCEPT
+      basic_symbol ()
         : value ()
         , location ()
       {}
@@ -798,7 +809,11 @@ namespace  EbelFile  {
       {
         switch (this->kind ())
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.move< IR::Type > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_INT: // "number"
         value.move< int > (std::move (that.value));
         break;
 
@@ -826,6 +841,20 @@ namespace  EbelFile  {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, IR::Type&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const IR::Type& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, int&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
@@ -845,10 +874,8 @@ namespace  EbelFile  {
         clear ();
       }
 
-
-
       /// Destroy contents, and record that is empty.
-      void clear () YY_NOEXCEPT
+      void clear ()
       {
         // User destructor.
         symbol_kind_type yykind = this->kind ();
@@ -863,7 +890,11 @@ namespace  EbelFile  {
         // Value type destructor.
 switch (yykind)
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.template destroy< IR::Type > ();
+        break;
+
+      case symbol_kind::S_INT: // "number"
         value.template destroy< int > ();
         break;
 
@@ -890,7 +921,7 @@ switch (yykind)
       void move (basic_symbol& s);
 
       /// The semantic value.
-      value_type value;
+      semantic_type value;
 
       /// The location.
       location_type location;
@@ -905,27 +936,25 @@ switch (yykind)
     /// Type access provider for token (enum) based symbols.
     struct by_kind
     {
-      /// The symbol kind as needed by the constructor.
-      typedef token_kind_type kind_type;
-
       /// Default constructor.
-      by_kind () YY_NOEXCEPT;
+      by_kind ();
 
 #if 201103L <= YY_CPLUSPLUS
       /// Move constructor.
-      by_kind (by_kind&& that) YY_NOEXCEPT;
+      by_kind (by_kind&& that);
 #endif
 
       /// Copy constructor.
-      by_kind (const by_kind& that) YY_NOEXCEPT;
+      by_kind (const by_kind& that);
+
+      /// The symbol kind as needed by the constructor.
+      typedef token_kind_type kind_type;
 
       /// Constructor from (external) token numbers.
-      by_kind (kind_type t) YY_NOEXCEPT;
-
-
+      by_kind (kind_type t);
 
       /// Record that this symbol is empty.
-      void clear () YY_NOEXCEPT;
+      void clear ();
 
       /// Steal the symbol kind from \a that.
       void move (by_kind& that);
@@ -952,35 +981,31 @@ switch (yykind)
       typedef basic_symbol<by_kind> super_type;
 
       /// Empty symbol.
-      symbol_type () YY_NOEXCEPT {}
+      symbol_type () {}
 
       /// Constructor for valueless symbols, and symbols from each type.
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, location_type l)
-        : super_type (token_kind_type (tok), std::move (l))
+        : super_type(token_type (tok), std::move (l))
 #else
       symbol_type (int tok, const location_type& l)
-        : super_type (token_kind_type (tok), l)
+        : super_type(token_type (tok), l)
 #endif
       {
-#if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::END
                    || (token::YYerror <= tok && tok <= token::NEWLINE)
-                   || (token::CONCAT <= tok && tok <= token::SWAP)
+                   || (token::CONCAT <= tok && tok <= token::EMPTY)
                    || tok == 10);
-#endif
       }
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, int v, location_type l)
-        : super_type (token_kind_type (tok), std::move (v), std::move (l))
+        : super_type(token_type (tok), std::move (v), std::move (l))
 #else
       symbol_type (int tok, const int& v, const location_type& l)
-        : super_type (token_kind_type (tok), v, l)
+        : super_type(token_type (tok), v, l)
 #endif
       {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::NUMBER);
-#endif
+        YY_ASSERT (tok == token::INT);
       }
     };
 
@@ -1029,7 +1054,7 @@ switch (yykind)
     /// YYSYMBOL.  No bounds checking.
     static std::string symbol_name (symbol_kind_type yysymbol);
 
-    // Implementation of make_symbol for each token kind.
+    // Implementation of make_symbol for each symbol type.
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
@@ -1093,16 +1118,16 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NUMBER (int v, location_type l)
+      make_INT (int v, location_type l)
       {
-        return symbol_type (token::NUMBER, std::move (v), std::move (l));
+        return symbol_type (token::INT, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_NUMBER (const int& v, const location_type& l)
+      make_INT (const int& v, const location_type& l)
       {
-        return symbol_type (token::NUMBER, v, l);
+        return symbol_type (token::INT, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1168,61 +1193,16 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_PASS_EXPRESSION (location_type l)
+      make_PASS (location_type l)
       {
-        return symbol_type (token::PASS_EXPRESSION, std::move (l));
+        return symbol_type (token::PASS, std::move (l));
       }
 #else
       static
       symbol_type
-      make_PASS_EXPRESSION (const location_type& l)
+      make_PASS (const location_type& l)
       {
-        return symbol_type (token::PASS_EXPRESSION, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_PASS_WORDS (location_type l)
-      {
-        return symbol_type (token::PASS_WORDS, std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_PASS_WORDS (const location_type& l)
-      {
-        return symbol_type (token::PASS_WORDS, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_PASS_LINES (location_type l)
-      {
-        return symbol_type (token::PASS_LINES, std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_PASS_LINES (const location_type& l)
-      {
-        return symbol_type (token::PASS_LINES, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_PASS_DOCUMENTS (location_type l)
-      {
-        return symbol_type (token::PASS_DOCUMENTS, std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_PASS_DOCUMENTS (const location_type& l)
-      {
-        return symbol_type (token::PASS_DOCUMENTS, l);
+        return symbol_type (token::PASS, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1240,15 +1220,180 @@ switch (yykind)
         return symbol_type (token::SWAP, l);
       }
 #endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_RETURN (location_type l)
+      {
+        return symbol_type (token::RETURN, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_RETURN (const location_type& l)
+      {
+        return symbol_type (token::RETURN, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_WORDS (location_type l)
+      {
+        return symbol_type (token::WORDS, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_WORDS (const location_type& l)
+      {
+        return symbol_type (token::WORDS, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_LINES (location_type l)
+      {
+        return symbol_type (token::LINES, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_LINES (const location_type& l)
+      {
+        return symbol_type (token::LINES, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_DOCUMENTS (location_type l)
+      {
+        return symbol_type (token::DOCUMENTS, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_DOCUMENTS (const location_type& l)
+      {
+        return symbol_type (token::DOCUMENTS, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_EXPRESSION (location_type l)
+      {
+        return symbol_type (token::EXPRESSION, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_EXPRESSION (const location_type& l)
+      {
+        return symbol_type (token::EXPRESSION, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_TEXT (location_type l)
+      {
+        return symbol_type (token::TEXT, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_TEXT (const location_type& l)
+      {
+        return symbol_type (token::TEXT, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_NUMBER (location_type l)
+      {
+        return symbol_type (token::NUMBER, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_NUMBER (const location_type& l)
+      {
+        return symbol_type (token::NUMBER, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_FLOAT (location_type l)
+      {
+        return symbol_type (token::FLOAT, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_FLOAT (const location_type& l)
+      {
+        return symbol_type (token::FLOAT, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_DELIMITER (location_type l)
+      {
+        return symbol_type (token::DELIMITER, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_DELIMITER (const location_type& l)
+      {
+        return symbol_type (token::DELIMITER, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_SYMBOL (location_type l)
+      {
+        return symbol_type (token::SYMBOL, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_SYMBOL (const location_type& l)
+      {
+        return symbol_type (token::SYMBOL, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_EMPTY (location_type l)
+      {
+        return symbol_type (token::EMPTY, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_EMPTY (const location_type& l)
+      {
+        return symbol_type (token::EMPTY, l);
+      }
+#endif
 
 
     class context
     {
     public:
       context (const  ParserEbel & yyparser, const symbol_type& yyla);
-      const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
-      symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
-      const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
+      const symbol_type& lookahead () const { return yyla_; }
+      symbol_kind_type token () const { return yyla_.kind (); }
+      const location_type& location () const { return yyla_.location; }
 
       /// Put in YYARG at most YYARGN of the expected tokens, and return the
       /// number of tokens stored in YYARG.  If YYARG is null, return the
@@ -1286,19 +1431,19 @@ switch (yykind)
 
     /// Whether the given \c yypact_ value indicates a defaulted state.
     /// \param yyvalue   the value to check
-    static bool yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT;
+    static bool yy_pact_value_is_default_ (int yyvalue);
 
     /// Whether the given \c yytable_ value indicates a syntax error.
     /// \param yyvalue   the value to check
-    static bool yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT;
+    static bool yy_table_value_is_error_ (int yyvalue);
 
     static const signed char yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token kind \a t to a symbol kind.
     /// In theory \a t should be a token_kind_type, but character literals
-    /// are valid, yet not members of the token_kind_type enum.
-    static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
+    /// are valid, yet not members of the token_type enum.
+    static symbol_kind_type yytranslate_ (int t);
 
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
     static std::string yytnamerr_ (const char *yystr);
@@ -1330,14 +1475,14 @@ switch (yykind)
 
     static const signed char yycheck_[];
 
-    // YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
-    // state STATE-NUM.
+    // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
+    // symbol of state STATE-NUM.
     static const signed char yystos_[];
 
-    // YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.
+    // YYR1[YYN] -- Symbol number of symbol that rule YYN derives.
     static const signed char yyr1_[];
 
-    // YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.
+    // YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.
     static const signed char yyr2_[];
 
 
@@ -1436,7 +1581,7 @@ switch (yykind)
       typedef typename S::size_type size_type;
       typedef typename std::ptrdiff_t index_type;
 
-      stack (size_type n = 200) YY_NOEXCEPT
+      stack (size_type n = 200)
         : seq_ (n)
       {}
 
@@ -1515,7 +1660,7 @@ switch (yykind)
       class slice
       {
       public:
-        slice (const stack& stack, index_type range) YY_NOEXCEPT
+        slice (const stack& stack, index_type range)
           : stack_ (stack)
           , range_ (range)
         {}
@@ -1565,14 +1710,14 @@ switch (yykind)
     void yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym);
 
     /// Pop \a n symbols from the stack.
-    void yypop_ (int n = 1) YY_NOEXCEPT;
+    void yypop_ (int n = 1);
 
     /// Constants.
     enum
     {
-      yylast_ = 29,     ///< Last index in yytable_.
-      yynnts_ = 4,  ///< Number of nonterminal symbols.
-      yyfinal_ = 19 ///< Termination state number.
+      yylast_ = 46,     ///< Last index in yytable_.
+      yynnts_ = 6,  ///< Number of nonterminal symbols.
+      yyfinal_ = 30 ///< Termination state number.
     };
 
 
@@ -1584,7 +1729,7 @@ switch (yykind)
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1588 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 1733 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 
 

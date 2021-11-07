@@ -34,7 +34,8 @@ const char *IR::get_type_name(Type type) {
         "delim",
         "symbol",
         "expression",
-        "empty"
+        "empty",
+        "derived"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
     if(type < names_size){

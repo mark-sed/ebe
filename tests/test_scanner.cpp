@@ -72,10 +72,36 @@ TEST(CodeScanner, ScannerEbel) {
         LooP\n\
             CONCAT 3    # Concat is in lines, so its fine\n\
     ");
-
     auto program = s->process(&corr_code, "");
     // Test for 3 passes
     EXPECT_EQ(true, program->nodes->size() == 3);
+    delete program;
+
+    // Testing all possible passes
+    std::istringstream passes_code(" \
+        NOP \n\
+        PASS LINE # No need for s\n\
+            SWAP 2\n\
+        PASS DOCUMENT\n\
+            NOP\n\
+        PASS documents\n\
+            NOP\n\
+        PASS words\n\
+            NOP\n\
+        PASS NUMBER expression\n\
+            RETURN NOP\n\
+        PASS EMPTY expression\n\
+            RETURN NOP\n\
+        PASS FLOAT expression\n\
+            RETURN SWAP 2\n\
+        PASS TEXT expression\n\
+            RETURN\n\
+        PASS expression\n\
+            RETURN DEL\n\
+    ");
+    auto p_passes = s->process(&passes_code, "");
+    EXPECT_EQ(true, p_passes != nullptr);
+    delete p_passes;
 
     // Test parsing incorrect code
     std::istringstream incor_code1("unknown");

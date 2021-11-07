@@ -32,6 +32,13 @@ namespace Utils {
     void to_upper(std::vector<std::string> *text);
 
     /**
+     * Capializes string (makes first letter capital)
+     * @param text Text to capitalize
+     * @return Capitalized text
+     */ 
+    std::string capitalize(std::string text);
+
+    /**
      * Parses csv values
      * @param csv String of csv values
      * @param delim CSV delimiter. Comma by default.
