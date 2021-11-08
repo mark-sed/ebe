@@ -729,20 +729,22 @@ namespace  TextFile  {
     NEWLINE = 258,                 // NEWLINE
     EXPR_BEGIN = 259,              // EXPR_BEGIN
     EXPR_END = 260,                // EXPR_END
-    TEXT = 261,                    // TEXT
-    NUMBER = 262,                  // NUMBER
-    DELIMITER = 263,               // DELIMITER
-    SYMBOL = 264,                  // SYMBOL
-    FLOAT = 265,                   // FLOAT
-    LPAR = 266,                    // "("
-    RPAR = 267,                    // ")"
-    VAR = 268,                     // "$"
-    PLUS = 269,                    // "+"
-    IMUL = 270,                    // "*"
-    MINUS = 271,                   // "-"
-    IDIV = 272,                    // "/"
-    MOD = 273,                     // "%"
-    POW = 274                      // "^"
+    FALSE_EXPR_BEGIN = 261,        // FALSE_EXPR_BEGIN
+    FALSE_EXPR_END = 262,          // FALSE_EXPR_END
+    TEXT = 263,                    // TEXT
+    NUMBER = 264,                  // NUMBER
+    DELIMITER = 265,               // DELIMITER
+    SYMBOL = 266,                  // SYMBOL
+    FLOAT = 267,                   // FLOAT
+    LPAR = 268,                    // "("
+    RPAR = 269,                    // ")"
+    VAR = 270,                     // "$"
+    PLUS = 271,                    // "+"
+    IMUL = 272,                    // "*"
+    MINUS = 273,                   // "-"
+    IDIV = 274,                    // "/"
+    MOD = 275,                     // "%"
+    POW = 276                      // "^"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -759,7 +761,7 @@ namespace  TextFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 20, ///< Number of tokens.
+        YYNTOKENS = 22, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "EOF"
         S_YYerror = 1,                           // error
@@ -767,26 +769,28 @@ namespace  TextFile  {
         S_NEWLINE = 3,                           // NEWLINE
         S_EXPR_BEGIN = 4,                        // EXPR_BEGIN
         S_EXPR_END = 5,                          // EXPR_END
-        S_TEXT = 6,                              // TEXT
-        S_NUMBER = 7,                            // NUMBER
-        S_DELIMITER = 8,                         // DELIMITER
-        S_SYMBOL = 9,                            // SYMBOL
-        S_FLOAT = 10,                            // FLOAT
-        S_LPAR = 11,                             // "("
-        S_RPAR = 12,                             // ")"
-        S_VAR = 13,                              // "$"
-        S_PLUS = 14,                             // "+"
-        S_IMUL = 15,                             // "*"
-        S_MINUS = 16,                            // "-"
-        S_IDIV = 17,                             // "/"
-        S_MOD = 18,                              // "%"
-        S_POW = 19,                              // "^"
-        S_YYACCEPT = 20,                         // $accept
-        S_text_file = 21,                        // text_file
-        S_sentence = 22,                         // sentence
-        S_word = 23,                             // word
-        S_varexpr = 24,                          // varexpr
-        S_expr = 25                              // expr
+        S_FALSE_EXPR_BEGIN = 6,                  // FALSE_EXPR_BEGIN
+        S_FALSE_EXPR_END = 7,                    // FALSE_EXPR_END
+        S_TEXT = 8,                              // TEXT
+        S_NUMBER = 9,                            // NUMBER
+        S_DELIMITER = 10,                        // DELIMITER
+        S_SYMBOL = 11,                           // SYMBOL
+        S_FLOAT = 12,                            // FLOAT
+        S_LPAR = 13,                             // "("
+        S_RPAR = 14,                             // ")"
+        S_VAR = 15,                              // "$"
+        S_PLUS = 16,                             // "+"
+        S_IMUL = 17,                             // "*"
+        S_MINUS = 18,                            // "-"
+        S_IDIV = 19,                             // "/"
+        S_MOD = 20,                              // "%"
+        S_POW = 21,                              // "^"
+        S_YYACCEPT = 22,                         // $accept
+        S_text_file = 23,                        // text_file
+        S_sentence = 24,                         // sentence
+        S_word = 25,                             // word
+        S_varexpr = 26,                          // varexpr
+        S_expr = 27                              // expr
       };
     };
 
@@ -1055,7 +1059,7 @@ switch (yykind)
 #endif
       {
         YY_ASSERT (tok == token::END
-                   || (token::YYerror <= tok && tok <= token::EXPR_END));
+                   || (token::YYerror <= tok && tok <= token::FALSE_EXPR_END));
       }
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, std::string v, location_type l)
@@ -1203,6 +1207,36 @@ switch (yykind)
       make_EXPR_END (const location_type& l)
       {
         return symbol_type (token::EXPR_END, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_FALSE_EXPR_BEGIN (location_type l)
+      {
+        return symbol_type (token::FALSE_EXPR_BEGIN, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_FALSE_EXPR_BEGIN (const location_type& l)
+      {
+        return symbol_type (token::FALSE_EXPR_BEGIN, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_FALSE_EXPR_END (location_type l)
+      {
+        return symbol_type (token::FALSE_EXPR_END, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_FALSE_EXPR_END (const location_type& l)
+      {
+        return symbol_type (token::FALSE_EXPR_END, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1745,9 +1779,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 113,     ///< Last index in yytable_.
+      yylast_ = 119,     ///< Last index in yytable_.
       yynnts_ = 6,  ///< Number of nonterminal symbols.
-      yyfinal_ = 25 ///< Termination state number.
+      yyfinal_ = 26 ///< Termination state number.
     };
 
 
@@ -1759,7 +1793,7 @@ switch (yykind)
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1763 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 1797 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
 

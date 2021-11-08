@@ -67,6 +67,8 @@
 %token NEWLINE
 %token EXPR_BEGIN
 %token EXPR_END
+%token FALSE_EXPR_BEGIN
+%token FALSE_EXPR_END
 
 %token <std::string> TEXT
 %token <std::string> NUMBER
@@ -89,7 +91,7 @@
 %right POW
 
 %type <Expr::Expression> varexpr
-%type <int> expr 
+%type <int> expr
 
 %locations
 
@@ -119,8 +121,8 @@ word      : TEXT       { scanner->add_text($1);      }
           | IDIV       { scanner->add_symbol($1);    }
           | MOD        { scanner->add_symbol($1);    }
           | POW        { scanner->add_symbol($1);    }
-          | EXPR_BEGIN { scanner->add_symbol("{"); scanner->add_symbol("!"); }
-          | EXPR_END   { scanner->add_symbol("!"); scanner->add_symbol("}");; }
+          | FALSE_EXPR_BEGIN { scanner->add_symbol("{"); scanner->add_symbol("!"); }
+          | FALSE_EXPR_END   { scanner->add_symbol("!"); scanner->add_symbol("}"); }
           | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::EQ, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2})); }
           ;
 

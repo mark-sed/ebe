@@ -682,65 +682,73 @@ YY_RULE_SETUP
 #line 48 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Expression starts
                         expr_start();
-                        return token::EXPR_BEGIN;
+                        // Check if expressions are allowed
+                        if(is_in_expr())
+                            return token::EXPR_BEGIN;
+                        else
+                            return token::FALSE_EXPR_BEGIN;
                     }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 52 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 56 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Expression ends
+                        // Check if we even were inside of an expression
+                        auto retv = token::FALSE_EXPR_END;
+                        if(is_in_expr())
+                            retv = token::EXPR_END;
                         expr_end();
-                        return token::EXPR_END;
+                        return retv;
                     }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 56 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 64 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::PLUS; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 57 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 65 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::POW; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 58 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 66 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::MOD; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 59 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 67 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::IMUL; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 60 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 68 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::MINUS; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 61 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 69 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::IDIV; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 62 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 70 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::VAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 63 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 71 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::LPAR; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 64 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 72 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   yylval->build<std::string>(yytext); return token::RPAR; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 65 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 73 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Whitespace is supposed to be ignored in expression
                         if(!is_in_expr()){
                             yylval->build<std::string>(yytext);
@@ -750,7 +758,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 71 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 79 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Delimiters
                         yylval->build<std::string>(yytext);
                         return token::DELIMITER;
@@ -758,7 +766,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 76 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 84 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Float in scientific notation
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
@@ -766,7 +774,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 81 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 89 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Float
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
@@ -774,7 +782,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 86 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 94 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Number
                         yylval->build<std::string>(yytext); 
                         return token::NUMBER; 
@@ -782,7 +790,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 91 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 99 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Text
                         yylval->build<std::string>(yytext);
                         return token::TEXT;
@@ -791,7 +799,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 96 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 104 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // New line
                         loc->lines();
                         return token::NEWLINE;
@@ -799,7 +807,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 101 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 109 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Anything else is symbol
                         yylval->build<std::string>(yytext); 
                         return token::SYMBOL; 
@@ -807,10 +815,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 105 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 113 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 813 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 821 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1782,6 +1790,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 105 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 113 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 
 

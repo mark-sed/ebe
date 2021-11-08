@@ -46,11 +46,19 @@ ALPHANUM  [a-zA-Z0-9\_\x80-\xf3]
 
 "{!"                {   // Expression starts
                         expr_start();
-                        return token::EXPR_BEGIN;
+                        // Check if expressions are allowed
+                        if(is_in_expr())
+                            return token::EXPR_BEGIN;
+                        else
+                            return token::FALSE_EXPR_BEGIN;
                     }
 "!}"                {   // Expression ends
+                        // Check if we even were inside of an expression
+                        auto retv = token::FALSE_EXPR_END;
+                        if(is_in_expr())
+                            retv = token::EXPR_END;
                         expr_end();
-                        return token::EXPR_END;
+                        return retv;
                     }
 "+"                 {   yylval->build<std::string>(yytext); return token::PLUS; }
 "^"                 {   yylval->build<std::string>(yytext); return token::POW; }

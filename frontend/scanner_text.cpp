@@ -17,6 +17,7 @@
 #include "scanner.hpp"
 #include "ir.hpp"
 #include "expression.hpp"
+#include "logging.hpp"
 
 #include <iostream>
 

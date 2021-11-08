@@ -38,7 +38,7 @@ const char *IR::get_type_name(Type type) {
         "derived"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
-    if(type < names_size){
+    if(static_cast<int>(type) < names_size){
         return NAMES[type];
     }
     return "none";

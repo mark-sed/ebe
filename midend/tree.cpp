@@ -14,7 +14,7 @@
 
 template<typename T> 
 void print_tree(std::ostream &out, const Tree<T> &tree, int space){
-    const int LEVEL_SPACE = 4;
+    const int LEVEL_SPACE = 12;
     space += LEVEL_SPACE;
     for(auto &c: tree.children){
         print_tree(out, c, space);
@@ -27,7 +27,7 @@ void print_tree(std::ostream &out, const Tree<T> &tree, int space){
 
 template<> 
 void print_tree(std::ostream &out, const Tree<Expr::Node> &tree, int space){
-    const int LEVEL_SPACE = 8;
+    const int LEVEL_SPACE = 12;
     space += LEVEL_SPACE;
     
     if(tree.children.size() > 0)
