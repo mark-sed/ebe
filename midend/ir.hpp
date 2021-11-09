@@ -147,6 +147,9 @@ namespace IR {
         PassEnvironment() : loop_inst{nullptr}, reprocess_obj{false} {};
     };
 
+    /**
+     * Pass types
+     */ 
     enum class PassType {
         EXPRESSION,
         WORDS,

@@ -16,6 +16,7 @@
 #include <list>
 #include <iterator>
 #include "ir.hpp"
+#include "compiler.hpp"
 
 // Forward declarations
 namespace IR{
@@ -67,6 +68,27 @@ namespace Inst {
          */
         virtual void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                           std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) = 0;
+    };
+
+    /**
+     * Type specialized instructions for expressions
+     */ 
+    class ExprInstruction : public Instruction {
+    public:
+        /** Destructor */ 
+        virtual ~ExprInstruction(){};
+
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, 
+                  IR::PassEnvironment &env) override {
+            Error::error(Error::ErrorCode::INTERNAL, 
+                         "Somehow expression instruction was executed in a words pass. Please report this");
+        }
+
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override {
+            Error::error(Error::ErrorCode::INTERNAL, 
+                        "Somehow expression instruction was executed in a lines pass. Please report this");
+        }
     };
 
     /**
@@ -163,6 +185,22 @@ namespace Inst {
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
         void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
+    };
+
+    // ExprInstructions
+    class ADD : public ExprInstruction {
+    private:
+        int dst;
+        int src1;
+        int src2;
+    public:
+        static const char * const NAME;
+        const char * const get_name() override { return NAME; }
+        void format_args(std::ostream &out) override;
+        ADD(int dst, int src1, int src2) : dst{dst}, src1{src1}, src2{src2} { pragma = false; }
+        ADD *copy() const override {
+            return new ADD(dst, src1, src2);
+        }
     };
 
 };

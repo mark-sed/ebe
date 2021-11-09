@@ -33,7 +33,8 @@ namespace Error {
         ARGUMENTS,     ///< Problem with user arguments
         SYNTACTIC,     ///< Syntactical error
         SEMANTIC,      ///< Semantical error
-        UNIMPLEMENTED  ///< Problems with instruction
+        UNIMPLEMENTED, ///< Problems with instruction
+        RUNTIME        ///< Runtime errors
     };
 
     /**

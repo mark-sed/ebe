@@ -27,6 +27,7 @@ set(SOURCES
     backend/compiler.cpp
     backend/instruction.cpp
     backend/interpreter.cpp
+    backend/symbol_table.cpp
     engine/engine.cpp
     engine/engine_jenn.cpp
     engine/engine_miRANDa.cpp
