@@ -18,18 +18,21 @@
 #include "ir.hpp"
 #include "expression.hpp"
 #include "logging.hpp"
+#include "arg_parser.hpp"
 
 #include <iostream>
 
 using namespace TextFile;
 
 ScannerText::ScannerText() : Scanner("Text scanner"), yyFlexLexer() {
-    loc = new TextFile::ParserText::location_type();
+    
 }
 
 IR::Node *ScannerText::process(std::istream *text, const char *file_name) {
     // Set lexer to new stream
     this->switch_streams(text);
+    this->current_file_name = file_name;
+    loc = new TextFile::ParserText::location_type();
 
     // Create new parse node (don't delete last one)
     this->current_parse = new IR::Node();
@@ -55,6 +58,11 @@ IR::Node *ScannerText::process(std::istream *text, const char *file_name) {
     return parsed;
 }
 
+void ScannerText::sub_error(Error::ErrorCode code, const std::string &err_message) {
+    this->error(code, this->current_file_name, loc->begin.line, loc->begin.column, 
+                    Utils::capitalize(err_message).c_str());
+}
+
 void ScannerText::touch_line() {
     if(current_line == nullptr){ 
         // Create new line if not created yet
@@ -63,8 +71,7 @@ void ScannerText::touch_line() {
 }
 
 void ScannerText::expr_start() {
-    // FIXME: Check if expressions are allowed
-    this->inside_expression = true;
+    this->inside_expression = Args::arg_opts.expr;
 }
 
 void ScannerText::expr_end() {
@@ -129,4 +136,6 @@ void ScannerText::add_expr(Expr::Expression *e) {
     //   filled with the instructions already so that reparsing isn't done multiple times
     //   in engine. Possibly the pass could be inside Expr::Expression or replace it even.
     current_line->push_back(new IR::Word(ss.str(), IR::Type::EXPRESSION, e));
+    // Expression was parsed, so notify that expression is no longer being parsed
+    this->expr_end();
 }

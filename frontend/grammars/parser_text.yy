@@ -65,10 +65,10 @@
 /* String is returned by all of them because it has to be stored as a string anyway */
 %token END 0 "EOF"
 %token NEWLINE
-%token EXPR_BEGIN
-%token EXPR_END
-%token FALSE_EXPR_BEGIN
-%token FALSE_EXPR_END
+%token EXPR_BEGIN "expression begin"
+%token EXPR_END "expression end"
+%token FALSE_EXPR_BEGIN "{!"
+%token FALSE_EXPR_END "!}"
 
 %token <std::string> TEXT
 %token <std::string> NUMBER
@@ -121,9 +121,13 @@ word      : TEXT       { scanner->add_text($1);      }
           | IDIV       { scanner->add_symbol($1);    }
           | MOD        { scanner->add_symbol($1);    }
           | POW        { scanner->add_symbol($1);    }
+          | LPAR       { scanner->add_symbol("(");   }
+          | RPAR       { scanner->add_symbol(")");   }
           | FALSE_EXPR_BEGIN { scanner->add_symbol("{"); scanner->add_symbol("!"); }
           | FALSE_EXPR_END   { scanner->add_symbol("!"); scanner->add_symbol("}"); }
           | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::EQ, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2})); }
+          | EXPR_BEGIN expr EXPR_END { auto e = Expression(Node(Type::NUMBER, std::to_string($2)), std::vector<Expression>{});
+                                       scanner->add_expr(new Expression(Node(Type::EQ, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}));}
           ;
 
 varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()); }
@@ -162,9 +166,14 @@ expr      : NUMBER { $$ = atoi($1.c_str()); }
 
 /* Error method */
 void TextFile::ParserText::error(const location_type &l, const std::string &err_message) {
-    // Since this should never happen, there is no need for additional information
-    std::stringstream mss;
-    mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
-        << " at line " << scanner->loc->begin.line << ", column " << scanner->loc->begin.column;
-    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str(), nullptr, true);
+    if(scanner->is_in_expr()) {
+        // Error in user expression
+        auto msg = err_message+". Incorrect expression";
+        scanner->sub_error(Error::ErrorCode::SYNTACTIC, msg.c_str());
+    }
+    else {
+        // Since this should never happen, there is no need for additional information
+        auto msg = std::string("Somehow text file wasn't parsed correctly: \"")+err_message+"\". Please report this";
+        scanner->sub_error(Error::ErrorCode::INTERNAL, msg.c_str());
+    }
 }

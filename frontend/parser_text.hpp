@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.7.4.
+// A Bison parser, made by GNU Bison 3.7.6.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -32,7 +32,7 @@
 
 
 /**
- ** \file frontend/parser_text.hpp
+ ** \file /home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp
  ** Define the  TextFile ::parser class.
  */
 
@@ -42,10 +42,10 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
-# define YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+#ifndef YY_YY_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+# define YY_YY_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_TEXT_HPP_INCLUDED
 // "%code requires" blocks.
-#line 25 "frontend/grammars/parser_text.yy"
+#line 25 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 
     namespace TextFile {
         class ScannerText;
@@ -64,7 +64,7 @@
         #endif
     #endif
 
-#line 68 "frontend/parser_text.hpp"
+#line 68 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -135,9 +135,9 @@
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
+# define YY_USE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YY_USE(E) /* empty */
 #endif
 
 #if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
@@ -197,9 +197,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 19 "frontend/grammars/parser_text.yy"
+#line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 namespace  TextFile  {
-#line 203 "frontend/parser_text.hpp"
+#line 203 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
   /// A point in a source file.
@@ -727,10 +727,10 @@ namespace  TextFile  {
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
     NEWLINE = 258,                 // NEWLINE
-    EXPR_BEGIN = 259,              // EXPR_BEGIN
-    EXPR_END = 260,                // EXPR_END
-    FALSE_EXPR_BEGIN = 261,        // FALSE_EXPR_BEGIN
-    FALSE_EXPR_END = 262,          // FALSE_EXPR_END
+    EXPR_BEGIN = 259,              // "expression begin"
+    EXPR_END = 260,                // "expression end"
+    FALSE_EXPR_BEGIN = 261,        // "{!"
+    FALSE_EXPR_END = 262,          // "!}"
     TEXT = 263,                    // TEXT
     NUMBER = 264,                  // NUMBER
     DELIMITER = 265,               // DELIMITER
@@ -767,10 +767,10 @@ namespace  TextFile  {
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_NEWLINE = 3,                           // NEWLINE
-        S_EXPR_BEGIN = 4,                        // EXPR_BEGIN
-        S_EXPR_END = 5,                          // EXPR_END
-        S_FALSE_EXPR_BEGIN = 6,                  // FALSE_EXPR_BEGIN
-        S_FALSE_EXPR_END = 7,                    // FALSE_EXPR_END
+        S_EXPR_BEGIN = 4,                        // "expression begin"
+        S_EXPR_END = 5,                          // "expression end"
+        S_FALSE_EXPR_BEGIN = 6,                  // "{!"
+        S_FALSE_EXPR_END = 7,                    // "!}"
         S_TEXT = 8,                              // TEXT
         S_NUMBER = 9,                            // NUMBER
         S_DELIMITER = 10,                        // DELIMITER
@@ -924,7 +924,7 @@ namespace  TextFile  {
       }
 
       /// Destroy contents, and record that is empty.
-      void clear ()
+      void clear () YY_NOEXCEPT
       {
         // User destructor.
         symbol_kind_type yykind = this->kind ();
@@ -1020,7 +1020,7 @@ switch (yykind)
       by_kind (kind_type t);
 
       /// Record that this symbol is empty.
-      void clear ();
+      void clear () YY_NOEXCEPT;
 
       /// Steal the symbol kind from \a that.
       void move (by_kind& that);
@@ -1455,9 +1455,9 @@ switch (yykind)
     {
     public:
       context (const  ParserText & yyparser, const symbol_type& yyla);
-      const symbol_type& lookahead () const { return yyla_; }
-      symbol_kind_type token () const { return yyla_.kind (); }
-      const location_type& location () const { return yyla_.location; }
+      const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
+      symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
+      const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
 
       /// Put in YYARG at most YYARGN of the expected tokens, and return the
       /// number of tokens stored in YYARG.  If YYARG is null, return the
@@ -1779,9 +1779,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 119,     ///< Last index in yytable_.
+      yylast_ = 123,     ///< Last index in yytable_.
       yynnts_ = 6,  ///< Number of nonterminal symbols.
-      yyfinal_ = 26 ///< Termination state number.
+      yyfinal_ = 28 ///< Termination state number.
     };
 
 
@@ -1791,11 +1791,11 @@ switch (yykind)
   };
 
 
-#line 19 "frontend/grammars/parser_text.yy"
+#line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1797 "frontend/parser_text.hpp"
+#line 1797 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
 
 
-#endif // !YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+#endif // !YY_YY_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_TEXT_HPP_INCLUDED

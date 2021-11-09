@@ -694,11 +694,11 @@ YY_RULE_SETUP
 #line 56 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 {   // Expression ends
                         // Check if we even were inside of an expression
-                        auto retv = token::FALSE_EXPR_END;
+                        // Note: expr_end should not be called here, it is called after the whole expression
+                        //       is parsed even inside the parser and scanner.
                         if(is_in_expr())
-                            retv = token::EXPR_END;
-                        expr_end();
-                        return retv;
+                            return token::EXPR_END;
+                        return token::FALSE_EXPR_END;
                     }
 	YY_BREAK
 case 3:

@@ -36,6 +36,7 @@ class ScannerText : public Scanner, public yyFlexLexer {
 private:
     TextFile::ParserText::semantic_type *yylval = nullptr;
     bool inside_expression = false;
+    const char *current_file_name;
 
     IR::Node *current_parse;              ///< Holds node that is currently being parsed during process method
     std::list<IR::Word *> *current_line;  ///< Holds line currently being parsed during process method
@@ -52,12 +53,6 @@ private:
      * Used by lexer to denote that an expression ends
      */ 
     void expr_end();
-
-    /**
-     * Used by the lexer to tell it if it is currently inside of an expression
-     * @return true if currently it's inside of an expression
-     */ 
-    bool is_in_expr();
 public:
     TextFile::ParserText::location_type *loc = nullptr;
     ScannerText();
@@ -79,6 +74,19 @@ public:
     void add_newline();
     void add_expr(Expr::Expression *e);
     /** @} */
+
+    /**
+     * Error handeling from parser and lexer
+     * @param code Error code to report
+     * @param err_message Error message
+     */ 
+    void sub_error(Error::ErrorCode code, const std::string &err_message);
+
+    /**
+     * Used by the lexer and parser to tell it if it is currently inside of an expression
+     * @return true if currently it's inside of an expression
+     */ 
+    bool is_in_expr();
 
     IR::Node *process(std::istream *text, const char *file_name) override;
 };

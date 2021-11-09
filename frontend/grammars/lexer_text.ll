@@ -54,11 +54,11 @@ ALPHANUM  [a-zA-Z0-9\_\x80-\xf3]
                     }
 "!}"                {   // Expression ends
                         // Check if we even were inside of an expression
-                        auto retv = token::FALSE_EXPR_END;
+                        // Note: expr_end should not be called here, it is called after the whole expression
+                        //       is parsed even inside the parser and scanner.
                         if(is_in_expr())
-                            retv = token::EXPR_END;
-                        expr_end();
-                        return retv;
+                            return token::EXPR_END;
+                        return token::FALSE_EXPR_END;
                     }
 "+"                 {   yylval->build<std::string>(yytext); return token::PLUS; }
 "^"                 {   yylval->build<std::string>(yytext); return token::POW; }

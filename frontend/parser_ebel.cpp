@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.7.4.
+// A Bison parser, made by GNU Bison 3.7.6.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -44,7 +44,7 @@
 
 
 // Unqualified %code blocks.
-#line 43 "frontend/grammars/parser_ebel.yy"
+#line 43 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 
     // Include compiler to use error
     #include <sstream>
@@ -58,7 +58,7 @@
     #undef yylex
     #define yylex scanner->eelex
 
-#line 62 "frontend/parser_ebel.cpp"
+#line 62 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
 
 #ifndef YY_
@@ -135,7 +135,7 @@
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YY_USE (Symbol)
 # define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
 # define YY_STACK_PRINT()                static_cast<void> (0)
 
@@ -149,9 +149,9 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 17 "frontend/grammars/parser_ebel.yy"
+#line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 namespace  EbelFile  {
-#line 155 "frontend/parser_ebel.cpp"
+#line 155 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
   /// Build a parser object.
    ParserEbel :: ParserEbel  (ScannerEbel *scanner_yyarg)
@@ -257,7 +257,7 @@ namespace  EbelFile  {
   {}
 
   void
-   ParserEbel ::by_kind::clear ()
+   ParserEbel ::by_kind::clear () YY_NOEXCEPT
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
@@ -426,7 +426,7 @@ namespace  EbelFile  {
    ParserEbel ::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
-    YYUSE (yyoutput);
+    YY_USE (yyoutput);
     if (yysym.empty ())
       yyo << "empty symbol";
     else
@@ -435,7 +435,7 @@ namespace  EbelFile  {
         yyo << (yykind < YYNTOKENS ? "token" : "nterm")
             << ' ' << yysym.name () << " ("
             << yysym.location << ": ";
-        YYUSE (yykind);
+        YY_USE (yykind);
         yyo << ')';
       }
   }
@@ -688,115 +688,115 @@ namespace  EbelFile  {
           switch (yyn)
             {
   case 12: // instruction: CONCAT "number"
-#line 105 "frontend/grammars/parser_ebel.yy"
+#line 105 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_concat(yystack_[0].value.as < int > ());          }
-#line 694 "frontend/parser_ebel.cpp"
+#line 694 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 13: // instruction: DEL
-#line 106 "frontend/grammars/parser_ebel.yy"
+#line 106 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_del();               }
-#line 700 "frontend/parser_ebel.cpp"
+#line 700 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 14: // instruction: LOOP
-#line 107 "frontend/grammars/parser_ebel.yy"
+#line 107 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_loop();              }
-#line 706 "frontend/parser_ebel.cpp"
+#line 706 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 15: // instruction: NOP
-#line 108 "frontend/grammars/parser_ebel.yy"
+#line 108 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_nop();               }
-#line 712 "frontend/parser_ebel.cpp"
+#line 712 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 16: // instruction: SWAP "number"
-#line 109 "frontend/grammars/parser_ebel.yy"
+#line 109 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_swap(yystack_[0].value.as < int > ());            }
-#line 718 "frontend/parser_ebel.cpp"
+#line 718 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 17: // instruction: RETURN instruction
-#line 110 "frontend/grammars/parser_ebel.yy"
+#line 110 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_return();            }
-#line 724 "frontend/parser_ebel.cpp"
+#line 724 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 18: // instruction: RETURN
-#line 111 "frontend/grammars/parser_ebel.yy"
+#line 111 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_return(); scanner->add_nop(); }
-#line 730 "frontend/parser_ebel.cpp"
+#line 730 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 19: // pass: PASS type "expression"
-#line 114 "frontend/grammars/parser_ebel.yy"
+#line 114 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_pass_expression(yystack_[1].value.as < IR::Type > ()); }
-#line 736 "frontend/parser_ebel.cpp"
+#line 736 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 20: // pass: PASS "expression"
-#line 115 "frontend/grammars/parser_ebel.yy"
+#line 115 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_pass_expression(IR::Type::DERIVED); }
-#line 742 "frontend/parser_ebel.cpp"
+#line 742 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 21: // pass: PASS "words"
-#line 116 "frontend/grammars/parser_ebel.yy"
+#line 116 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_pass_words();        }
-#line 748 "frontend/parser_ebel.cpp"
+#line 748 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 22: // pass: PASS "lines"
-#line 117 "frontend/grammars/parser_ebel.yy"
+#line 117 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_pass_lines();        }
-#line 754 "frontend/parser_ebel.cpp"
+#line 754 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 23: // pass: PASS "documents"
-#line 118 "frontend/grammars/parser_ebel.yy"
+#line 118 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                                    { scanner->add_pass_documents();    }
-#line 760 "frontend/parser_ebel.cpp"
+#line 760 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 24: // type: TEXT
-#line 120 "frontend/grammars/parser_ebel.yy"
+#line 120 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                         { yylhs.value.as < IR::Type > () = IR::Type::TEXT;      }
-#line 766 "frontend/parser_ebel.cpp"
+#line 766 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 25: // type: NUMBER
-#line 121 "frontend/grammars/parser_ebel.yy"
+#line 121 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                         { yylhs.value.as < IR::Type > () = IR::Type::NUMBER;    }
-#line 772 "frontend/parser_ebel.cpp"
+#line 772 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 26: // type: FLOAT
-#line 122 "frontend/grammars/parser_ebel.yy"
+#line 122 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                         { yylhs.value.as < IR::Type > () = IR::Type::FLOAT;     }
-#line 778 "frontend/parser_ebel.cpp"
+#line 778 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 27: // type: DELIMITER
-#line 123 "frontend/grammars/parser_ebel.yy"
+#line 123 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                         { yylhs.value.as < IR::Type > () = IR::Type::DELIMITER; }
-#line 784 "frontend/parser_ebel.cpp"
+#line 784 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 28: // type: SYMBOL
-#line 124 "frontend/grammars/parser_ebel.yy"
+#line 124 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                         { yylhs.value.as < IR::Type > () = IR::Type::SYMBOL;    }
-#line 790 "frontend/parser_ebel.cpp"
+#line 790 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 29: // type: EMPTY
-#line 125 "frontend/grammars/parser_ebel.yy"
+#line 125 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
                         { yylhs.value.as < IR::Type > () = IR::Type::EMPTY;     }
-#line 796 "frontend/parser_ebel.cpp"
+#line 796 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
 
-#line 800 "frontend/parser_ebel.cpp"
+#line 800 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
             default:
               break;
@@ -1176,7 +1176,7 @@ namespace  EbelFile  {
   const signed char
    ParserEbel ::yydefgoto_[] =
   {
-      -1,    11,    12,    13,    14,    27
+       0,    11,    12,    13,    14,    27
   };
 
   const signed char
@@ -1325,11 +1325,11 @@ namespace  EbelFile  {
       return symbol_kind::S_YYUNDEF;
   }
 
-#line 17 "frontend/grammars/parser_ebel.yy"
+#line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1331 "frontend/parser_ebel.cpp"
+#line 1331 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
-#line 128 "frontend/grammars/parser_ebel.yy"
+#line 128 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 
 
 /* Error method */

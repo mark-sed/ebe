@@ -29,6 +29,7 @@ const char *HELP_TEXT = "Usage: ebe [options] file\n"
 "Options:\n"
 "  --help -h                   Prints this text.\n"
 "  --version                   Prints compiler's version information.\n"
+"  -expr --expressions         Expressions between \"{!\" and \"!}\" will be generated into ebel code.\n"
 "  -alpha-num                  Compiler will group text with numbers if they're not separated.\n"
 "  -alpha-sym                  Compiler will group text with symbols if they're not separated.\n"
 "  -group-delim                Multiple delimiters after each other will be parsed as one delimiter.\n"
@@ -54,6 +55,7 @@ ArgOpts Args::arg_opts {
     .file_out = nullptr,
     .ebel_file = nullptr,
     .int_files{},
+    .expr = false,
     .alpha_num = false,
     .alpha_sym = false,
     .group_delim = false,
@@ -252,6 +254,9 @@ void Args::parse_args(int argc, char *argv[]){
         }
     }
     // Parsing options
+    if(exists_option(argv, argv+argc, "-expr", "--expressions")){
+        arg_opts.expr = true;
+    }
     if(exists_option(argv, argv+argc, "-alpha-num", "")){
         arg_opts.alpha_num = true;
     }
