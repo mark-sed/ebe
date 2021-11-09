@@ -32,7 +32,7 @@
 
 
 /**
- ** \file /home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp
+ ** \file frontend/parser_ebel.hpp
  ** Define the  EbelFile ::parser class.
  */
 
@@ -42,10 +42,10 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_EE_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_EBEL_HPP_INCLUDED
-# define YY_EE_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_EBEL_HPP_INCLUDED
+#ifndef YY_EE_FRONTEND_PARSER_EBEL_HPP_INCLUDED
+# define YY_EE_FRONTEND_PARSER_EBEL_HPP_INCLUDED
 // "%code requires" blocks.
-#line 23 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+#line 23 "frontend/grammars/parser_ebel.yy"
 
     namespace EbelFile {
         class ScannerEbel;
@@ -61,7 +61,7 @@
         #endif
     #endif
 
-#line 65 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 65 "frontend/parser_ebel.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -194,9 +194,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+#line 17 "frontend/grammars/parser_ebel.yy"
 namespace  EbelFile  {
-#line 200 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 200 "frontend/parser_ebel.hpp"
 
 
   /// A point in a source file.
@@ -1727,11 +1727,11 @@ switch (yykind)
   };
 
 
-#line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+#line 17 "frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1733 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 1733 "frontend/parser_ebel.hpp"
 
 
 
 
-#endif // !YY_EE_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_EBEL_HPP_INCLUDED
+#endif // !YY_EE_FRONTEND_PARSER_EBEL_HPP_INCLUDED

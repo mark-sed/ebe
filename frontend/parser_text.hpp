@@ -32,7 +32,7 @@
 
 
 /**
- ** \file /home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp
+ ** \file frontend/parser_text.hpp
  ** Define the  TextFile ::parser class.
  */
 
@@ -42,10 +42,10 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_TEXT_HPP_INCLUDED
-# define YY_YY_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+#ifndef YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+# define YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
 // "%code requires" blocks.
-#line 25 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+#line 25 "frontend/grammars/parser_text.yy"
 
     namespace TextFile {
         class ScannerText;
@@ -64,7 +64,7 @@
         #endif
     #endif
 
-#line 68 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 68 "frontend/parser_text.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -197,9 +197,9 @@
 # define YYDEBUG 0
 #endif
 
-#line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+#line 19 "frontend/grammars/parser_text.yy"
 namespace  TextFile  {
-#line 203 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 203 "frontend/parser_text.hpp"
 
 
   /// A point in a source file.
@@ -1791,11 +1791,11 @@ switch (yykind)
   };
 
 
-#line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+#line 19 "frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1797 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 1797 "frontend/parser_text.hpp"
 
 
 
 
-#endif // !YY_YY_HOME_MAREK_DESKTOP_SKOLA_DP_EBE_FRONTEND_PARSER_TEXT_HPP_INCLUDED
+#endif // !YY_YY_FRONTEND_PARSER_TEXT_HPP_INCLUDED
