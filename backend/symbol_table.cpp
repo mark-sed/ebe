@@ -61,6 +61,13 @@ bool SymbolTable::assert_get(int index){
     return true;
 }
 
+IR::Type SymbolTable::type_at(int index) {
+    if(this->assert_get(index)){
+        return table[index]->type;
+    }
+    return IR::Type::DERIVED;
+}
+
 template<typename T>
 void SymbolTable::set(int index, T value) {
     throw Exception::EbeSymTableUnknwonTypeException("Attempt to set variable to not supported type");
@@ -70,6 +77,13 @@ template<>
 void SymbolTable::set(int index, int value) {
     if(this->assert_set(index)){
         table[index] = new NumberVar(value);
+    }
+}
+
+template<>
+void SymbolTable::set(int index, float value) {
+    if(this->assert_set(index)){
+        table[index] = new FloatVar(value);
     }
 }
 
@@ -83,6 +97,14 @@ template<>
 int SymbolTable::get(int index) {
     if(this->assert_get(index)){
         return table[index]->get_number();
+    }
+    return 0;
+}
+
+template<>
+float SymbolTable::get(int index) {
+    if(this->assert_get(index)){
+        return table[index]->get_float();
     }
     return 0;
 }

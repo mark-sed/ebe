@@ -17,6 +17,7 @@
 #include <iterator>
 #include "ir.hpp"
 #include "compiler.hpp"
+#include "symbol_table.hpp"
 
 // Forward declarations
 namespace IR{
@@ -68,6 +69,15 @@ namespace Inst {
          */
         virtual void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
                           std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) = 0;
+
+        /**
+         * Instruction execution for PassExpression
+         * @param sym_table Symbol table which variables will be modified by the instruction
+         */
+        virtual void exec(Vars::SymbolTable *sym_table) {
+            Error::error(Error::ErrorCode::INTERNAL, 
+                         "Somehow non-expression instruction was executed in an expression pass. Please report this");
+        }
     };
 
     /**
@@ -188,19 +198,37 @@ namespace Inst {
     };
 
     // ExprInstructions
+
     class ADD : public ExprInstruction {
     private:
         int dst;
-        int src1;
-        int src2;
+        int isrc1;
+        int isrc2;
+        Vars::Variable src1;
+        Vars::Variable src2;
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
         void format_args(std::ostream &out) override;
-        ADD(int dst, int src1, int src2) : dst{dst}, src1{src1}, src2{src2} { pragma = false; }
+        // For custom settings, should be used only by copy
+        ADD(int dst, int isrc1, int isrc2, Vars::Variable src1, Vars::Variable src2) 
+            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { pragma = false; }
+        // $, $, $
+        ADD(int dst, int isrc1, int isrc2) 
+            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{}, src2{} { pragma = false; }
+        // $, $, #
+        ADD(int dst, int isrc1, Vars::Variable src2) 
+            : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{}, src2{src2} { pragma = false; }
+        // $, #, $
+        ADD(int dst, Vars::Variable src1, int isrc2) 
+            : dst{dst}, isrc1{-1}, isrc2{isrc2}, src1{src1}, src2{} { pragma = false; }
+        // $, #, #
+        ADD(int dst, Vars::Variable src1, Vars::Variable src2) 
+            : dst{dst}, isrc1{-1}, isrc2{-1}, src1{src1}, src2{src2} { pragma = false; }
         ADD *copy() const override {
-            return new ADD(dst, src1, src2);
+            return new ADD(dst, isrc1, isrc2, src1, src2);
         }
+        void exec(Vars::SymbolTable *sym_table) override;
     };
 
 };

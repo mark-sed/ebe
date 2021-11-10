@@ -151,3 +151,75 @@ void SWAP::exec(std::list<std::list<IR::Word *> *>::iterator &line,
     std::advance(line, this->arg1);
     std::iter_swap(src, line);
 }
+
+// ExprInstructions
+
+void ADD::exec(Vars::SymbolTable *sym_table) {
+    IR::Type src1_type;
+    IR::Type src2_type;
+    // Check if src1 is variable or constant and get its type
+    if(isrc1 >= 0) {
+        src1_type = sym_table->type_at(isrc1);
+    }
+    else {
+        src1_type = src1.type;
+    }
+    // Check also for src2
+    if(isrc2 >= 0) {
+        src2_type = sym_table->type_at(isrc2);
+    }
+    else {
+        src2_type = src2.type;
+    }
+
+    // Do type checking
+    if(src1_type != src2_type) {
+        throw Exception::EbeSymTableTypeException("Mismatched argument types in ADD instruction");
+    }
+    if(src1_type != IR::Type::NUMBER && src1_type != IR::Type::FLOAT) {
+        throw Exception::EbeSymTableTypeException("Incorrect 2nd argument type in ADD instruction");
+    }
+    if(src2_type != IR::Type::NUMBER && src2_type != IR::Type::FLOAT) {
+        throw Exception::EbeSymTableTypeException("Incorrect 3rd argument type in ADD instruction");
+    }
+    // SRC1 and SRC2 have matching type, based on it do addition
+    if(src1_type == IR::NUMBER) {
+        int src1_value;
+        int src2_value;
+        // Extract int values either from symbol table or Variable
+        if(isrc1 >= 0) {
+            src1_value = sym_table->get<int>(isrc1);
+        }
+        else {
+            src1_value = src1.get_number();
+        }
+
+        if(isrc2 >= 0) {
+            src2_value = sym_table->get<int>(isrc2);
+        }
+        else {
+            src2_value = src2.get_number();
+        }
+        int result = src1_value + src2_value;
+        sym_table->set<int>(dst, result);
+    }
+    else { // FLOAT
+        int src1_value;
+        int src2_value;
+        if(isrc1 >= 0) {
+            src1_value = sym_table->get<float>(isrc1);
+        }
+        else {
+            src1_value = src1.get_float();
+        }
+
+        if(isrc2 >= 0) {
+            src2_value = sym_table->get<float>(isrc2);
+        }
+        else {
+            src2_value = src2.get_float();
+        }
+        int result = src1_value + src2_value;
+        sym_table->set<float>(dst, result);
+    }
+}

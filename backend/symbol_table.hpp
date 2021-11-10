@@ -14,6 +14,7 @@
 
 #include <string>
 #include "compiler.hpp"
+#include "ir.hpp"
 
 /**
  * Namespace for working with variables
@@ -24,6 +25,19 @@ namespace Vars {
      */ 
     class Variable {
     public:
+        IR::Type type;  ///< Denotes variable's dynamic type
+    protected:
+        /**
+         * Constructor for derived classes to set the type
+         * @param Derived class type
+         */ 
+        Variable(IR::Type type) : type{type} {}
+    public:
+        /** 
+         * Constructor to create dummy Variable 
+         * It's type will be IR::Type::DERIVED  
+         */
+        Variable() : type{IR::Type::DERIVED} {}
         virtual ~Variable() {}
 
         /**
@@ -40,13 +54,36 @@ namespace Vars {
         /** @} */
     };
 
+    /**
+     * Variable of type NUMBER
+     */ 
     class NumberVar : public Variable {
     private:
         int value;
     public:
-        NumberVar(int value) : value{value} {}
+        /**
+         * Constructor
+         * @param value Variable's value
+         */ 
+        NumberVar(int value) : Variable(IR::Type::NUMBER), value{value} {}
 
         int get_number() override { return value; }
+    };
+
+    /**
+     * Variable of type FLOAT
+     */ 
+    class FloatVar : public Variable {
+    private:
+        float value;
+    public:
+        /**
+         * Constructor
+         * @param value Variable's value
+         */ 
+        FloatVar(float value) : Variable(IR::Type::FLOAT), value{value} {}
+
+        float get_float() override { return value; }
     };
 
     /**
@@ -101,6 +138,14 @@ namespace Vars {
          */ 
         template<typename T>
         T get(int index);
+
+        /**
+         * Getter for variable type
+         * @param index Variable's index
+         * @return Variable's dynamic type
+         * @throw Same exceptions as get might throw
+         */
+        IR::Type type_at(int index);
     };
 }
 

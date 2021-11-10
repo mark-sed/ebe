@@ -16,7 +16,6 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include "instruction.hpp"
 #include "engine.hpp"
 #include "gp.hpp"
 #include "tree.hpp"
@@ -27,6 +26,7 @@
 // Forward declarations
 namespace Inst {
     class Instruction;
+    class ExprInstruction;
 }
 
 namespace GP {
