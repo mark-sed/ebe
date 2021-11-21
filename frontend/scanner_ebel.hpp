@@ -23,7 +23,10 @@
 #include "ir.hpp"
 #include "scanner.hpp"
 #include "parser_ebel.hpp"
+#include "symbol_table.hpp"
 
+
+/** Handeling of files containing ebel code */
 namespace EbelFile {
 
 /**
@@ -46,10 +49,14 @@ private:
 
     /** If current pass is nullptr allocates a new one */
     void touch_pass();
+
+    /** General assertion for expression instructions */
+    void assert_expr_inst(const char * iname);
 public:
     EbelFile::ParserEbel::location_type *loc = nullptr;     ///< Current parsing location
 
     ScannerEbel();
+    virtual ~ScannerEbel() {}
 
     virtual int eelex(EbelFile::ParserEbel::semantic_type *const lval,
                       EbelFile::ParserEbel::location_type *location);
@@ -57,7 +64,6 @@ public:
     /**
      * @defgroup instparse Instruction parsers
      * Receive instruction and add it to the current_parse.
-     * @param v Text of the word
      * @{
      */  
     void add_concat(int offset);
@@ -70,6 +76,11 @@ public:
     void add_pass_documents();
     void add_swap(int offset);
     void add_return();
+    
+    void add_add(int dst, int src1, int src2);
+    void add_add(int dst, int src1, Vars::Variable src2);
+    void add_add(int dst, Vars::Variable src1, int src2);
+    void add_add(int dst, Vars::Variable src1, Vars::Variable src2);
     /** @} */
 
     /**

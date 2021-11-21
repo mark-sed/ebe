@@ -86,7 +86,7 @@ namespace Inst {
     class ExprInstruction : public Instruction {
     public:
         /** Destructor */ 
-        virtual ~ExprInstruction(){};
+        virtual ~ExprInstruction();
 
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, 
                   IR::PassEnvironment &env) override {
@@ -109,6 +109,21 @@ namespace Inst {
     Instruction *rand_instruction();
 
     // Sort instructions alphabetically
+
+    class CALL : public Instruction {
+    public:
+        size_t arg1;
+        static const char * const NAME;
+        const char * const get_name() override {return NAME;}
+        void format_args(std::ostream &out) override;
+        CALL(size_t arg1) { pragma = true; }
+        CALL *copy() const override {
+            return new CALL(arg1);
+        }
+        void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env) override;
+        void exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override;
+    };
 
     class CONCAT : public Instruction {
     private:
@@ -212,10 +227,10 @@ namespace Inst {
         void format_args(std::ostream &out) override;
         // For custom settings, should be used only by copy
         ADD(int dst, int isrc1, int isrc2, Vars::Variable src1, Vars::Variable src2) 
-            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { pragma = false; }
+            : ExprInstruction(), dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { pragma = false; }
         // $, $, $
         ADD(int dst, int isrc1, int isrc2) 
-            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{}, src2{} { pragma = false; }
+            : ExprInstruction(), dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{}, src2{} { pragma = false; }
         // $, $, #
         ADD(int dst, int isrc1, Vars::Variable src2) 
             : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{}, src2{src2} { pragma = false; }

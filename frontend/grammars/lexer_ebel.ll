@@ -48,10 +48,19 @@ SPACE   [ \t]
 
 "#"+.*                          {   /* Line comment */       ; }
 {SPACE}                         {   /* Spaces are ignored */ ; }
+","                             {   return token::COMMA      ;  }
 {NUM}+                          {   /* Integer */
                                     // TODO: Change to unsigned int and use Cast::to
                                     yylval->emplace<int>(atoi(yytext));
                                     return token::INT;
+                                }
+"$"[0-9]+                       {   /* Variable */
+                                    yylval->emplace<int>(atoi(&yytext[1]));
+                                    return token::VAR;
+                                }
+"$"                             {   /* $0 variable */
+                                    yylval->emplace<int>(0);
+                                    return token::VAR;
                                 }
 "CONCAT"{SPACE}+                {   return token::CONCAT;     }
 "DEL"                           {   return token::DEL;        }
@@ -64,6 +73,8 @@ SPACE   [ \t]
 "EXPRESSION"[S]?                {   return token::EXPRESSION; }
 "SWAP"{SPACE}+                  {   return token::SWAP;       }
 "RETURN"                        {   return token::RETURN;     }
+
+"ADD"                           {   return token::ADD;        }
 
 "TEXT"{SPACE}+                  {   return token::TEXT;       }
 "NUMBER"{SPACE}+                {   return token::NUMBER;     }

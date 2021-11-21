@@ -165,7 +165,8 @@ namespace IR {
         const char *pass_name;                       ///< Name of the pass (needed for error printing)
         PassType type;                               ///< Pass type ID
         std::vector<Inst::Instruction *> *pipeline;  ///< Pipeline of instructions
-        PassEnvironment env;
+        std::vector<Pass *> *subpass_table;          ///< Table of subpasses
+        PassEnvironment env;                         ///< Current environment
     private:
         friend std::ostream& operator<< (std::ostream &out, const IR::Pass& pass);
     protected:
@@ -182,6 +183,13 @@ namespace IR {
          * @param inst Instruction to be pushed
          */
         void push_back(Inst::Instruction *inst);
+
+        /**
+         * Pushes a subpass into the pipeline
+         * @param subpass Sub pass to push
+         * @note This method can only be used for pass words with expression pass at the moment
+         */
+        virtual void push_subpass(Pass *subpass);
 
         /**
          * Sets the pipeline
@@ -229,6 +237,7 @@ namespace IR {
         PassWords();
 
         void process(IR::Node *text) override;
+        void push_subpass(IR::Pass *subpass) override;
     };
 
     /**

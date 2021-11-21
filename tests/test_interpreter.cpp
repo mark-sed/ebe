@@ -8,6 +8,7 @@
 #include "arg_parser.hpp"
 #include "interpreter.hpp"
 #include "ir.hpp"
+#include "instruction.hpp"
 
 namespace{
 

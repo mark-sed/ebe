@@ -356,4 +356,9 @@ void Args::parse_args(int argc, char *argv[]){
             Error::error(Error::ErrorCode::UNIMPLEMENTED, "Reading input from stdin is not yet implemented, please use a file");
         }
     }
+
+    // Check for non-compatible options
+    if(arg_opts.expr && arg_opts.interpret_mode) {
+        Error::error(Error::ErrorCode::ARGUMENTS, "Expressions (-expr) cannot be used in iterpretation mode");
+    }
 }

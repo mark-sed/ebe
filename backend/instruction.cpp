@@ -24,6 +24,7 @@
 using namespace Inst;
 
 // TODO: Convert to macro extracting class name
+const char * const CALL::NAME = "CALL";
 const char * const CONCAT::NAME = "CONCAT";
 const char * const DEL::NAME = "DEL";
 const char * const LOOP::NAME = "LOOP";
@@ -31,8 +32,14 @@ const char * const NOP::NAME = "NOP";
 const char * const PASS::NAME = "PASS";
 const char * const SWAP::NAME = "SWAP";
 
+const char * const ADD::NAME = "ADD";
+
 inline void Instruction::format_args(std::ostream &out){
     
+}
+
+inline void CALL::format_args(std::ostream &out){
+    out << this->arg1;
 }
 
 inline void CONCAT::format_args(std::ostream &out){
@@ -57,6 +64,18 @@ Instruction *Inst::rand_instruction(){
 }
 
 // Instruction interpretation
+
+void CALL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
+    // Words pass
+    env.reprocess_obj = true;
+}
+
+void CALL::exec(std::list<std::list<IR::Word *> *>::iterator &line, 
+                  std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) {
+    // Lines pass
+    env.reprocess_obj = true;
+}
+
 
 void CONCAT::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
     // Words pass

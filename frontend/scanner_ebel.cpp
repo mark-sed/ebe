@@ -19,6 +19,7 @@
 #include "scanner.hpp"
 #include "ir.hpp"
 #include "logging.hpp"
+#include "symbol_table.hpp"
 
 using namespace EbelFile;
 
@@ -167,9 +168,37 @@ void ScannerEbel::add_return() {
                     "RETURN is not inside of a PASS expression", nullptr, false);
         this->error_found(Error::SEMANTIC);
     }
-    // Push current pass (expression)
-    this->current_parse->push_back(this->current_pass);
-    // Pop stored pass and remove stored pass
+    // Push current expression pass as a subpass and pop parent pass
+    this->parent_pass->push_subpass(this->current_pass);
     this->current_pass = this->parent_pass;
     this->parent_pass = nullptr;
+}
+
+// Expression instructions
+void ScannerEbel::assert_expr_inst(const char * iname) {
+    if(current_pass == nullptr || current_pass->type != IR::PassType::EXPRESSION) {
+        this->error(Error::ErrorCode::SEMANTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
+                    (std::string(iname) + " can only appear inside of an expression pass").c_str(), nullptr, false);
+        this->error_found(Error::SEMANTIC);
+    }
+}
+
+void ScannerEbel::add_add(int dst, int src1, int src2) {
+    assert_expr_inst(Inst::ADD::NAME);
+    //this->current_pass->push_back(new Inst::ADD(dst, src1, src2));
+}
+
+void ScannerEbel::add_add(int dst, int src1, Vars::Variable src2) {
+    assert_expr_inst(Inst::ADD::NAME);
+    //this->current_pass->push_back(new Inst::ADD(dst, src1, src2));
+}
+
+void ScannerEbel::add_add(int dst, Vars::Variable src1, int src2) {
+    assert_expr_inst(Inst::ADD::NAME);
+    //this->current_pass->push_back(new Inst::ADD(dst, src1, src2));
+}
+
+void ScannerEbel::add_add(int dst, Vars::Variable src1, Vars::Variable src2) {
+    assert_expr_inst(Inst::ADD::NAME);
+    //this->current_pass->push_back(new Inst::ADD(dst, src1, src2));
 }

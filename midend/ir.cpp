@@ -176,7 +176,7 @@ std::string Node::output(){
     return out.str();
 }
 
-Pass::Pass(PassType type) : type{type}, env{} {
+Pass::Pass(PassType type) : type{type}, env{}, subpass_table{nullptr} {
     if(type == PassType::EXPRESSION){
         this->pass_name = "Expression";
     }
@@ -203,6 +203,10 @@ void Pass::push_back(Inst::Instruction *inst){
     this->pipeline->push_back(inst);
 }
 
+void Pass::push_subpass(Pass *subpass) {
+    Error::error(Error::ErrorCode::INTERNAL, "Somehow subpass was pushed into non-words pass");
+}
+
 void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
     this->pipeline = pipeline;
 }
@@ -217,6 +221,15 @@ void PassExpression::process(IR::Node *text) {
 
 PassWords::PassWords() : Pass(PassType::WORDS) {
 
+}
+
+void PassWords::push_subpass(Pass *subpass) {
+    if(this->subpass_table == nullptr) {
+        this->subpass_table = new std::vector<Pass *>();
+    }
+    // Push into pipeline call to this subpass
+    this->pipeline->push_back(new Inst::CALL(this->subpass_table->size()));
+    this->subpass_table->push_back(subpass);
 }
 
 void PassWords::process(IR::Node *text) {
@@ -428,15 +441,27 @@ namespace IR {
         return out;
     }
 
-    std::ostream& operator<< (std::ostream &out, const IR::Pass& pass){
-        const char * INDENT = "  ";
+    std::ostream& format_print_pass(std::ostream &out, const IR::Pass& pass, const char * INDENT){
         out << "PASS " << pass.pass_name << std::endl;
         for(auto inst: *pass.pipeline){
-            out << INDENT << inst->get_name() << " ";
-            inst->format_args(out);
-            out << std::endl;
+            if(inst->get_name() == std::string(Inst::CALL::NAME)){
+                // Subpass printing
+                size_t index = dynamic_cast<Inst::CALL*>(inst)->arg1;
+                auto subpass = (*pass.subpass_table)[index];
+                format_print_pass(out, *subpass, "    ");
+            }
+            else {
+                out << INDENT << inst->get_name() << " ";
+                inst->format_args(out);
+                out << std::endl;
+            }
         }
         return out;
+    }
+
+    std::ostream& operator<< (std::ostream &out, const IR::Pass& pass){
+        const char * INDENT = "  ";
+        return format_print_pass(out, pass, INDENT);
     }
 
     std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node){

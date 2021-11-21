@@ -46,6 +46,7 @@
     #include <cctype>
     #include "compiler.hpp"
     #include "scanner_ebel.hpp"
+    #include "symbol_table.hpp"
 
     #include <iostream>
 
@@ -62,6 +63,10 @@
 %token END 0 "end of file"
 %token NEWLINE "new line"
 %token <int> INT "number"
+%token COMMA ","
+%token <int> VAR "variable"
+
+/* Instructions */
 %token CONCAT
 %token DEL
 %token LOOP
@@ -70,11 +75,16 @@
 %token SWAP
 %token RETURN
 
+/* Expression instructions */
+%token ADD
+
+/* Passes */
 %token WORDS "words"
 %token LINES "lines"
 %token DOCUMENTS "documents"
 %token EXPRESSION "expression"
 
+/* Word types */
 %token TEXT
 %token NUMBER
 %token FLOAT
@@ -99,6 +109,7 @@ code        : instruction
             | NEWLINE
             | code NEWLINE
             | code NEWLINE instruction
+            | code NEWLINE expr_inst
             | code NEWLINE pass
             ;
 
@@ -107,8 +118,16 @@ instruction : CONCAT INT           { scanner->add_concat($2);          }
             | LOOP                 { scanner->add_loop();              }
             | NOP                  { scanner->add_nop();               }
             | SWAP INT             { scanner->add_swap($2);            }
-            | RETURN instruction   { scanner->add_return();            }
+            | RETURN SWAP INT      { scanner->add_return(); scanner->add_swap($3); }
+            | RETURN DEL           { scanner->add_return(); scanner->add_del(); }
+            | RETURN NOP           { scanner->add_return(); scanner->add_nop(); }
             | RETURN               { scanner->add_return(); scanner->add_nop(); }
+            ;
+
+expr_inst   : ADD VAR COMMA VAR COMMA VAR           { scanner->add_add($2, $4, $6); }
+            | ADD VAR COMMA VAR COMMA NUMBER        { /*scanner->add_add($2, $4, Vars::NumberVar($6))*/; }
+            | ADD VAR COMMA NUMBER COMMA VAR        { /*scanner->add_add($2, Vars::NumberVar($4), $6)*/; }
+            | ADD VAR COMMA NUMBER COMMA NUMBER     { /*scanner->add_add($2, Vars::NumberVar($4), Vars::NumberVar($6))*/; }
             ;
 
 pass        : PASS type EXPRESSION { scanner->add_pass_expression($2); }
