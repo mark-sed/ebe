@@ -99,6 +99,24 @@ namespace Vars {
     };
 
     /**
+     * Variable of type TEXT
+     */ 
+    class TextVar : public Variable {
+    private:
+        std::string value;
+    public:
+        /**
+         * Constructor
+         * @param value Variable's value
+         */ 
+        TextVar(std::string value) : Variable(IR::Type::TEXT), value{value} {}
+
+        std::string get_text() override { return value; }
+
+        void format_value(std::ostream &out) override { out << value; };
+    };
+
+    /**
      * Symbol table is used to hold values of variables in currently interpreted expressions.
      * @note Index 0 is the $ variable (user input).
      */ 
@@ -125,6 +143,12 @@ namespace Vars {
          * Constructor. Allocates symbol table
          */ 
         SymbolTable();
+
+        /**
+         * Constructor. Allocates symbol table and adds $0 to the table
+         * @param var0 $0 in a form of IR::Word
+         */ 
+        SymbolTable(IR::Word *var0);
         
         /**
          * Destructor. Frees up symbol table allocated space.
@@ -158,6 +182,13 @@ namespace Vars {
          * @throw Same exceptions as get might throw
          */
         IR::Type type_at(int index);
+
+        /**
+         * Parses value to a string
+         * @param index Variable's index
+         * @return Variable's value as a string (to save into word)
+         */ 
+        std::string to_string(int index);
     };
 }
 

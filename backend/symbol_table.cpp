@@ -11,6 +11,7 @@
 
 #include "symbol_table.hpp"
 #include "exceptions.hpp"
+#include "ir.hpp"
 
 using namespace Vars;
 
@@ -32,6 +33,19 @@ std::string Variable::get_text() {
 
 SymbolTable::SymbolTable() : Compiler("Symbol table") {
     this->table = new Variable *[SIZE]();
+}
+
+SymbolTable::SymbolTable(IR::Word *var0) : Compiler("Symbol table") {
+    this->table = new Variable *[SIZE]();
+    if(var0->type == IR::Type::NUMBER) {
+        table[0] = new NumberVar(var0->to_int<IR::Type::NUMBER>());
+    }
+    else if(var0->type == IR::Type::FLOAT) {
+        table[0] = new FloatVar(var0->to_float<IR::Type::FLOAT>());
+    }
+    else if(var0->type == IR::Type::TEXT) {
+        table[0] = new TextVar(var0->to_string<IR::Type::TEXT>());
+    }
 }
 
 SymbolTable::~SymbolTable() { 
@@ -108,6 +122,23 @@ float SymbolTable::get(int index) {
         return table[index]->get_float();
     }
     return 0;
+}
+
+std::string SymbolTable::to_string(int index) {
+    if(index >= SIZE) { 
+        throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)+"is out of range. Maximum allowed variable is $"+std::to_string(SIZE));
+    }
+    auto var = table[index];
+    if(var->type == IR::Type::NUMBER) {
+        return std::to_string(var->get_number());
+    }
+    if(var->type == IR::Type::FLOAT) {
+        return std::to_string(var->get_float());
+    }
+    if(var->type == IR::Type::TEXT) {
+        return var->get_text();
+    }
+    throw Exception::EbeSymTableTypeException("Variable $"+std::to_string(index)+" type could not be casted to a string");
 }
 
 namespace Vars {

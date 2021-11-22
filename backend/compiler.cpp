@@ -41,7 +41,7 @@ void Error::error(Error::ErrorCode code, const char *msg, Exception::EbeExceptio
         std::cerr << "): " << msg << "." << std::endl;
     }
     else {
-        std::cerr << exc->get_type() << "): " << msg << "." << exc->what() << "." << std::endl;
+        std::cerr << ", " << exc->get_type() << "): " << msg << ". " << exc->what() << "." << std::endl;
     }
     if(exit){
         Error::exit(code);
@@ -67,7 +67,7 @@ void Compiler::error(Error::ErrorCode code, const char *file,
         std::cerr << "): " << msg << "." << std::endl;
     }
     else {
-        std::cerr << ", " << exc->get_type() << "): " << msg << "! " << exc->what() << "." << std::endl;
+        std::cerr << ", " << exc->get_type() << "): " << msg << ". " << exc->what() << "." << std::endl;
     }
     if(exit){
         Error::exit(code);

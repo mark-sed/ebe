@@ -133,7 +133,7 @@ void ScannerEbel::add_pass_expression(IR::Type type) {
         // Store parent pass to be popped in return instruction
         this->parent_pass = this->current_pass;
     }
-    this->current_pass = new IR::PassExpression();
+    this->current_pass = new IR::PassExpression(type);
 }
 
 void ScannerEbel::add_pass_words() {

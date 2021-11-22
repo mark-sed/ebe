@@ -74,6 +74,21 @@ bool Word::operator!=(const Word &other) const {
     return !(*this == other);
 }
 
+template <> int Word::to_int<IR::Type::NUMBER>() {
+    // FIXME: Don't use atoi
+    return atoi(this->text.c_str());
+}
+
+template <> std::string Word::to_string<IR::Type::TEXT>() {
+    return this->text;
+}
+
+template <> float Word::to_float<IR::Type::FLOAT>() {
+    // FIXME: PARSE TO FLOAT!!
+    std::cout << "NOT IMPLEMENTED!!!\n\n";
+    return 0.0;
+}
+
 Node::Node() {
     this->nodes = new std::list<std::list<Word *> *>();
 }
@@ -211,12 +226,30 @@ void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
     this->pipeline = pipeline;
 }
 
-PassExpression::PassExpression() : Pass(PassType::EXPRESSION) {
+PassExpression::PassExpression(IR::Type expr_type) : Pass(PassType::EXPRESSION), expr_type{expr_type} {
 
 }
 
 void PassExpression::process(IR::Node *text) {
-    // TODO: 
+
+}
+
+void PassExpression::process(IR::Word *word, size_t line, size_t column) {
+    auto sym_table = new Vars::SymbolTable(word);
+    try {
+        for(auto inst: (*this->pipeline)){
+            ++line;
+            inst->exec(sym_table);
+        }
+        word->type = sym_table->type_at(0);
+        word->text = sym_table->to_string(0);
+    } catch (Exception::EbeException *e) {
+        Error::error(Error::ErrorCode::RUNTIME, (std::string("Word '")+word->text+"' (line "+std::to_string(line)
+            +", column "+ std::to_string(column) +") won't be modified").c_str(), e, false);
+    } catch (Exception::EbeException &e) {
+        Error::error(Error::ErrorCode::RUNTIME, (std::string("Word '")+word->text+"' (line "+std::to_string(line)
+            +", column "+ std::to_string(column) +") won't be modified").c_str(), &e, false);
+    }
 }
 
 PassWords::PassWords() : Pass(PassType::WORDS) {
@@ -240,6 +273,7 @@ void PassWords::process(IR::Node *text) {
     }
     LOG1("Words pass processing:\n" << *text);
     // Iterate through lines of text
+    size_t line_number = 0;
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
         size_t column = 0;
         env.loop_inst = nullptr;
@@ -274,13 +308,22 @@ void PassWords::process(IR::Node *text) {
                 // In a loop
                 column = 0;
             }
-            // Instruction execution
-            inst->exec(word, *line, this->env);
+            // Check if instruction is subprocess call
+            if(inst->get_name() == std::string("CALL")){
+                auto index = dynamic_cast<Inst::CALL *>(inst)->arg1;
+                auto subpass = dynamic_cast<PassExpression *>((*this->subpass_table)[index]);
+                subpass->process(*word, line_number, column);
+            }
+            else {
+                // Instruction execution
+                inst->exec(word, *line, this->env);
+            }
             if(env.reprocess_obj){
                 --word;
                 env.reprocess_obj = false;
             }
         }
+        ++line_number;
     }
     LOG1("Word pass processing done");
 }

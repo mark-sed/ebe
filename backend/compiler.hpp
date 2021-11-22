@@ -54,6 +54,9 @@ namespace Error {
      */
     void error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc=nullptr, bool exit=true);
 
+    void error(Error::ErrorCode code, const char *file, long line, long column, const char *msg, 
+               Exception::EbeException *exc=nullptr, bool exit=true);
+
     /**
      * Prints warning to std::cerr
      * @param msg Message to print

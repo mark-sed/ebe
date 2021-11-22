@@ -91,6 +91,10 @@ namespace IR {
         /** Comparison operator */
         bool operator==(const Word &other) const;
         bool operator!=(const Word &other) const;
+
+        template<IR::Type type> int to_int();
+        template<IR::Type type> float to_float();
+        template<IR::Type type> std::string to_string();
     };
 
     /**
@@ -222,10 +226,13 @@ namespace IR {
      */
     class PassExpression : public Pass {
     public:
+        Type expr_type;
+
         /** Constructor */
-        PassExpression();
+        PassExpression(Type expr_type);
 
         void process(IR::Node *text) override;
+        void process(IR::Word *word, size_t line, size_t column);
     };
 
     /**

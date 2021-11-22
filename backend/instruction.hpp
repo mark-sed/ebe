@@ -85,9 +85,6 @@ namespace Inst {
      */ 
     class ExprInstruction : public Instruction {
     public:
-        /** Destructor */ 
-        //virtual ~ExprInstruction() 
-
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, 
                   IR::PassEnvironment &env) override {
             Error::error(Error::ErrorCode::INTERNAL, 
