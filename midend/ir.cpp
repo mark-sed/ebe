@@ -309,9 +309,12 @@ void PassWords::process(IR::Node *text) {
             if(inst->get_name() == std::string("CALL")){
                 auto index = dynamic_cast<Inst::CALL *>(inst)->arg1;
                 auto subpass = dynamic_cast<PassExpression *>((*this->subpass_table)[index]);
-                subpass->process(*word, line_number, column);
-                // Reprocess so that return instruction can be executed
-                env.reprocess_obj = true;
+                // Check if type matches pass type
+                if(subpass->expr_type == (*word)->type || subpass->expr_type == IR::Type::DERIVED) {
+                    subpass->process(*word, line_number, column);
+                    // Reprocess so that return instruction can be executed
+                    env.reprocess_obj = true;
+                }
             }
             else {
                 // Instruction execution
@@ -484,7 +487,11 @@ namespace IR {
     }
 
     std::ostream& format_print_pass(std::ostream &out, const IR::Pass& pass, const char * INDENT){
-        out << "PASS " << pass.pass_name << std::endl;
+        out << "PASS ";
+        if(pass.type == IR::PassType::EXPRESSION){
+            out << IR::get_type_name(dynamic_cast<const IR::PassExpression &>(pass).expr_type) << " ";
+        }
+        out << pass.pass_name << std::endl;
         for(auto inst: *pass.pipeline){
             if(inst->get_name() == std::string(Inst::CALL::NAME)){
                 // Subpass printing

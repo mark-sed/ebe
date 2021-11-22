@@ -77,6 +77,7 @@
 
 /* Expression instructions */
 %token ADD
+%token SUB
 
 /* Passes */
 %token WORDS "words"
@@ -91,6 +92,7 @@
 %token DELIMITER
 %token SYMBOL
 %token EMPTY
+%token DERIVED
 
 %type <IR::Type> type
 
@@ -99,8 +101,7 @@
 %%
 
 program     : END
-            | NEWLINE code
-            | NEWLINE END
+            | NEWLINE
             | code END
             | code error '\n'
             | error '\n'
@@ -108,7 +109,6 @@ program     : END
 
 code        : instruction
             | pass
-            | NEWLINE
             | code NEWLINE
             | code NEWLINE instruction
             | code NEWLINE expr_inst
@@ -126,17 +126,22 @@ instruction : CONCAT INT           { scanner->add_concat($2);          }
             | RETURN               { scanner->add_return(); scanner->add_nop(); }
             ;
 
-expr_inst   : ADD VAR COMMA VAR COMMA VAR       { scanner->add_add($2, $4, $6); }
+expr_inst   : ADD VAR COMMA VAR COMMA VAR       { scanner->add_add($2, $4, $6);                      }
             | ADD VAR COMMA VAR COMMA INT       { scanner->add_add($2, $4, new Vars::NumberVar($6)); }
             | ADD VAR COMMA INT COMMA VAR       { scanner->add_add($2, new Vars::NumberVar($4), $6); }
             | ADD VAR COMMA INT COMMA INT       { scanner->add_add($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+
+            | SUB VAR COMMA VAR COMMA VAR       { scanner->add_sub($2, $4, $6);                      }
+            | SUB VAR COMMA VAR COMMA INT       { scanner->add_sub($2, $4, new Vars::NumberVar($6)); }
+            | SUB VAR COMMA INT COMMA VAR       { scanner->add_sub($2, new Vars::NumberVar($4), $6); }
+            | SUB VAR COMMA INT COMMA INT       { scanner->add_sub($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
             ;
 
-pass        : PASS type EXPRESSION { scanner->add_pass_expression($2); }
+pass        : PASS type EXPRESSION { scanner->add_pass_expression($2);                }
             | PASS EXPRESSION      { scanner->add_pass_expression(IR::Type::DERIVED); }
-            | PASS WORDS           { scanner->add_pass_words();        }
-            | PASS LINES           { scanner->add_pass_lines();        }
-            | PASS DOCUMENTS       { scanner->add_pass_documents();    }
+            | PASS WORDS           { scanner->add_pass_words();                       }
+            | PASS LINES           { scanner->add_pass_lines();                       }
+            | PASS DOCUMENTS       { scanner->add_pass_documents();                   }
 
 type        : TEXT      { $$ = IR::Type::TEXT;      }
             | NUMBER    { $$ = IR::Type::NUMBER;    }
@@ -144,6 +149,7 @@ type        : TEXT      { $$ = IR::Type::TEXT;      }
             | DELIMITER { $$ = IR::Type::DELIMITER; }
             | SYMBOL    { $$ = IR::Type::SYMBOL;    }
             | EMPTY     { $$ = IR::Type::EMPTY;     }
+            | DERIVED   { $$ = IR::Type::DERIVED;   }
             ;
 
 %%

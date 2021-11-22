@@ -121,7 +121,15 @@ float SymbolTable::get(int index) {
     if(this->assert_get(index)){
         return table[index]->get_float();
     }
-    return 0;
+    return 0.0f;
+}
+
+template<>
+std::string SymbolTable::get(int index) {
+    if(this->assert_get(index)){
+        return table[index]->get_text();
+    }
+    return "";
 }
 
 std::string SymbolTable::to_string(int index) {

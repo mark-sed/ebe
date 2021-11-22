@@ -212,3 +212,23 @@ void ScannerEbel::add_add(int dst, Vars::Variable *src1, Vars::Variable *src2) {
     assert_expr_inst(Inst::ADD::NAME);
     this->current_pass->push_back(new Inst::ADD(dst, src1, src2));
 }
+
+void ScannerEbel::add_sub(int dst, int src1, int src2) {
+    assert_expr_inst(Inst::SUB::NAME);
+    this->current_pass->push_back(new Inst::SUB(dst, src1, src2));
+}
+
+void ScannerEbel::add_sub(int dst, int src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::SUB::NAME);
+    this->current_pass->push_back(new Inst::SUB(dst, src1, src2));
+}
+
+void ScannerEbel::add_sub(int dst, Vars::Variable *src1, int src2) {
+    assert_expr_inst(Inst::SUB::NAME);
+    this->current_pass->push_back(new Inst::SUB(dst, src1, src2));
+}
+
+void ScannerEbel::add_sub(int dst, Vars::Variable *src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::SUB::NAME);
+    this->current_pass->push_back(new Inst::SUB(dst, src1, src2));
+}

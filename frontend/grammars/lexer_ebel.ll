@@ -75,7 +75,8 @@ SPACE   [ \t]
 "SWAP"{SPACE}+                  {   return token::SWAP;       }
 "RETURN"                        {   return token::RETURN;     }
 
-"ADD"                           {   return token::ADD;        }
+"ADD"{SPACE}+                   {   return token::ADD;        }
+"SUB"{SPACE}+                   {   return token::SUB;        }
 
 "TEXT"{SPACE}+                  {   return token::TEXT;       }
 "NUMBER"{SPACE}+                {   return token::NUMBER;     }
@@ -83,6 +84,7 @@ SPACE   [ \t]
 "DELIMITER"{SPACE}+             {   return token::DELIMITER;  }
 "SYMBOL"{SPACE}+                {   return token::SYMBOL;     }
 "EMPTY"{SPACE}+                 {   return token::EMPTY;      }
+"DERIVED"{SPACE}+               {   return token::DERIVED;    }
 
 \n                              {
                                     loc->lines();

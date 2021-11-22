@@ -15,6 +15,7 @@
 #include <vector>
 #include <list>
 #include <iterator>
+#include <initializer_list>
 #include "ir.hpp"
 #include "compiler.hpp"
 #include "symbol_table.hpp"
@@ -84,6 +85,60 @@ namespace Inst {
      * Type specialized instructions for expressions
      */ 
     class ExprInstruction : public Instruction {
+    protected:
+        /**
+         * Asserts that argument's type is matching to expected one
+         * @param arg_num Number of the argument, for error printing
+         * @param inst_name Instruction name, for error printing
+         * @param type Type of the argument
+         * @param allowed Allowed values
+         */ 
+        void assert_type(int arg_num, const char *inst_name, IR::Type type, std::initializer_list<IR::Type> allowed);
+
+        /**
+         * Asserts that 2 argument have matching types
+         * @param inst_name Instruction name, for error printing
+         * @param t1 Type of the first argument
+         * @param t2 Type of the second argument
+         */ 
+        void assert_eq_type(const char *inst_name, IR::Type t1, IR::Type t2);
+
+        /**
+         * Extracts type from variable/value
+         * @param var Var index (if -1 then it won't be used)
+         * @param value Value argument or nullptr
+         * @param sym_table Symbol table to lookup variable
+         * @return Variable's type
+         */  
+        IR::Type extract_type_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table);
+
+        /**
+         * Extracts value from integer (NUMBER) variable/value
+         * @param var Var index (if -1 then it won't be used)
+         * @param value Value argument or nullptr
+         * @param sym_table Symbol table to lookup variable
+         * @return Variable's value
+         */  
+        int extract_int_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table);
+
+        /**
+         * Extracts value from FLOAT variable/value
+         * @param var Var index (if -1 then it won't be used)
+         * @param value Value argument or nullptr
+         * @param sym_table Symbol table to lookup variable
+         * @return Variable's value
+         */  
+        float extract_float_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table);
+
+        /**
+         * Extracts value from TEXT variable/value
+         * @param var Var index (if -1 then it won't be used)
+         * @param value Value argument or nullptr
+         * @param sym_table Symbol table to lookup variable
+         * @return Variable's value
+         */  
+        std::string extract_string_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table);
+
     public:
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, 
                   IR::PassEnvironment &env) override {
@@ -100,6 +155,56 @@ namespace Inst {
         void exec(Vars::SymbolTable *sym_table) override {
             Error::error(Error::ErrorCode::INTERNAL, 
                          "Somehow non-expression instruction was executed in an expression pass. Please report this");
+        }
+    };
+
+    /**
+     * Class for arithmetic instructions
+     */ 
+    class ArithmeticInstruction : public ExprInstruction {
+    protected:
+        int dst;                ///< Destination address (variable index)
+        int isrc1;              ///< 1st argument source address
+        int isrc2;              ///< 2nd argument source address
+        Vars::Variable *src1;   ///< 1st argument value
+        Vars::Variable *src2;   ///< 2nd argument value
+    public:
+        void format_args(std::ostream &out) override;
+
+        ArithmeticInstruction(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
+            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { pragma = false; }
+        /** 
+         * Constructor for instruction signature:
+         * $, $, $
+         */ 
+        ArithmeticInstruction(int dst, int isrc1, int isrc2) 
+            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{nullptr}, src2{nullptr} { pragma = false; }
+        /** 
+         * Constructor for instruction signature:
+         * $, $, #
+         */ 
+        ArithmeticInstruction(int dst, int isrc1, Vars::Variable *src2) 
+            : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{nullptr}, src2{src2} { pragma = false; }
+        /** 
+         * Constructor for instruction signature:
+         * $, #, $
+         */ 
+        ArithmeticInstruction(int dst, Vars::Variable *src1, int isrc2) 
+            : dst{dst}, isrc1{-1}, isrc2{isrc2}, src1{src1}, src2{nullptr} { pragma = false; }
+        /** 
+         * Constructor for instruction signature:
+         * $, #, #
+         */ 
+        ArithmeticInstruction(int dst, Vars::Variable *src1, Vars::Variable *src2) 
+            : dst{dst}, isrc1{-1}, isrc2{-1}, src1{src1}, src2{src2} { pragma = false; }
+
+        ~ArithmeticInstruction() {
+            if(src1 != nullptr) {
+                delete src1;
+            }
+            if(src2 != nullptr) {
+                delete src2;
+            }
         }
     };
 
@@ -216,40 +321,44 @@ namespace Inst {
 
     // ExprInstructions
 
-    class ADD : public ExprInstruction {
-    private:
-        int dst;
-        int isrc1;
-        int isrc2;
-        Vars::Variable *src1;
-        Vars::Variable *src2;
+    class ADD : public ArithmeticInstruction {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        void format_args(std::ostream &out) override;
         // For custom settings, should be used only by copy
         ADD(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
-            : ExprInstruction(), dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { pragma = false; }
+            : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
         // $, $, $
-        ADD(int dst, int isrc1, int isrc2) 
-            : ExprInstruction(), dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{nullptr}, src2{nullptr} { pragma = false; }
+        ADD(int dst, int isrc1, int isrc2) : ArithmeticInstruction(dst, isrc1, isrc2) {}
         // $, $, #
-        ADD(int dst, int isrc1, Vars::Variable *src2) 
-            : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{nullptr}, src2{src2} { pragma = false; }
+        ADD(int dst, int isrc1, Vars::Variable *src2) : ArithmeticInstruction(dst, isrc1, src2) {}
         // $, #, $
-        ADD(int dst, Vars::Variable *src1, int isrc2) 
-            : dst{dst}, isrc1{-1}, isrc2{isrc2}, src1{src1}, src2{nullptr} { pragma = false; }
+        ADD(int dst, Vars::Variable *src1, int isrc2) : ArithmeticInstruction(dst, src1, isrc2) {}
         // $, #, #
-        ADD(int dst, Vars::Variable *src1, Vars::Variable *src2) 
-            : dst{dst}, isrc1{-1}, isrc2{-1}, src1{src1}, src2{src2} { pragma = false; }
-        ~ADD() {
-            if(src1 != nullptr)
-                free(src1);
-            if(src2 != nullptr)
-                free(src2);
-        }
+        ADD(int dst, Vars::Variable *src1, Vars::Variable *src2) : ArithmeticInstruction(dst, src1, src2) {}
         ADD *copy() const override {
             return new ADD(dst, isrc1, isrc2, src1, src2);
+        }
+        void exec(Vars::SymbolTable *sym_table) override;
+    };
+
+    class SUB : public ArithmeticInstruction {
+    public:
+        static const char * const NAME;
+        const char * const get_name() override { return NAME; }
+        // For custom settings, should be used only by copy
+        SUB(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
+            : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
+        // $, $, $
+        SUB(int dst, int isrc1, int isrc2) : ArithmeticInstruction(dst, isrc1, isrc2) {}
+        // $, $, #
+        SUB(int dst, int isrc1, Vars::Variable *src2) : ArithmeticInstruction(dst, isrc1, src2) {}
+        // $, #, $
+        SUB(int dst, Vars::Variable *src1, int isrc2) : ArithmeticInstruction(dst, src1, isrc2) {}
+        // $, #, #
+        SUB(int dst, Vars::Variable *src1, Vars::Variable *src2) : ArithmeticInstruction(dst, src1, src2) {}
+        SUB *copy() const override {
+            return new SUB(dst, isrc1, isrc2, src1, src2);
         }
         void exec(Vars::SymbolTable *sym_table) override;
     };

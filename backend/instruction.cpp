@@ -11,6 +11,7 @@
 
 #include <string>
 #include <ostream>
+#include <initializer_list>
 #include <algorithm>
 #include "ir.hpp"
 #include "instruction.hpp"
@@ -34,13 +35,14 @@ const char * const PASS::NAME = "PASS";
 const char * const SWAP::NAME = "SWAP";
 // ExprInstructions
 const char * const ADD::NAME = "ADD";
+const char * const SUB::NAME = "SUB";
 
 
 inline void Instruction::format_args(std::ostream &out){
     
 }
 
-inline void ADD::format_args(std::ostream &out) {
+inline void ArithmeticInstruction::format_args(std::ostream &out) {
     out << "$" << this->dst << ", ";
     if(isrc1 >= 0)
         out << "$" << isrc1;
@@ -189,72 +191,103 @@ void SWAP::exec(std::list<std::list<IR::Word *> *>::iterator &line,
 
 // ExprInstructions
 
+void ExprInstruction::assert_type(int arg_num, const char *inst_name, IR::Type type, std::initializer_list<IR::Type> allowed) {
+    for(auto &a: allowed) {
+        if(type == a)
+            return;
+    }
+    throw Exception::EbeSymTableTypeException(std::string("Incorrect ")+ std::to_string(arg_num) 
+                                                         +". argument type in instruction "+inst_name);
+}
+
+inline void ExprInstruction::assert_eq_type(const char *inst_name, IR::Type t1, IR::Type t2) {
+    if(t1 != t2) {
+        throw Exception::EbeSymTableTypeException(std::string("Mismatched argument types in ")+inst_name+" instruction");
+    }
+}
+
+inline IR::Type ExprInstruction::extract_type_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table) {
+    if(var >= 0) {
+        return sym_table->type_at(var);
+    }
+    return value->type;
+}
+
+int ExprInstruction::extract_int_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table) {
+    if(var >= 0) {
+        return sym_table->get<int>(var);
+    }
+    return value->get_number();
+}
+
+float ExprInstruction::extract_float_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table) {
+    if(var >= 0) {
+        return sym_table->get<float>(var);
+    }
+    return value->get_float();
+}
+
+std::string ExprInstruction::extract_string_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table) {
+    if(var >= 0) {
+        return sym_table->get<std::string>(var);
+    }
+    return value->get_text();
+}
+
 void ADD::exec(Vars::SymbolTable *sym_table) {
-    IR::Type src1_type;
-    IR::Type src2_type;
-    // Check if src1 is variable or constant and get its type
-    if(isrc1 >= 0) {
-        src1_type = sym_table->type_at(isrc1);
-    }
-    else {
-        src1_type = src1->type;
-    }
-    // Check also for src2
-    if(isrc2 >= 0) {
-        src2_type = sym_table->type_at(isrc2);
-    }
-    else {
-        src2_type = src2->type;
-    }
+    // Extract types
+    IR::Type src1_type = extract_type_var(isrc1, src1, sym_table);
+    IR::Type src2_type = extract_type_var(isrc2, src2, sym_table);
 
     // Do type checking
-    if(src1_type != src2_type) {
-        throw Exception::EbeSymTableTypeException("Mismatched argument types in ADD instruction");
-    }
-    if(src1_type != IR::Type::NUMBER && src1_type != IR::Type::FLOAT) {
-        throw Exception::EbeSymTableTypeException("Incorrect 2nd argument type in ADD instruction");
-    }
-    if(src2_type != IR::Type::NUMBER && src2_type != IR::Type::FLOAT) {
-        throw Exception::EbeSymTableTypeException("Incorrect 3rd argument type in ADD instruction");
-    }
+    assert_type(2, NAME, src1_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_type(3, NAME, src2_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_eq_type(NAME, src1_type, src2_type);
+
     // SRC1 and SRC2 have matching type, based on it do addition
     if(src1_type == IR::NUMBER) {
-        int src1_value;
-        int src2_value;
-        // Extract int values either from symbol table or Variable
-        if(isrc1 >= 0) {
-            src1_value = sym_table->get<int>(isrc1);
-        }
-        else {
-            src1_value = src1->get_number();
-        }
-
-        if(isrc2 >= 0) {
-            src2_value = sym_table->get<int>(isrc2);
-        }
-        else {
-            src2_value = src2->get_number();
-        }
+        // Extract number values
+        int src1_value = extract_int_var(isrc1, src1, sym_table);
+        int src2_value = extract_int_var(isrc2, src2, sym_table);
+        // Compute and save to symbol table
         int result = src1_value + src2_value;
         sym_table->set<int>(dst, result);
     }
     else { // FLOAT
-        int src1_value;
-        int src2_value;
-        if(isrc1 >= 0) {
-            src1_value = sym_table->get<float>(isrc1);
-        }
-        else {
-            src1_value = src1->get_float();
-        }
+        // Extract number values
+        float src1_value = extract_float_var(isrc1, src1, sym_table);
+        float src2_value = extract_float_var(isrc2, src2, sym_table);
+        // Compute and save to symbol table
+        float result = src1_value + src2_value;
+        sym_table->set<float>(dst, result);
+    }
+}
 
-        if(isrc2 >= 0) {
-            src2_value = sym_table->get<float>(isrc2);
-        }
-        else {
-            src2_value = src2->get_float();
-        }
-        int result = src1_value + src2_value;
+void SUB::exec(Vars::SymbolTable *sym_table) {
+    // Extract types
+    IR::Type src1_type = extract_type_var(isrc1, src1, sym_table);
+    IR::Type src2_type = extract_type_var(isrc2, src2, sym_table);
+
+    // Do type checking
+    assert_type(2, NAME, src1_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_type(3, NAME, src2_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_eq_type(NAME, src1_type, src2_type);
+
+    // SRC1 and SRC2 have matching type, based on it do addition
+    if(src1_type == IR::NUMBER) {
+        // Extract number values
+        int src1_value = extract_int_var(isrc1, src1, sym_table);
+        int src2_value = extract_int_var(isrc2, src2, sym_table);
+        // Compute and save to symbol table
+        int result = src1_value - src2_value;
+        sym_table->set<int>(dst, result);
+    }
+    else { // FLOAT
+        // Extract number values
+        float src1_value = extract_float_var(isrc1, src1, sym_table);
+        float src2_value = extract_float_var(isrc2, src2, sym_table);
+        // Compute and save to symbol table
+        float result = src1_value - src2_value;
         sym_table->set<float>(dst, result);
     }
 }
