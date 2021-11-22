@@ -92,9 +92,18 @@ namespace IR {
         bool operator==(const Word &other) const;
         bool operator!=(const Word &other) const;
 
+        /**
+         * @defgroup wordgetters Word value extractors
+         * Extract values of specified type from the word
+         * @return Variable's value
+         * @note This calls Cast::to so it's exceptions may be raised
+         * @throws EbeTypeException if incorrect type is requested
+         * @{
+         */  
         template<IR::Type type> int to_int();
         template<IR::Type type> float to_float();
         template<IR::Type type> std::string to_string();
+        /** @} */
     };
 
     /**

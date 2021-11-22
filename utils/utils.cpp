@@ -91,3 +91,29 @@ template<> unsigned int Cast::to(std::string v){
         throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to unsigned int"));
     }
 }
+
+template<> int Cast::to(std::string v){
+    try{
+        char *pos = 0;
+        auto c = std::strtol(v.c_str(), &pos, 10);
+        if(*pos != '\0'){
+            throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to int"));
+        }
+        return c;
+    }catch (std::exception & e){
+        throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to int"));
+    }
+}
+
+template<> float Cast::to(std::string v){
+    try{
+        char *pos = 0;
+        auto c = std::strtof(v.c_str(), &pos);
+        if(*pos != '\0'){
+            throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to float"));
+        }
+        return c;
+    }catch (std::exception & e){
+        throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to float"));
+    }
+}

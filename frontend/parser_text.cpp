@@ -1039,7 +1039,7 @@ namespace  TextFile  {
 
   case 45: // expr: NUMBER
 #line 155 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
-                   { yylhs.value.as < int > () = atoi(yystack_[0].value.as < std::string > ().c_str()); }
+                   { yylhs.value.as < int > () = atoi(yystack_[0].value.as < std::string > ().c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
 #line 1044 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
     break;
 

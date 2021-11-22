@@ -75,8 +75,7 @@ bool Word::operator!=(const Word &other) const {
 }
 
 template <> int Word::to_int<IR::Type::NUMBER>() {
-    // FIXME: Don't use atoi
-    return atoi(this->text.c_str());
+    return Cast::to<int>(this->text.c_str());
 }
 
 template <> std::string Word::to_string<IR::Type::TEXT>() {
@@ -84,9 +83,7 @@ template <> std::string Word::to_string<IR::Type::TEXT>() {
 }
 
 template <> float Word::to_float<IR::Type::FLOAT>() {
-    // FIXME: PARSE TO FLOAT!!
-    std::cout << "NOT IMPLEMENTED!!!\n\n";
-    return 0.0;
+    return Cast::to<float>(this->text);
 }
 
 Node::Node() {

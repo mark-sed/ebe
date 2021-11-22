@@ -5,6 +5,9 @@ build/
 docs/html/
 docs/docs.html
 
+# GTests
+tests/Testing
+
 # Prerequisites
 *.d
 
@@ -38,4 +41,5 @@ docs/docs.html
 *.out
 *.app
 
+# VCode
 .vscode

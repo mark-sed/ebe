@@ -69,6 +69,11 @@ namespace Cast {
 
     /// @note Default base (base 10) is used
     template<> unsigned int to(std::string v);
+
+    /// @note Default base (base 10) is used
+    template<> int to(std::string v);
+
+    template<> float to(std::string v);
 }
 
 #endif//_UTILS_HPP_

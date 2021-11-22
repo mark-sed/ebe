@@ -50,11 +50,12 @@ SPACE   [ \t]
 {SPACE}                         {   /* Spaces are ignored */ ; }
 ","                             {   return token::COMMA      ;  }
 {NUM}+                          {   /* Integer */
-                                    // TODO: Change to unsigned int and use Cast::to
+                                    // atoi can be used since syntactical analysis was done here
                                     yylval->emplace<int>(atoi(yytext));
                                     return token::INT;
                                 }
 "$"[0-9]+                       {   /* Variable */
+                                    // atoi can be used since syntactical analysis was done here
                                     yylval->emplace<int>(atoi(&yytext[1]));
                                     return token::VAR;
                                 }

@@ -152,7 +152,7 @@ varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()
           | varexpr PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{$1, $3}); }
           ;
 
-expr      : NUMBER { $$ = atoi($1.c_str()); }
+expr      : NUMBER { $$ = atoi($1.c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
           | LPAR expr RPAR { $$ = $2; }
           | expr POW expr { $$ = static_cast<int>(std::pow($1, $3));}
           | expr MOD expr { $$ = $1 % $3;}
