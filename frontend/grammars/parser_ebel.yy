@@ -98,7 +98,9 @@
 
 %%
 
-program     : END 
+program     : END
+            | NEWLINE code
+            | NEWLINE END
             | code END
             | code error '\n'
             | error '\n'

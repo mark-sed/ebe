@@ -80,17 +80,17 @@ ALPHANUM  [a-zA-Z0-9\_\x80-\xf3]
                         return token::DELIMITER;
                     }
 
-{NUM}+\.{NUM}+[eE][+-]?{NUM}+   {   // Float in scientific notation
+[-]?{NUM}+\.{NUM}+[eE][+-]?{NUM}+   {   // Float in scientific notation
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
-                                }
+                                    }
 
-{NUM}+\.{NUM}+                  {   // Float
+[-]?{NUM}+\.{NUM}+                  {   // Float
                                     yylval->build<std::string>(yytext); 
                                     return token::FLOAT;
-                                }
+                                    }
 
-{NUM}+              {   // Number
+[-]?{NUM}+              {   // Number
                         yylval->build<std::string>(yytext); 
                         return token::NUMBER; 
                     }

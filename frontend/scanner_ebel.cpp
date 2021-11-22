@@ -94,6 +94,11 @@ void ScannerEbel::add_concat(int offset) {
                     "CONCAT can be used only in PASS lines", nullptr, false);
         this->error_found(Error::ErrorCode::SEMANTIC);
     }
+    if(offset <= 0) {
+        this->error(Error::ErrorCode::SYNTACTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
+                    "CONCAT argument can only be non-zero positive integer", nullptr, false);
+        this->error_found(Error::SYNTACTIC);
+    }
     this->current_pass->push_back(new Inst::CONCAT(offset));
 }
 
@@ -159,6 +164,11 @@ void ScannerEbel::add_pass_documents() {
 
 void ScannerEbel::add_swap(int offset) {
     this->touch_pass();
+    if(offset <= 0) {
+        this->error(Error::ErrorCode::SYNTACTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
+                    "SWAP argument can only be non-zero positive integer", nullptr, false);
+        this->error_found(Error::SYNTACTIC);
+    }
     this->current_pass->push_back(new Inst::SWAP(offset));
 }
 

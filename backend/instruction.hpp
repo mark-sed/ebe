@@ -129,12 +129,12 @@ namespace Inst {
 
     class CONCAT : public Instruction {
     private:
-        unsigned int arg1;
+        int arg1;
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
-        CONCAT(unsigned int arg1) : arg1{arg1} { pragma = false; }
+        CONCAT(int arg1) : arg1{arg1} { pragma = false; }
         CONCAT *copy() const override {
             return new CONCAT(arg1);
         }
@@ -200,12 +200,12 @@ namespace Inst {
 
     class SWAP : public Instruction {
     private:
-        unsigned int arg1;
+        int arg1;
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
-        SWAP(unsigned int arg1) : arg1{arg1} { pragma = false; }
+        SWAP(int arg1) : arg1{arg1} { pragma = false; }
         SWAP *copy() const override {
             return new SWAP(arg1);
         }

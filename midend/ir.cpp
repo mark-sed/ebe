@@ -310,6 +310,8 @@ void PassWords::process(IR::Node *text) {
                 auto index = dynamic_cast<Inst::CALL *>(inst)->arg1;
                 auto subpass = dynamic_cast<PassExpression *>((*this->subpass_table)[index]);
                 subpass->process(*word, line_number, column);
+                // Reprocess so that return instruction can be executed
+                env.reprocess_obj = true;
             }
             else {
                 // Instruction execution

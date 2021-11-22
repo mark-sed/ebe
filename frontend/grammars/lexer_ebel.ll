@@ -49,7 +49,7 @@ SPACE   [ \t]
 "#"+.*                          {   /* Line comment */       ; }
 {SPACE}                         {   /* Spaces are ignored */ ; }
 ","                             {   return token::COMMA      ;  }
-{NUM}+                          {   /* Integer */
+[-]?{NUM}+                      {   /* Integer */
                                     // atoi can be used since syntactical analysis was done here
                                     yylval->emplace<int>(atoi(yytext));
                                     return token::INT;
