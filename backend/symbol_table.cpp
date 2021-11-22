@@ -29,6 +29,7 @@ std::string Variable::get_text() {
     return std::string("");
 }
 
+
 SymbolTable::SymbolTable() : Compiler("Symbol table") {
     this->table = new Variable *[SIZE]();
 }
@@ -109,3 +110,9 @@ float SymbolTable::get(int index) {
     return 0;
 }
 
+namespace Vars {
+    std::ostream& operator<< (std::ostream &out, Vars::Variable& var) {
+        var.format_value(out);
+        return out;
+    }
+}

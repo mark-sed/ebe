@@ -456,6 +456,9 @@ namespace IR {
                 out << std::endl;
             }
         }
+        if(pass.type == IR::PassType::EXPRESSION){
+            out << INDENT << "RETURN";
+        }
         return out;
     }
 

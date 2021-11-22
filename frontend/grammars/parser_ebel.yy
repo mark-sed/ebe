@@ -124,10 +124,10 @@ instruction : CONCAT INT           { scanner->add_concat($2);          }
             | RETURN               { scanner->add_return(); scanner->add_nop(); }
             ;
 
-expr_inst   : ADD VAR COMMA VAR COMMA VAR           { scanner->add_add($2, $4, $6); }
-            | ADD VAR COMMA VAR COMMA NUMBER        { /*scanner->add_add($2, $4, Vars::NumberVar($6))*/; }
-            | ADD VAR COMMA NUMBER COMMA VAR        { /*scanner->add_add($2, Vars::NumberVar($4), $6)*/; }
-            | ADD VAR COMMA NUMBER COMMA NUMBER     { /*scanner->add_add($2, Vars::NumberVar($4), Vars::NumberVar($6))*/; }
+expr_inst   : ADD VAR COMMA VAR COMMA VAR       { scanner->add_add($2, $4, $6); }
+            | ADD VAR COMMA VAR COMMA INT       { scanner->add_add($2, $4, new Vars::NumberVar($6)); }
+            | ADD VAR COMMA INT COMMA VAR       { scanner->add_add($2, new Vars::NumberVar($4), $6); }
+            | ADD VAR COMMA INT COMMA INT       { scanner->add_add($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
             ;
 
 pass        : PASS type EXPRESSION { scanner->add_pass_expression($2); }

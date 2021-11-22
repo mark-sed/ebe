@@ -86,7 +86,7 @@ namespace Inst {
     class ExprInstruction : public Instruction {
     public:
         /** Destructor */ 
-        virtual ~ExprInstruction();
+        //virtual ~ExprInstruction() 
 
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, 
                   IR::PassEnvironment &env) override {
@@ -98,6 +98,11 @@ namespace Inst {
                   std::list<std::list<IR::Word *> *> *doc, IR::PassEnvironment &env) override {
             Error::error(Error::ErrorCode::INTERNAL, 
                         "Somehow expression instruction was executed in a lines pass. Please report this");
+        }
+
+        void exec(Vars::SymbolTable *sym_table) override {
+            Error::error(Error::ErrorCode::INTERNAL, 
+                         "Somehow non-expression instruction was executed in an expression pass. Please report this");
         }
     };
 
@@ -219,27 +224,33 @@ namespace Inst {
         int dst;
         int isrc1;
         int isrc2;
-        Vars::Variable src1;
-        Vars::Variable src2;
+        Vars::Variable *src1;
+        Vars::Variable *src2;
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
         void format_args(std::ostream &out) override;
         // For custom settings, should be used only by copy
-        ADD(int dst, int isrc1, int isrc2, Vars::Variable src1, Vars::Variable src2) 
+        ADD(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
             : ExprInstruction(), dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { pragma = false; }
         // $, $, $
         ADD(int dst, int isrc1, int isrc2) 
-            : ExprInstruction(), dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{}, src2{} { pragma = false; }
+            : ExprInstruction(), dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{nullptr}, src2{nullptr} { pragma = false; }
         // $, $, #
-        ADD(int dst, int isrc1, Vars::Variable src2) 
-            : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{}, src2{src2} { pragma = false; }
+        ADD(int dst, int isrc1, Vars::Variable *src2) 
+            : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{nullptr}, src2{src2} { pragma = false; }
         // $, #, $
-        ADD(int dst, Vars::Variable src1, int isrc2) 
-            : dst{dst}, isrc1{-1}, isrc2{isrc2}, src1{src1}, src2{} { pragma = false; }
+        ADD(int dst, Vars::Variable *src1, int isrc2) 
+            : dst{dst}, isrc1{-1}, isrc2{isrc2}, src1{src1}, src2{nullptr} { pragma = false; }
         // $, #, #
-        ADD(int dst, Vars::Variable src1, Vars::Variable src2) 
+        ADD(int dst, Vars::Variable *src1, Vars::Variable *src2) 
             : dst{dst}, isrc1{-1}, isrc2{-1}, src1{src1}, src2{src2} { pragma = false; }
+        ~ADD() {
+            if(src1 != nullptr)
+                free(src1);
+            if(src2 != nullptr)
+                free(src2);
+        }
         ADD *copy() const override {
             return new ADD(dst, isrc1, isrc2, src1, src2);
         }

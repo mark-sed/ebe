@@ -18,6 +18,7 @@
 #include "utils.hpp"
 #include "rng.hpp"
 #include "logging.hpp"
+#include "symbol_table.hpp"
 
 #include <iostream>
 
@@ -38,6 +39,19 @@ inline void Instruction::format_args(std::ostream &out){
     
 }
 
+inline void ADD::format_args(std::ostream &out) {
+    out << "$" << this->dst << ", ";
+    if(isrc1 >= 0)
+        out << "$" << isrc1;
+    else
+        out << *src1; 
+    out << ", ";
+    if(isrc2 >= 0)    
+        out << "$" << isrc2;
+    else
+        out << *src2;
+}
+
 inline void CALL::format_args(std::ostream &out){
     out << this->arg1;
 }
@@ -49,6 +63,7 @@ inline void CONCAT::format_args(std::ostream &out){
 inline void SWAP::format_args(std::ostream &out){
     out << this->arg1;
 }
+
 
 Instruction *Inst::rand_instruction(){
     // TODO: Make arguments be generated better and with passed in values
@@ -181,14 +196,14 @@ void ADD::exec(Vars::SymbolTable *sym_table) {
         src1_type = sym_table->type_at(isrc1);
     }
     else {
-        src1_type = src1.type;
+        src1_type = src1->type;
     }
     // Check also for src2
     if(isrc2 >= 0) {
         src2_type = sym_table->type_at(isrc2);
     }
     else {
-        src2_type = src2.type;
+        src2_type = src2->type;
     }
 
     // Do type checking
@@ -210,14 +225,14 @@ void ADD::exec(Vars::SymbolTable *sym_table) {
             src1_value = sym_table->get<int>(isrc1);
         }
         else {
-            src1_value = src1.get_number();
+            src1_value = src1->get_number();
         }
 
         if(isrc2 >= 0) {
             src2_value = sym_table->get<int>(isrc2);
         }
         else {
-            src2_value = src2.get_number();
+            src2_value = src2->get_number();
         }
         int result = src1_value + src2_value;
         sym_table->set<int>(dst, result);
@@ -229,14 +244,14 @@ void ADD::exec(Vars::SymbolTable *sym_table) {
             src1_value = sym_table->get<float>(isrc1);
         }
         else {
-            src1_value = src1.get_float();
+            src1_value = src1->get_float();
         }
 
         if(isrc2 >= 0) {
             src2_value = sym_table->get<float>(isrc2);
         }
         else {
-            src2_value = src2.get_float();
+            src2_value = src2->get_float();
         }
         int result = src1_value + src2_value;
         sym_table->set<float>(dst, result);

@@ -751,25 +751,25 @@ namespace  EbelFile  {
 
   case 22: // expr_inst: ADD "variable" "," "variable" "," "variable"
 #line 127 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                                    { scanner->add_add(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ()); }
+                                                { scanner->add_add(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ()); }
 #line 756 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
-  case 23: // expr_inst: ADD "variable" "," "variable" "," NUMBER
+  case 23: // expr_inst: ADD "variable" "," "variable" "," "number"
 #line 128 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                                    { /*scanner->add_add($2, $4, Vars::NumberVar($6))*/; }
+                                                { scanner->add_add(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
 #line 762 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
-  case 24: // expr_inst: ADD "variable" "," NUMBER "," "variable"
+  case 24: // expr_inst: ADD "variable" "," "number" "," "variable"
 #line 129 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                                    { /*scanner->add_add($2, Vars::NumberVar($4), $6)*/; }
+                                                { scanner->add_add(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), yystack_[0].value.as < int > ()); }
 #line 768 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
-  case 25: // expr_inst: ADD "variable" "," NUMBER "," NUMBER
+  case 25: // expr_inst: ADD "variable" "," "number" "," "number"
 #line 130 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                                    { /*scanner->add_add($2, Vars::NumberVar($4), Vars::NumberVar($6))*/; }
+                                                { scanner->add_add(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
 #line 774 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
@@ -1189,19 +1189,19 @@ namespace  EbelFile  {
   }
 
 
-  const signed char  ParserEbel ::yypact_ninf_ = -18;
+  const signed char  ParserEbel ::yypact_ninf_ = -21;
 
   const signed char  ParserEbel ::yytable_ninf_ = -1;
 
   const signed char
    ParserEbel ::yypact_[] =
   {
-      10,   -18,   -17,   -18,     8,   -18,   -18,   -18,     9,    38,
-      -3,    43,     3,   -18,   -18,   -18,   -18,   -18,   -18,   -18,
-     -18,   -18,   -18,   -18,   -18,   -18,   -18,    26,   -18,   -18,
-     -18,    41,   -18,   -18,    21,    27,   -18,   -18,   -18,    42,
-     -18,   -18,   -18,    44,    -6,    45,    46,    -5,    -4,   -18,
-     -18,   -18,   -18
+       0,   -21,   -20,   -21,    37,   -21,   -21,   -21,    -1,    38,
+      -6,    43,    32,   -21,   -21,   -21,   -21,   -21,   -21,   -21,
+     -21,   -21,   -21,   -21,   -21,   -21,   -21,    26,   -21,   -21,
+     -21,    41,   -21,   -21,    21,    17,   -21,   -21,   -21,    42,
+     -21,   -21,   -21,    44,    30,    45,    46,    33,    34,   -21,
+     -21,   -21,   -21
   };
 
   const signed char
@@ -1211,14 +1211,14 @@ namespace  EbelFile  {
       21,     0,     0,     6,     7,     5,    13,    28,    29,    30,
       27,    31,    32,    33,    34,    35,    36,     0,    17,    19,
       20,     0,     1,     3,     0,     9,    26,    18,     4,     0,
-      10,    11,    12,     0,     0,     0,     0,     0,     0,    22,
-      23,    24,    25
+      10,    11,    12,     0,     0,     0,     0,     0,     0,    25,
+      24,    23,    22
   };
 
   const signed char
    ParserEbel ::yypgoto_[] =
   {
-     -18,   -18,   -18,    12,   -18,    17,   -18
+     -21,   -21,   -21,    12,   -21,    18,   -21
   };
 
   const signed char
@@ -1230,23 +1230,23 @@ namespace  EbelFile  {
   const signed char
    ParserEbel ::yytable_[] =
   {
-      45,    49,    51,    33,    34,    29,    35,    30,    15,    31,
-       1,     2,    16,     3,    46,    50,    52,     4,     5,     6,
+       1,     2,    29,     3,    30,    15,    31,     4,     5,     6,
        7,     8,     9,    10,    17,    18,    19,    20,    21,    22,
       23,    24,    25,    26,     4,     5,     6,     7,     8,     9,
-      10,    39,    28,    32,    36,    37,    38,    40,    43,    44,
-      47,    48,    42
+      10,    39,    33,    34,    45,    35,    46,    49,    51,    50,
+      52,    16,    28,    32,    36,    37,    38,    40,    43,    44,
+      47,    48,     0,    42
   };
 
   const signed char
    ParserEbel ::yycheck_[] =
   {
-       6,     6,     6,     0,     1,     8,     3,    10,    25,    12,
-       0,     1,     4,     3,    20,    20,    20,     7,     8,     9,
+       0,     1,     8,     3,    10,    25,    12,     7,     8,     9,
       10,    11,    12,    13,    15,    16,    17,    18,    19,    20,
       21,    22,    23,    24,     7,     8,     9,    10,    11,    12,
-      13,    14,     4,     0,    18,     4,    25,    35,     6,     5,
-       5,     5,    35
+      13,    14,     0,     1,     4,     3,     6,     4,     4,     6,
+       6,     4,     4,     0,    18,     4,    25,    35,     6,     5,
+       5,     5,    -1,    35
   };
 
   const signed char
@@ -1256,8 +1256,8 @@ namespace  EbelFile  {
       13,    27,    28,    29,    31,    25,     4,    15,    16,    17,
       18,    19,    20,    21,    22,    23,    24,    32,     4,     8,
       10,    12,     0,     0,     1,     3,    18,     4,    25,    14,
-      29,    30,    31,     6,     5,     6,    20,     5,     5,     6,
-      20,     6,    20
+      29,    30,    31,     6,     5,     4,     6,     5,     5,     4,
+       6,     4,     6
   };
 
   const signed char

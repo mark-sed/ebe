@@ -78,9 +78,9 @@ public:
     void add_return();
     
     void add_add(int dst, int src1, int src2);
-    void add_add(int dst, int src1, Vars::Variable src2);
-    void add_add(int dst, Vars::Variable src1, int src2);
-    void add_add(int dst, Vars::Variable src1, Vars::Variable src2);
+    void add_add(int dst, int src1, Vars::Variable *src2);
+    void add_add(int dst, Vars::Variable *src1, int src2);
+    void add_add(int dst, Vars::Variable *src1, Vars::Variable *src2);
     /** @} */
 
     /**

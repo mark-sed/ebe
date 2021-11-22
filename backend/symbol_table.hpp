@@ -32,6 +32,8 @@ namespace Vars {
          * @param Derived class type
          */ 
         Variable(IR::Type type) : type{type} {}
+    private:
+        friend std::ostream& operator<< (std::ostream &out, Vars::Variable& var);
     public:
         /** 
          * Constructor to create dummy Variable 
@@ -52,6 +54,12 @@ namespace Vars {
         virtual float get_float();
         virtual std::string get_text();
         /** @} */
+        
+        /**
+         * Formats value in the variable into output stream
+         * @param out Output stream to print into
+         */ 
+        virtual void format_value(std::ostream &out) { out << "$(VALUE)"; }
     };
 
     /**
@@ -68,6 +76,8 @@ namespace Vars {
         NumberVar(int value) : Variable(IR::Type::NUMBER), value{value} {}
 
         int get_number() override { return value; }
+
+        void format_value(std::ostream &out) override { out << value; };
     };
 
     /**
@@ -84,6 +94,8 @@ namespace Vars {
         FloatVar(float value) : Variable(IR::Type::FLOAT), value{value} {}
 
         float get_float() override { return value; }
+
+        void format_value(std::ostream &out) override { out << value; };
     };
 
     /**
