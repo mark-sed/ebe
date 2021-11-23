@@ -193,6 +193,7 @@ void ScannerEbel::assert_expr_inst(const char * iname) {
     }
 }
 
+// ADD
 void ScannerEbel::add_add(int dst, int src1, int src2) {
     assert_expr_inst(Inst::ADD::NAME);
     this->current_pass->push_back(new Inst::ADD(dst, src1, src2));
@@ -213,6 +214,7 @@ void ScannerEbel::add_add(int dst, Vars::Variable *src1, Vars::Variable *src2) {
     this->current_pass->push_back(new Inst::ADD(dst, src1, src2));
 }
 
+// SUB
 void ScannerEbel::add_sub(int dst, int src1, int src2) {
     assert_expr_inst(Inst::SUB::NAME);
     this->current_pass->push_back(new Inst::SUB(dst, src1, src2));
@@ -231,4 +233,46 @@ void ScannerEbel::add_sub(int dst, Vars::Variable *src1, int src2) {
 void ScannerEbel::add_sub(int dst, Vars::Variable *src1, Vars::Variable *src2) {
     assert_expr_inst(Inst::SUB::NAME);
     this->current_pass->push_back(new Inst::SUB(dst, src1, src2));
+}
+
+// MUL
+void ScannerEbel::add_mul(int dst, int src1, int src2) {
+    assert_expr_inst(Inst::MUL::NAME);
+    this->current_pass->push_back(new Inst::MUL(dst, src1, src2));
+}
+
+void ScannerEbel::add_mul(int dst, int src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::MUL::NAME);
+    this->current_pass->push_back(new Inst::MUL(dst, src1, src2));
+}
+
+void ScannerEbel::add_mul(int dst, Vars::Variable *src1, int src2) {
+    assert_expr_inst(Inst::MUL::NAME);
+    this->current_pass->push_back(new Inst::MUL(dst, src1, src2));
+}
+
+void ScannerEbel::add_mul(int dst, Vars::Variable *src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::MUL::NAME);
+    this->current_pass->push_back(new Inst::MUL(dst, src1, src2));
+}
+
+// DIV
+void ScannerEbel::add_div(int dst, int src1, int src2) {
+    assert_expr_inst(Inst::DIV::NAME);
+    this->current_pass->push_back(new Inst::DIV(dst, src1, src2));
+}
+
+void ScannerEbel::add_div(int dst, int src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::DIV::NAME);
+    this->current_pass->push_back(new Inst::DIV(dst, src1, src2));
+}
+
+void ScannerEbel::add_div(int dst, Vars::Variable *src1, int src2) {
+    assert_expr_inst(Inst::DIV::NAME);
+    this->current_pass->push_back(new Inst::DIV(dst, src1, src2));
+}
+
+void ScannerEbel::add_div(int dst, Vars::Variable *src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::DIV::NAME);
+    this->current_pass->push_back(new Inst::DIV(dst, src1, src2));
 }

@@ -166,6 +166,26 @@ namespace Exception {
          */ 
         EbeSymTableUndefinedVarException(std::string msg) : EbeException(msg, TYPE) {}
     };
+
+    /**
+     * Exception for division by zero
+     */
+    class EbeDivisionByZeroException : public EbeException {
+    private:
+        static constexpr const char *TYPE = "Division by zero exception";
+    public:
+        /**
+         * Constructor
+         * @param msg C style string with the error message
+         */ 
+        EbeDivisionByZeroException(const char *msg) : EbeException(msg, TYPE) {}
+
+        /**
+         * Constructor
+         * @param msg string with the error message
+         */ 
+        EbeDivisionByZeroException(std::string msg) : EbeException(msg, TYPE) {}
+    };
 }
 
 #endif//_EXCEPTIONS_HPP_

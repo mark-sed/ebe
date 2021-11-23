@@ -78,6 +78,8 @@
 /* Expression instructions */
 %token ADD
 %token SUB
+%token MUL
+%token DIV
 
 /* Passes */
 %token WORDS "words"
@@ -135,6 +137,16 @@ expr_inst   : ADD VAR COMMA VAR COMMA VAR       { scanner->add_add($2, $4, $6); 
             | SUB VAR COMMA VAR COMMA INT       { scanner->add_sub($2, $4, new Vars::NumberVar($6)); }
             | SUB VAR COMMA INT COMMA VAR       { scanner->add_sub($2, new Vars::NumberVar($4), $6); }
             | SUB VAR COMMA INT COMMA INT       { scanner->add_sub($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+
+            | MUL VAR COMMA VAR COMMA VAR       { scanner->add_mul($2, $4, $6);                      }
+            | MUL VAR COMMA VAR COMMA INT       { scanner->add_mul($2, $4, new Vars::NumberVar($6)); }
+            | MUL VAR COMMA INT COMMA VAR       { scanner->add_mul($2, new Vars::NumberVar($4), $6); }
+            | MUL VAR COMMA INT COMMA INT       { scanner->add_mul($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+            
+            | DIV VAR COMMA VAR COMMA VAR       { scanner->add_div($2, $4, $6);                      }
+            | DIV VAR COMMA VAR COMMA INT       { scanner->add_div($2, $4, new Vars::NumberVar($6)); }
+            | DIV VAR COMMA INT COMMA VAR       { scanner->add_div($2, new Vars::NumberVar($4), $6); }
+            | DIV VAR COMMA INT COMMA INT       { scanner->add_div($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
             ;
 
 pass        : PASS type EXPRESSION { scanner->add_pass_expression($2);                }

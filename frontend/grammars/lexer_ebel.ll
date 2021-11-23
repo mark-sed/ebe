@@ -77,6 +77,8 @@ SPACE   [ \t]
 
 "ADD"{SPACE}+                   {   return token::ADD;        }
 "SUB"{SPACE}+                   {   return token::SUB;        }
+"MUL"{SPACE}+                   {   return token::MUL;        }
+"DIV"{SPACE}+                   {   return token::DIV;        }
 
 "TEXT"{SPACE}+                  {   return token::TEXT;       }
 "NUMBER"{SPACE}+                {   return token::NUMBER;     }

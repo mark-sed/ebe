@@ -36,6 +36,8 @@ const char * const SWAP::NAME = "SWAP";
 // ExprInstructions
 const char * const ADD::NAME = "ADD";
 const char * const SUB::NAME = "SUB";
+const char * const MUL::NAME = "MUL";
+const char * const DIV::NAME = "DIV";
 
 
 inline void Instruction::format_args(std::ostream &out){
@@ -288,6 +290,71 @@ void SUB::exec(Vars::SymbolTable *sym_table) {
         float src2_value = extract_float_var(isrc2, src2, sym_table);
         // Compute and save to symbol table
         float result = src1_value - src2_value;
+        sym_table->set<float>(dst, result);
+    }
+}
+
+void MUL::exec(Vars::SymbolTable *sym_table) {
+    // Extract types
+    IR::Type src1_type = extract_type_var(isrc1, src1, sym_table);
+    IR::Type src2_type = extract_type_var(isrc2, src2, sym_table);
+
+    // Do type checking
+    assert_type(2, NAME, src1_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_type(3, NAME, src2_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_eq_type(NAME, src1_type, src2_type);
+
+    // SRC1 and SRC2 have matching type, based on it do addition
+    if(src1_type == IR::NUMBER) {
+        // Extract number values
+        int src1_value = extract_int_var(isrc1, src1, sym_table);
+        int src2_value = extract_int_var(isrc2, src2, sym_table);
+        // Compute and save to symbol table
+        int result = src1_value * src2_value;
+        sym_table->set<int>(dst, result);
+    }
+    else { // FLOAT
+        // Extract number values
+        float src1_value = extract_float_var(isrc1, src1, sym_table);
+        float src2_value = extract_float_var(isrc2, src2, sym_table);
+        // Compute and save to symbol table
+        float result = src1_value * src2_value;
+        sym_table->set<float>(dst, result);
+    }
+}
+
+void DIV::exec(Vars::SymbolTable *sym_table) {
+    // Extract types
+    IR::Type src1_type = extract_type_var(isrc1, src1, sym_table);
+    IR::Type src2_type = extract_type_var(isrc2, src2, sym_table);
+
+    // Do type checking
+    assert_type(2, NAME, src1_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_type(3, NAME, src2_type, {IR::Type::NUMBER, IR::Type::FLOAT});
+    assert_eq_type(NAME, src1_type, src2_type);
+
+    // SRC1 and SRC2 have matching type, based on it do addition
+    if(src1_type == IR::NUMBER) {
+        // Extract number values
+        int src1_value = extract_int_var(isrc1, src1, sym_table);
+        int src2_value = extract_int_var(isrc2, src2, sym_table);
+        // Check division by 0
+        if(src2_value == 0) {
+            throw Exception::EbeDivisionByZeroException("Division by zero");
+        }
+        // Compute and save to symbol table
+        int result = src1_value / src2_value;
+        sym_table->set<int>(dst, result);
+    }
+    else { // FLOAT
+        // Extract number values
+        float src1_value = extract_float_var(isrc1, src1, sym_table);
+        float src2_value = extract_float_var(isrc2, src2, sym_table);
+        if(src2_value == 0.0f) {
+            throw Exception::EbeDivisionByZeroException("Division by zero");
+        }
+        // Compute and save to symbol table
+        float result = src1_value / src2_value;
         sym_table->set<float>(dst, result);
     }
 }

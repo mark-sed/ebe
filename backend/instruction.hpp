@@ -363,6 +363,48 @@ namespace Inst {
         void exec(Vars::SymbolTable *sym_table) override;
     };
 
+    class MUL : public ArithmeticInstruction {
+    public:
+        static const char * const NAME;
+        const char * const get_name() override { return NAME; }
+        // For custom settings, should be used only by copy
+        MUL(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
+            : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
+        // $, $, $
+        MUL(int dst, int isrc1, int isrc2) : ArithmeticInstruction(dst, isrc1, isrc2) {}
+        // $, $, #
+        MUL(int dst, int isrc1, Vars::Variable *src2) : ArithmeticInstruction(dst, isrc1, src2) {}
+        // $, #, $
+        MUL(int dst, Vars::Variable *src1, int isrc2) : ArithmeticInstruction(dst, src1, isrc2) {}
+        // $, #, #
+        MUL(int dst, Vars::Variable *src1, Vars::Variable *src2) : ArithmeticInstruction(dst, src1, src2) {}
+        MUL *copy() const override {
+            return new MUL(dst, isrc1, isrc2, src1, src2);
+        }
+        void exec(Vars::SymbolTable *sym_table) override;
+    };
+
+    class DIV : public ArithmeticInstruction {
+    public:
+        static const char * const NAME;
+        const char * const get_name() override { return NAME; }
+        // For custom settings, should be used only by copy
+        DIV(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
+            : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
+        // $, $, $
+        DIV(int dst, int isrc1, int isrc2) : ArithmeticInstruction(dst, isrc1, isrc2) {}
+        // $, $, #
+        DIV(int dst, int isrc1, Vars::Variable *src2) : ArithmeticInstruction(dst, isrc1, src2) {}
+        // $, #, $
+        DIV(int dst, Vars::Variable *src1, int isrc2) : ArithmeticInstruction(dst, src1, isrc2) {}
+        // $, #, #
+        DIV(int dst, Vars::Variable *src1, Vars::Variable *src2) : ArithmeticInstruction(dst, src1, src2) {}
+        DIV *copy() const override {
+            return new DIV(dst, isrc1, isrc2, src1, src2);
+        }
+        void exec(Vars::SymbolTable *sym_table) override;
+    };
+
 };
 
 #endif//_INSTRUCTION_HPP_

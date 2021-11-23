@@ -68,6 +68,7 @@ namespace IR {
     class Word {
     private:
         friend std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node);
+        friend std::ostream& operator<< (std::ostream &out, const IR::Word& word);
     public:
         std::string text;  ///< Text represantation of the word (as was in the file)
         Type type;         ///< Type parsed type of the word
@@ -228,6 +229,13 @@ namespace IR {
 
         /** Getter for pass type */
         PassType get_type() { return this->type; }
+
+        /**
+         * Debugging print that won't replace CALL with the subpass (unlike << does)
+         * @param out Stream to print to
+         * @param indent Indentation
+         */ 
+        std::ostream& print_pass_noinline(std::ostream &out, const char *indent);
     };
 
     /**
@@ -304,6 +312,13 @@ namespace IR {
          * @param pass Pass to be pushed
          */
         void push_back(Pass *pass);
+
+        /**
+         * Debug print for ebel code without inlining subpasses
+         * @param out Output stream
+         * @return The output stream
+         */ 
+        std::ostream &dbprint_no_inline(std::ostream &out);
 
         friend std::ostream& operator<< (std::ostream &out, const GP::Population& popul);
     };

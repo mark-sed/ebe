@@ -275,7 +275,10 @@ void PassWords::process(IR::Node *text) {
         size_t column = 0;
         env.loop_inst = nullptr;
         bool checked_executable_loop = false;  // Used to detect inf loops
-        for(auto word = (*line)->begin(); word != (*line)->end(); ++word){
+        auto word = (*line)->begin();
+        auto prev = word;
+        while(word != (*line)->end()) {
+            //LOGMAX("Processing word '" << (*word)->text << "'");
             // Break when not looping and there are no more instructions for the line
             if(!this->env.loop_inst && column >= this->pipeline->size()){
                 break;
@@ -305,25 +308,27 @@ void PassWords::process(IR::Node *text) {
                 // In a loop
                 column = 0;
             }
+            LOGMAX("Current instruction: " << inst->get_name() << "; Current word: " << **word);
             // Check if instruction is subprocess call
             if(inst->get_name() == std::string("CALL")){
                 auto index = dynamic_cast<Inst::CALL *>(inst)->arg1;
                 auto subpass = dynamic_cast<PassExpression *>((*this->subpass_table)[index]);
                 // Check if type matches pass type
                 if(subpass->expr_type == (*word)->type || subpass->expr_type == IR::Type::DERIVED) {
+                    // FIXME: Column isn't letter column, but word number
                     subpass->process(*word, line_number, column);
                     // Reprocess so that return instruction can be executed
-                    env.reprocess_obj = true;
                 }
+                env.reprocess_obj = true;
             }
             else {
                 // Instruction execution
                 inst->exec(word, *line, this->env);
             }
-            if(env.reprocess_obj){
-                --word;
-                env.reprocess_obj = false;
+            if(!env.reprocess_obj){
+                ++word;
             }
+            env.reprocess_obj = false;
         }
         ++line_number;
     }
@@ -463,7 +468,6 @@ namespace IR {
     }
 
     std::ostream& operator<< (std::ostream &out, const std::list<IR::Word *>& node){
-        static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
         // TODO: Add detail level (using args)
         bool first = true;
         for(auto const *word: node){
@@ -472,16 +476,7 @@ namespace IR {
             }
             first = false;
             // Print word's type and value
-            out << "(" << get_type_name(word->type) << ")";
-            if((word->type == IR::Type::DELIMITER || word->type == IR::Type::SYMBOL) && 
-                (!std::isprint(word->text[0]) || NOT_PRINT.find(word->text[0]) != NOT_PRINT.end())){
-                for(auto c: word->text){
-                    // For non printable or not visible charactets print hex value
-                    out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
-                }
-            }else{
-                out << word->text;
-            }
+            out << *word;
         }
         return out;
     }
@@ -494,6 +489,7 @@ namespace IR {
         out << pass.pass_name << std::endl;
         for(auto inst: *pass.pipeline){
             if(inst->get_name() == std::string(Inst::CALL::NAME)){
+                out << INDENT;
                 // Subpass printing
                 size_t index = dynamic_cast<Inst::CALL*>(inst)->arg1;
                 auto subpass = (*pass.subpass_table)[index];
@@ -519,6 +515,43 @@ namespace IR {
     std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node){
         for(auto const &pass: *node.nodes){
             out << *pass;
+        }
+        return out;
+    }
+
+    std::ostream& Pass::print_pass_noinline(std::ostream &out, const char *indent) {
+        out << "PASS ";
+        if(type == IR::PassType::EXPRESSION){
+            out << IR::get_type_name(dynamic_cast<const IR::PassExpression *>(this)->expr_type) << " ";
+        }
+        out << pass_name << std::endl;
+        for(auto inst: *pipeline){
+            out << indent << inst->get_name() << " ";
+            inst->format_args(out);
+            out << std::endl;
+        }
+        return out;
+    }
+
+    std::ostream &IR::EbelNode::dbprint_no_inline(std::ostream &out) {
+        for(auto const &pass: *this->nodes){
+            pass->print_pass_noinline(out, "  ");
+        }
+        return out;
+    }
+
+
+    std::ostream& operator<< (std::ostream &out, const IR::Word& word){
+        static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
+        out << "(" << get_type_name(word.type) << ")";
+        if((word.type == IR::Type::DELIMITER || word.type == IR::Type::SYMBOL) && 
+            (!std::isprint(word.text[0]) || NOT_PRINT.find(word.text[0]) != NOT_PRINT.end())){
+            for(auto c: word.text){
+                // For non printable or not visible charactets print hex value
+                out << "\\0x" << std::hex << static_cast<int>(c) << std::dec;
+            }
+        }else{
+            out << word.text;
         }
         return out;
     }

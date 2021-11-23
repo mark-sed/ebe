@@ -86,6 +86,16 @@ public:
     void add_sub(int dst, int src1, Vars::Variable *src2);
     void add_sub(int dst, Vars::Variable *src1, int src2);
     void add_sub(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_mul(int dst, int src1, int src2);
+    void add_mul(int dst, int src1, Vars::Variable *src2);
+    void add_mul(int dst, Vars::Variable *src1, int src2);
+    void add_mul(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_div(int dst, int src1, int src2);
+    void add_div(int dst, int src1, Vars::Variable *src2);
+    void add_div(int dst, Vars::Variable *src1, int src2);
+    void add_div(int dst, Vars::Variable *src1, Vars::Variable *src2);
     /** @} */
 
     /**
