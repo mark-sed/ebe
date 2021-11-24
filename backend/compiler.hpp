@@ -14,6 +14,7 @@
 #define _COMPILER_HPP_
 
 #include <iostream>
+#include <unistd.h>
 #include "exceptions.hpp"
 
 /**
@@ -46,13 +47,30 @@ namespace Error {
         extern const char * RESET;
 
         /**
+         * Checks if stderr is redirected to a file
+         * @return true if stderr is redirected
+         */ 
+        inline bool is_cerr_redirected() {
+            static bool initialized(false);
+            static bool is_redir;
+            if (!initialized) {
+                initialized = true;
+                is_redir = ttyname(fileno(stderr)) == nullptr;
+            }
+            return is_redir;
+        }
+
+        /**
          * Returns passes in color in case the output is not redirected.
          * If output is redirected then this returns empty string ("")
          * @param color Colors to sanitize
          * @return color if output if not redirected otherwise empty string
          */ 
-        inline const char *begin(const char * color) {
-            // FIXME: Output "" when tty is redirected
+        inline const char *colorize(const char * color) {
+            // Check if stderr is redirected
+            if(is_cerr_redirected()) {
+                return "";
+            }
             return color;
         }
 
@@ -60,7 +78,11 @@ namespace Error {
          * Resets set color to default terminal settings
          * @return Colors::RESET if output is not redirected otherwise empty string
          */ 
-        inline const char *end() { 
+        inline const char *reset() {
+            // Check if stderr is redirected
+            if(is_cerr_redirected()) {
+                return "";
+            }
             return Colors::RESET;
         }
     }
@@ -106,7 +128,7 @@ namespace Error {
      * @param msg Message to print
      */ 
     inline void warning(const char *msg) {
-        std::cerr << Colors::begin(Colors::PURPLE) << "WARNING: " << Colors::end() << msg << std::endl;
+        std::cerr << Colors::colorize(Colors::PURPLE) << "WARNING: " << Colors::reset() << msg << std::endl;
     }
 
     /**
