@@ -79,6 +79,8 @@ SPACE   [ \t]
 "SUB"{SPACE}+                   {   return token::SUB;        }
 "MUL"{SPACE}+                   {   return token::MUL;        }
 "DIV"{SPACE}+                   {   return token::DIV;        }
+"MOD"{SPACE}+                   {   return token::MOD;        }
+"POW"{SPACE}+                   {   return token::POW;        }
 
 "TEXT"{SPACE}+                  {   return token::TEXT;       }
 "NUMBER"{SPACE}+                {   return token::NUMBER;     }

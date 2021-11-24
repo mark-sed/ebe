@@ -276,3 +276,45 @@ void ScannerEbel::add_div(int dst, Vars::Variable *src1, Vars::Variable *src2) {
     assert_expr_inst(Inst::DIV::NAME);
     this->current_pass->push_back(new Inst::DIV(dst, src1, src2));
 }
+
+// MOD
+void ScannerEbel::add_mod(int dst, int src1, int src2) {
+    assert_expr_inst(Inst::MOD::NAME);
+    this->current_pass->push_back(new Inst::MOD(dst, src1, src2));
+}
+
+void ScannerEbel::add_mod(int dst, int src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::MOD::NAME);
+    this->current_pass->push_back(new Inst::MOD(dst, src1, src2));
+}
+
+void ScannerEbel::add_mod(int dst, Vars::Variable *src1, int src2) {
+    assert_expr_inst(Inst::MOD::NAME);
+    this->current_pass->push_back(new Inst::MOD(dst, src1, src2));
+}
+
+void ScannerEbel::add_mod(int dst, Vars::Variable *src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::MOD::NAME);
+    this->current_pass->push_back(new Inst::MOD(dst, src1, src2));
+}
+
+// POW
+void ScannerEbel::add_pow(int dst, int src1, int src2) {
+    assert_expr_inst(Inst::POW::NAME);
+    this->current_pass->push_back(new Inst::POW(dst, src1, src2));
+}
+
+void ScannerEbel::add_pow(int dst, int src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::POW::NAME);
+    this->current_pass->push_back(new Inst::POW(dst, src1, src2));
+}
+
+void ScannerEbel::add_pow(int dst, Vars::Variable *src1, int src2) {
+    assert_expr_inst(Inst::POW::NAME);
+    this->current_pass->push_back(new Inst::POW(dst, src1, src2));
+}
+
+void ScannerEbel::add_pow(int dst, Vars::Variable *src1, Vars::Variable *src2) {
+    assert_expr_inst(Inst::POW::NAME);
+    this->current_pass->push_back(new Inst::POW(dst, src1, src2));
+}

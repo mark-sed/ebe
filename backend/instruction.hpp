@@ -405,6 +405,48 @@ namespace Inst {
         void exec(Vars::SymbolTable *sym_table) override;
     };
 
+    class MOD : public ArithmeticInstruction {
+    public:
+        static const char * const NAME;
+        const char * const get_name() override { return NAME; }
+        // For custom settings, should be used only by copy
+        MOD(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
+            : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
+        // $, $, $
+        MOD(int dst, int isrc1, int isrc2) : ArithmeticInstruction(dst, isrc1, isrc2) {}
+        // $, $, #
+        MOD(int dst, int isrc1, Vars::Variable *src2) : ArithmeticInstruction(dst, isrc1, src2) {}
+        // $, #, $
+        MOD(int dst, Vars::Variable *src1, int isrc2) : ArithmeticInstruction(dst, src1, isrc2) {}
+        // $, #, #
+        MOD(int dst, Vars::Variable *src1, Vars::Variable *src2) : ArithmeticInstruction(dst, src1, src2) {}
+        MOD *copy() const override {
+            return new MOD(dst, isrc1, isrc2, src1, src2);
+        }
+        void exec(Vars::SymbolTable *sym_table) override;
+    };
+
+    class POW : public ArithmeticInstruction {
+    public:
+        static const char * const NAME;
+        const char * const get_name() override { return NAME; }
+        // For custom settings, should be used only by copy
+        POW(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
+            : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
+        // $, $, $
+        POW(int dst, int isrc1, int isrc2) : ArithmeticInstruction(dst, isrc1, isrc2) {}
+        // $, $, #
+        POW(int dst, int isrc1, Vars::Variable *src2) : ArithmeticInstruction(dst, isrc1, src2) {}
+        // $, #, $
+        POW(int dst, Vars::Variable *src1, int isrc2) : ArithmeticInstruction(dst, src1, isrc2) {}
+        // $, #, #
+        POW(int dst, Vars::Variable *src1, Vars::Variable *src2) : ArithmeticInstruction(dst, src1, src2) {}
+        POW *copy() const override {
+            return new POW(dst, isrc1, isrc2, src1, src2);
+        }
+        void exec(Vars::SymbolTable *sym_table) override;
+    };
+
 };
 
 #endif//_INSTRUCTION_HPP_

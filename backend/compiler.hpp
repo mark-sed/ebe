@@ -20,6 +20,50 @@
  * Namespace holding resources for error and warning handling
  */
 namespace Error {
+    
+    /**
+     * Namespace for terminal colorization
+     */ 
+    namespace Colors {
+
+        extern const char * NO_COLOR;
+        extern const char * BLACK;
+        extern const char * GRAY;
+        extern const char * RED;
+        extern const char * LIGHT_RED;
+        extern const char * GREEN;
+        extern const char * LIGHT_GREEN;
+        extern const char * BROWN;
+        extern const char * YELLOW;
+        extern const char * BLUE;
+        extern const char * LIGHT_BLUE;
+        extern const char * PURPLE;
+        extern const char * LIGHT_PURPLE;
+        extern const char * CYAN;
+        extern const char * LIGHT_CYAN;
+        extern const char * LIGHT_GRAY;
+        extern const char * WHITE;
+        extern const char * RESET;
+
+        /**
+         * Returns passes in color in case the output is not redirected.
+         * If output is redirected then this returns empty string ("")
+         * @param color Colors to sanitize
+         * @return color if output if not redirected otherwise empty string
+         */ 
+        inline const char *begin(const char * color) {
+            // FIXME: Output "" when tty is redirected
+            return color;
+        }
+
+        /**
+         * Resets set color to default terminal settings
+         * @return Colors::RESET if output is not redirected otherwise empty string
+         */ 
+        inline const char *end() { 
+            return Colors::RESET;
+        }
+    }
 
     /**
      * Possible enum codes
@@ -62,7 +106,7 @@ namespace Error {
      * @param msg Message to print
      */ 
     inline void warning(const char *msg) {
-        std::cerr << "WARNING: " << msg << std::endl;
+        std::cerr << Colors::begin(Colors::PURPLE) << "WARNING: " << Colors::end() << msg << std::endl;
     }
 
     /**

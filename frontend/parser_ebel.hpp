@@ -723,17 +723,19 @@ namespace  EbelFile  {
     SUB = 270,                     // SUB
     MUL = 271,                     // MUL
     DIV = 272,                     // DIV
-    WORDS = 273,                   // "words"
-    LINES = 274,                   // "lines"
-    DOCUMENTS = 275,               // "documents"
-    EXPRESSION = 276,              // "expression"
-    TEXT = 277,                    // TEXT
-    NUMBER = 278,                  // NUMBER
-    FLOAT = 279,                   // FLOAT
-    DELIMITER = 280,               // DELIMITER
-    SYMBOL = 281,                  // SYMBOL
-    EMPTY = 282,                   // EMPTY
-    DERIVED = 283                  // DERIVED
+    MOD = 273,                     // MOD
+    POW = 274,                     // POW
+    WORDS = 275,                   // "words"
+    LINES = 276,                   // "lines"
+    DOCUMENTS = 277,               // "documents"
+    EXPRESSION = 278,              // "expression"
+    TEXT = 279,                    // TEXT
+    NUMBER = 280,                  // NUMBER
+    FLOAT = 281,                   // FLOAT
+    DELIMITER = 282,               // DELIMITER
+    SYMBOL = 283,                  // SYMBOL
+    EMPTY = 284,                   // EMPTY
+    DERIVED = 285                  // DERIVED
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -750,7 +752,7 @@ namespace  EbelFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 30, ///< Number of tokens.
+        YYNTOKENS = 32, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -770,25 +772,27 @@ namespace  EbelFile  {
         S_SUB = 15,                              // SUB
         S_MUL = 16,                              // MUL
         S_DIV = 17,                              // DIV
-        S_WORDS = 18,                            // "words"
-        S_LINES = 19,                            // "lines"
-        S_DOCUMENTS = 20,                        // "documents"
-        S_EXPRESSION = 21,                       // "expression"
-        S_TEXT = 22,                             // TEXT
-        S_NUMBER = 23,                           // NUMBER
-        S_FLOAT = 24,                            // FLOAT
-        S_DELIMITER = 25,                        // DELIMITER
-        S_SYMBOL = 26,                           // SYMBOL
-        S_EMPTY = 27,                            // EMPTY
-        S_DERIVED = 28,                          // DERIVED
-        S_29_n_ = 29,                            // '\n'
-        S_YYACCEPT = 30,                         // $accept
-        S_program = 31,                          // program
-        S_code = 32,                             // code
-        S_instruction = 33,                      // instruction
-        S_expr_inst = 34,                        // expr_inst
-        S_pass = 35,                             // pass
-        S_type = 36                              // type
+        S_MOD = 18,                              // MOD
+        S_POW = 19,                              // POW
+        S_WORDS = 20,                            // "words"
+        S_LINES = 21,                            // "lines"
+        S_DOCUMENTS = 22,                        // "documents"
+        S_EXPRESSION = 23,                       // "expression"
+        S_TEXT = 24,                             // TEXT
+        S_NUMBER = 25,                           // NUMBER
+        S_FLOAT = 26,                            // FLOAT
+        S_DELIMITER = 27,                        // DELIMITER
+        S_SYMBOL = 28,                           // SYMBOL
+        S_EMPTY = 29,                            // EMPTY
+        S_DERIVED = 30,                          // DERIVED
+        S_31_n_ = 31,                            // '\n'
+        S_YYACCEPT = 32,                         // $accept
+        S_program = 33,                          // program
+        S_code = 34,                             // code
+        S_instruction = 35,                      // instruction
+        S_expr_inst = 36,                        // expr_inst
+        S_pass = 37,                             // pass
+        S_type = 38                              // type
       };
     };
 
@@ -1348,6 +1352,36 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_MOD (location_type l)
+      {
+        return symbol_type (token::MOD, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_MOD (const location_type& l)
+      {
+        return symbol_type (token::MOD, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_POW (location_type l)
+      {
+        return symbol_type (token::POW, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_POW (const location_type& l)
+      {
+        return symbol_type (token::POW, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_WORDS (location_type l)
       {
         return symbol_type (token::WORDS, std::move (l));
@@ -1840,7 +1874,7 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 87,     ///< Last index in yytable_.
+      yylast_ = 111,     ///< Last index in yytable_.
       yynnts_ = 7,  ///< Number of nonterminal symbols.
       yyfinal_ = 33 ///< Termination state number.
     };
@@ -1854,7 +1888,7 @@ switch (yykind)
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1858 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 1892 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 
 

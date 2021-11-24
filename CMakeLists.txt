@@ -68,6 +68,7 @@ add_executable(
     ebe.cpp
     ${SOURCES}
 )
+target_link_libraries(${PROJECT_NAME} m)
 
 # ebetests target
 add_executable(

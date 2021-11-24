@@ -96,6 +96,16 @@ public:
     void add_div(int dst, int src1, Vars::Variable *src2);
     void add_div(int dst, Vars::Variable *src1, int src2);
     void add_div(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_mod(int dst, int src1, int src2);
+    void add_mod(int dst, int src1, Vars::Variable *src2);
+    void add_mod(int dst, Vars::Variable *src1, int src2);
+    void add_mod(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_pow(int dst, int src1, int src2);
+    void add_pow(int dst, int src1, Vars::Variable *src2);
+    void add_pow(int dst, Vars::Variable *src1, int src2);
+    void add_pow(int dst, Vars::Variable *src1, Vars::Variable *src2);
     /** @} */
 
     /**
