@@ -42,6 +42,8 @@ namespace Vars {
         Variable() : type{IR::Type::DERIVED} {}
         virtual ~Variable() {}
 
+        virtual Variable *clone() { return new Variable(); }
+
         /**
          * @defgroup vargetters Variable value extractors
          * Extract values of specified type from a variable
@@ -74,6 +76,7 @@ namespace Vars {
          * @param value Variable's value
          */ 
         NumberVar(int value) : Variable(IR::Type::NUMBER), value{value} {}
+        NumberVar *clone() override { return new NumberVar(value); }
 
         int get_number() override { return value; }
 
@@ -92,6 +95,7 @@ namespace Vars {
          * @param value Variable's value
          */ 
         FloatVar(float value) : Variable(IR::Type::FLOAT), value{value} {}
+        FloatVar *clone() override { return new FloatVar(value); }
 
         float get_float() override { return value; }
 
@@ -110,6 +114,7 @@ namespace Vars {
          * @param value Variable's value
          */ 
         TextVar(std::string value) : Variable(IR::Type::TEXT), value{value} {}
+        TextVar *clone() override { return new TextVar(value); }
 
         std::string get_text() override { return value; }
 
@@ -174,6 +179,13 @@ namespace Vars {
          */ 
         template<typename T>
         T get(int index);
+
+        /**
+         * Copies one src variable value into dst variable
+         * @param dst Destination variable
+         * @param src Source variable
+         */ 
+        void copy(int dst, int src);
 
         /**
          * Getter for variable type

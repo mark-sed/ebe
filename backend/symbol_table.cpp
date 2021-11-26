@@ -102,6 +102,28 @@ void SymbolTable::set(int index, float value) {
     }
 }
 
+template<>
+void SymbolTable::set(int index, std::string value) {
+    if(this->assert_set(index)){
+        table[index] = new TextVar(value);
+    }
+}
+
+template<>
+void SymbolTable::set(int index, NumberVar *value) {
+    table[index] = value;
+}
+
+template<>
+void SymbolTable::set(int index, FloatVar *value) {
+    table[index] = value;
+}
+
+template<>
+void SymbolTable::set(int index, TextVar *value) {
+    table[index] = value;
+}
+
 template<typename T>
 T SymbolTable::get(int index) {
     throw Exception::EbeSymTableUnknwonTypeException("Attempt to set variable to not supported type");
@@ -130,6 +152,12 @@ std::string SymbolTable::get(int index) {
         return table[index]->get_text();
     }
     return "";
+}
+
+void SymbolTable::copy(int dst, int src) {
+    assert_set(dst);
+    assert_get(src);
+    table[dst] = table[src]->clone();
 }
 
 std::string SymbolTable::to_string(int index) {

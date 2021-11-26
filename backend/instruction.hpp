@@ -320,12 +320,35 @@ namespace Inst {
     };
 
     // ExprInstructions
+    class MOVE : public ExprInstruction {
+    private:
+        int dst;
+        int isrc1;
+        Vars::Variable *src1;
+    public:
+        static const char * const NAME;
+        const char * const get_name() override { return NAME; }
+        void format_args(std::ostream &out) override;
+        // For custom settings
+        MOVE(int dst, int isrc1, Vars::Variable *src1) 
+            : dst{dst}, isrc1{isrc1}, src1{src1} { pragma = true; }
+        // $, $
+        MOVE(int dst, int isrc1) 
+            : dst{dst}, isrc1{isrc1}, src1{nullptr} { pragma = true; }
+        // $, #
+        MOVE(int dst, Vars::Variable *src1) 
+            : dst{dst}, isrc1{-1}, src1{src1} { pragma = true; }
+        MOVE *copy() const override {
+            return new MOVE(dst, isrc1, src1);
+        }
+        void exec(Vars::SymbolTable *sym_table) override;
+    };
 
     class ADD : public ArithmeticInstruction {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        // For custom settings, should be used only by copy
+        // For custom settings
         ADD(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
             : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
         // $, $, $
@@ -346,7 +369,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        // For custom settings, should be used only by copy
+        // For custom settings
         SUB(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
             : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
         // $, $, $
@@ -367,7 +390,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        // For custom settings, should be used only by copy
+        // For custom settings
         MUL(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
             : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
         // $, $, $
@@ -388,7 +411,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        // For custom settings, should be used only by copy
+        // For custom settings
         DIV(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
             : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
         // $, $, $
@@ -409,7 +432,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        // For custom settings, should be used only by copy
+        // For custom settings
         MOD(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
             : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
         // $, $, $
@@ -430,7 +453,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        // For custom settings, should be used only by copy
+        // For custom settings
         POW(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
             : ArithmeticInstruction(dst, isrc1, isrc2, src1, src2) {}
         // $, $, $

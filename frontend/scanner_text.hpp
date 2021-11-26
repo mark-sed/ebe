@@ -53,6 +53,23 @@ private:
      * Used by lexer to denote that an expression ends
      */ 
     void expr_end();
+
+    /**
+     * Parses abstract syntax tree into an expression pass
+     * @param expr Abstract syntax tree expression
+     * @return Passed in expression in as a pass of ebel instructions
+     */
+    IR::PassExpression *expr2pass(Expr::Expression *expr, IR::Type type); 
+
+    /**
+     * Walks expression creating expression pass, used by expr2pass.
+     * @param expr Expression to walk
+     * @param pass Output pass
+     * @param var_num Destination variable
+     * @note This method is recursive
+     * @return Destination variable used
+     */ 
+    int walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int var_num);
 public:
     TextFile::ParserText::location_type *loc = nullptr;
     ScannerText();
@@ -72,7 +89,7 @@ public:
     void add_symbol(const std::string &v);
     void add_float(const std::string &v);
     void add_newline();
-    void add_expr(Expr::Expression *e);
+    void add_expr(Expr::Expression *e, IR::Type type);
     /** @} */
 
     /**

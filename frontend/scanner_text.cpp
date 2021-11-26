@@ -19,6 +19,8 @@
 #include "expression.hpp"
 #include "logging.hpp"
 #include "arg_parser.hpp"
+#include "symbol_table.hpp"
+#include "instruction.hpp"
 
 #include <iostream>
 
@@ -128,13 +130,97 @@ static void expr2strs(std::stringstream &ss, const Expr::Expression *e) {
     }
 }
 
-void ScannerText::add_expr(Expr::Expression *e) {
+int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int var_num) {
+    // TODO: If more than 1 argument instructions are added for loop will be needed
+    Vars::Variable *arg1 = nullptr;
+    int iarg1 = -1;
+    if(expr->children.size() > 0 && expr->children[0].children.empty()){
+        // Leaf - Arg1
+        if(expr->children[0].value.type == Expr::Type::NUMBER) {
+            arg1 = new Vars::NumberVar(atoi(expr->children[0].value.text.c_str()));
+        }
+        else {
+            this->error(Error::ErrorCode::INTERNAL, this->current_file_name, loc->begin.line, loc->begin.column, 
+                    (std::string("There is no variable binding for type with id "
+                    +expr->children[0].value.type)).c_str());
+        }
+    }
+    else {
+        iarg1 = walk_expr(&expr->children[0], pass, var_num+1);
+    }
+
+    Vars::Variable *arg2 = nullptr;
+    int iarg2 = -1;
+    if(expr->children.size() > 1 && expr->children[1].children.empty()){
+        // Leaf - Arg1
+        if(expr->children[1].value.type == Expr::Type::NUMBER) {
+            arg1 = new Vars::NumberVar(atoi(expr->children[1].value.text.c_str()));
+        }
+        else {
+            this->error(Error::ErrorCode::INTERNAL, this->current_file_name, loc->begin.line, loc->begin.column, 
+                    (std::string("There is no variable binding for type with id "
+                    +expr->children[1].value.type)).c_str());
+        }
+    }
+    else {
+        iarg1 = walk_expr(&expr->children[1], pass, var_num+1);
+    }
+    
+    
+    switch(expr->value.type) {
+        case VAR:
+            // Just `$` expression
+            // No need to generate any code
+            return 0;
+        break;
+        case NUMBER:
+            // Just 42 expression (constant assignment)
+            pass->push_back(new Inst::MOVE(0, new Vars::NumberVar(atoi(expr->value.text.c_str()))));
+            return 0;
+        break;
+        case ADD:
+            pass->push_back(new Inst::ADD(var_num, iarg1, iarg2, arg1, arg2));
+        break;
+        case IMUL:
+
+        break;
+        case SUB:
+
+        break;
+        case IDIV:
+
+        break;
+        case MOD:
+
+        break;
+        case POW:
+
+        break;
+        case EQ:
+            walk_expr(&expr->children[0], pass, var_num);
+        break;
+        default:
+            this->error(Error::ErrorCode::INTERNAL, this->current_file_name, loc->begin.line, loc->begin.column, 
+                    (std::string("There is no instruction binding for expression type with id "
+                    +expr->value.type)).c_str());
+    }
+
+    return var_num;
+}
+
+IR::PassExpression *ScannerText::expr2pass(Expr::Expression *expr, IR::Type type) {
+    auto pass = new IR::PassExpression(type);
+    walk_expr(expr, pass, 0);
+    return pass;
+}
+
+void ScannerText::add_expr(Expr::Expression *e, IR::Type type) {
     this->touch_line();
     std::stringstream ss;
+    ss << '(' << IR::get_type_name(type) << ')';
     expr2strs(ss, e);
-    // TODO: Most likely the expression has to be reparsed and made into Pass Expression 
-    //   filled with the instructions already so that reparsing isn't done multiple times
-    //   in engine. Possibly the pass could be inside Expr::Expression or replace it even.
+    auto expr_pass = expr2pass(e, type);
+    std::cout << *expr_pass << std::endl;
     current_line->push_back(new IR::Word(ss.str(), IR::Type::EXPRESSION, e));
     // Expression was parsed, so notify that expression is no longer being parsed
     this->expr_end();

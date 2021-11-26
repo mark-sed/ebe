@@ -35,6 +35,7 @@ const char * const NOP::NAME = "NOP";
 const char * const PASS::NAME = "PASS";
 const char * const SWAP::NAME = "SWAP";
 // ExprInstructions
+const char * const MOVE::NAME = "MOVE";
 const char * const ADD::NAME = "ADD";
 const char * const SUB::NAME = "SUB";
 const char * const MUL::NAME = "MUL";
@@ -57,6 +58,15 @@ inline void ArithmeticInstruction::format_args(std::ostream &out) {
         out << "$" << isrc2;
     else
         out << *src2;
+}
+
+inline void MOVE::format_args(std::ostream &out) {
+    out << "$" << this->dst << ", ";
+    if(isrc1 >= 0)
+        out << "$" << isrc1;
+    else
+        out << *src1; 
+    out << ", ";
 }
 
 inline void CALL::format_args(std::ostream &out){
@@ -236,6 +246,17 @@ std::string ExprInstruction::extract_string_var(int var, Vars::Variable *value, 
         return sym_table->get<std::string>(var);
     }
     return value->get_text();
+}
+
+void MOVE::exec(Vars::SymbolTable *sym_table) {
+    if(isrc1 > -1) {
+        // variable
+        sym_table->copy(dst, isrc1);
+    }
+    else {
+        sym_table->set(dst, src1);
+    }
+
 }
 
 void ADD::exec(Vars::SymbolTable *sym_table) {
