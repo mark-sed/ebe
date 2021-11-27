@@ -174,6 +174,11 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
     return static_cast<float>(matched) / max_size;
 }
 
+GPEngine::~GPEngine() {
+    delete params;
+    delete population;
+}
+
 void GPEngine::sort_population() {
     this->population->candidates->sort([](auto a, auto b){ return a->fitness > b->fitness; });
 }
@@ -184,6 +189,10 @@ void GPEngine::mutate(GP::Phenotype *pheno) {
     // TODO: Add logs
     auto rand_pass = RNG::rand_list_elem(pheno->program->nodes, nullptr);
     auto rand_inst = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
+    /*// Dont mutate CALLs
+    if((*rand_inst)->get_name() == std::string("CALL")) {
+        return;
+    }*/
     auto old_inst = *rand_inst;
     delete old_inst;
     // FIXME: Use exclude list or some other format when rand_instruction is properly coded
@@ -198,21 +207,19 @@ void GPEngine::crossover_insert(GP::Phenotype *pheno) {
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
     auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
+    /*if((*rand_pos)->get_name() == std::string("CALL")){
+        return;
+    }*/
     ++rand_pos_og; // Increment iterator because insert inserts before the instruction
     // Get how many instructions to insert
     auto amount = RNG::rand_int(1, std::distance(rand_pos, (*rand_pass)->pipeline->end()));
-    //std::cout << "DIST: " << std::distance(rand_pos, (*rand_pass)->pipeline->end()) << "  RND: " << amount << std::endl;
     // TODO: Add logs for crossing
-    //std::cout << "CROSSING: \n" << *pheno << **rand_pheno << "---------\n";
-    //std::cout << "BEFORE: \n" << *pheno << std::endl;
     for(int i = 0; i < amount; ++i){
         // Create copy of instruction
         auto inst_copy = (*rand_pos)->copy();
         rand_pos_og = (*rand_pass_og)->pipeline->insert(rand_pos_og, inst_copy);
         ++rand_pos;
     }
-    //std::cout << "AFTER: \n" << *pheno << std::endl; 
-    //std::cout << "-----------\n\n";
 }
 
 void GPEngine::crossover_switch(GP::Phenotype *pheno) {
@@ -222,21 +229,20 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
     auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
+    /*if((*rand_pos)->get_name() == std::string("CALL") || (*rand_pass)->type == IR::PassType::EXPRESSION_PASS){
+        std::cout << "AAAAA\n";
+        return;
+    }*/
     // Get how many instructions to insert
     auto min_len = std::min(std::distance(rand_pos, (*rand_pass)->pipeline->end()), std::distance(rand_pos_og, (*rand_pass_og)->pipeline->end()));
     auto amount = RNG::rand_int(1, min_len);
-    //std::cout << "DIST: " << std::distance(rand_pos, (*rand_pass)->pipeline->end()) << "  RND: " << amount << std::endl;
     // TODO: Add logs for crossing
-    //std::cout << "CROSSING: \n" << *pheno << **rand_pheno << "---------\n";
-    //std::cout << "BEFORE: \n" << *pheno << std::endl << **rand_pheno << "\n";
     for(int i = 0; i < amount; ++i){
         // Create copy of instruction
         std::swap(*rand_pos, *rand_pos_og);
         ++rand_pos;
         ++rand_pos_og;
     }
-    //std::cout << "AFTER: \n" << *pheno << std::endl << **rand_pheno << "\n"; 
-    //std::cout << "-----------\n\n";
 }
 
 GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id) : 
@@ -251,6 +257,7 @@ GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, Eng
         // Check only first line
         // FIXME: When line subpasses are implemented check more than just first line
         if(line1 != (text_out->nodes)->end()){
+            int index = 0;
             for(auto word: **line1) {
                 if(word->type == IR::Type::EXPRESSION) {
                     if(word->code != nullptr && word->return_inst != nullptr) {

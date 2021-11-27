@@ -29,7 +29,7 @@ namespace Vars {
     protected:
         /**
          * Constructor for derived classes to set the type
-         * @param Derived class type
+         * @param type class type
          */ 
         Variable(IR::Type type) : type{type} {}
     private:

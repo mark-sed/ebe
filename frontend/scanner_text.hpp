@@ -57,6 +57,7 @@ private:
     /**
      * Parses abstract syntax tree into an expression pass
      * @param expr Abstract syntax tree expression
+     * @param type Expression input type
      * @return Passed in expression in as a pass of ebel instructions
      */
     IR::PassExpression *expr2pass(Expr::Expression *expr, IR::Type type); 

@@ -38,8 +38,7 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
 }
 
 EngineJenn::~EngineJenn() {
-    delete population;
-    delete params;
+    // Params and population is deleted in GPEngine destructor
 }
 
 /**

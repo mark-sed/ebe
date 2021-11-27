@@ -66,8 +66,15 @@ void compile(const char *f_in, const char *f_out) {
     IR::EbelNode *best_program = nullptr;
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
+    Engine *engine = nullptr;
     for(size_t e = 0; e < evolutions; ++e){
-        Engine *engine = nullptr;
+        if(engine != nullptr && best_program != nullptr) { 
+            // Before deletion, best program has to be copied to not be lost
+            auto best_program_copy = new IR::EbelNode(*best_program);
+            best_program = best_program_copy;
+            delete engine;
+            engine = nullptr;
+        }
         switch(engine_id){
             case EngineUtils::EngineID::MIRANDA:
                 engine = new EngineMiRANDa(ir_in, ir_out);
@@ -83,27 +90,17 @@ void compile(const char *f_in, const char *f_out) {
         if(precision >= 1.0f){
             // Found perfect program, end now
             std::cout << "Perfectly fitting program found." << std::endl;
-            if(best_program){
-                delete best_program;
-            }
             best_program = program;
             best_precision = precision;
             LOG3("Perfectly fitting program found, compilation ended");
-            delete engine;
             break;
         }
         LOG4(e << ". evolution finished. Best program (with " << (precision*100) << "% precision):\n" << *program);
         // Save program if it is the best one so far
         if(!best_program || best_precision < precision){
-            if(best_program){
-                delete best_program;
-            }
             best_program = program;
             best_precision = precision;
-        }else{
-            delete program;
         }
-        delete engine;
     }
 
     if(best_program){
@@ -121,9 +118,12 @@ void compile(const char *f_in, const char *f_out) {
             std::cout << *best_program;
         }
         LOG1("Best compiled program with " << (best_precision*100) << "% precision:\n" << *best_program);
-        delete best_program;
+        //delete best_program;
     }
 
+    if(engine != nullptr) {
+        delete engine;
+    }
     // Cleanup
     delete ir_in;
     delete ir_out;

@@ -174,12 +174,12 @@ namespace IR {
 
     /**
      * Pass types
-     */ 
-    enum class PassType {
-        EXPRESSION,
-        WORDS,
-        LINES,
-        DOCUMENTS
+     */
+    enum PassType {
+        EXPRESSION_PASS,
+        WORDS_PASS,
+        LINES_PASS,
+        DOCUMENTS_PASS
     };
 
     /**
@@ -200,6 +200,8 @@ namespace IR {
          * @param type Name of the pass that inherits this class
          */
         Pass(PassType type);
+        /** Copy constructor */
+        Pass(const Pass &other);
     public:
         /** Destructor */
         virtual ~Pass();
@@ -258,6 +260,8 @@ namespace IR {
 
         /** Constructor */
         PassExpression(Type expr_type);
+        /** Copy constructor */
+        PassExpression(const PassExpression &other);
 
         void process(IR::Node *text) override;
         void process(IR::Word *word, size_t line, size_t column);
@@ -270,6 +274,8 @@ namespace IR {
     public:
         /** Constructor */
         PassWords();
+        /** Copy constructor */
+        PassWords(const PassWords &other);
 
         void process(IR::Node *text) override;
         void push_subpass(IR::Pass *subpass) override;
@@ -282,6 +288,8 @@ namespace IR {
     public:
         /** Constructor */
         PassLines();
+        /** Copy constructor */
+        PassLines(const PassLines &other);
 
         void process(IR::Node *text) override;
     };
@@ -293,6 +301,8 @@ namespace IR {
     public:
         /** Constructor */
         PassDocuments();
+        /** Copy constructor */
+        PassDocuments(const PassDocuments &other);
 
         void process(IR::Node *text) override;
     };
@@ -308,6 +318,8 @@ namespace IR {
 
         /** Constructor */
         EbelNode();
+        /** Copy constructor */
+        EbelNode(const EbelNode &other);
 
         /**
          * Constructor for generating random node

@@ -195,13 +195,13 @@ std::string Node::output(){
 }
 
 Pass::Pass(PassType type) : type{type}, env{}, subpass_table{nullptr} {
-    if(type == PassType::EXPRESSION){
+    if(type == PassType::EXPRESSION_PASS){
         this->pass_name = "Expression";
     }
-    else if(type == PassType::WORDS) {
+    else if(type == PassType::WORDS_PASS) {
         this->pass_name = "Words";
     }
-    else if(type == PassType::LINES) {
+    else if(type == PassType::LINES_PASS) {
         this->pass_name = "Lines";
     }
     else {
@@ -210,9 +210,46 @@ Pass::Pass(PassType type) : type{type}, env{}, subpass_table{nullptr} {
     this->pipeline = new std::vector<Inst::Instruction *>();
 }
 
+Pass::Pass(const Pass &other) {
+    this->pass_name = other.pass_name;
+    this->type = other.type;
+    this->env = other.env;
+    this->subpass_table = nullptr;
+    // Copy subpasses
+    if(other.subpass_table != nullptr) {
+        subpass_table = new std::vector<IR::Pass *>();
+        for(auto subpass: *other.subpass_table){
+            IR::Pass *subpass_copy = nullptr;
+            if(subpass->get_type() == IR::PassType::EXPRESSION_PASS) {
+                subpass_copy = new IR::PassExpression(*dynamic_cast<IR::PassExpression *>(subpass));
+            }
+            else if(subpass->get_type() == IR::PassType::WORDS_PASS) {
+                subpass_copy = new IR::PassWords(*dynamic_cast<IR::PassWords *>(subpass));
+            }
+            else if(subpass->get_type() == IR::PassType::LINES_PASS) {
+                subpass_copy = new IR::PassLines(*dynamic_cast<IR::PassLines *>(subpass));
+            }
+            else if(subpass->get_type() == IR::PassType::DOCUMENTS_PASS) {
+                subpass_copy = new IR::PassDocuments(*dynamic_cast<IR::PassDocuments *>(subpass));
+            }
+            else {
+                Error::error(Error::ErrorCode::INTERNAL, (std::string("Pass of type '")
+                            +std::to_string(subpass->get_type())+"' cannot be copies").c_str());
+            }
+            // Just push_back into vector, push_subpass is only for new ones, because it creates CALL instruction
+            subpass_table->push_back(subpass_copy);
+        }
+    }
+    // Copy instructions
+    this->pipeline = new std::vector<Inst::Instruction *>();
+    for(auto inst: *other.pipeline) {
+        this->pipeline->push_back(inst->copy());
+    }
+}
+
 Pass::~Pass(){
     for(auto const &inst: *this->pipeline){
-        delete inst;
+        //delete inst;
     }
     delete pipeline;
 }
@@ -229,8 +266,12 @@ void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
     this->pipeline = pipeline;
 }
 
-PassExpression::PassExpression(IR::Type expr_type) : Pass(PassType::EXPRESSION), expr_type{expr_type} {
+PassExpression::PassExpression(IR::Type expr_type) : Pass(PassType::EXPRESSION_PASS), expr_type{expr_type} {
 
+}
+
+PassExpression::PassExpression(const PassExpression &other) : Pass(other), expr_type{other.expr_type} {
+    
 }
 
 void PassExpression::process(IR::Node *text) {
@@ -255,8 +296,12 @@ void PassExpression::process(IR::Word *word, size_t line, size_t column) {
     }
 }
 
-PassWords::PassWords() : Pass(PassType::WORDS) {
+PassWords::PassWords() : Pass(PassType::WORDS_PASS) {
 
+}
+
+PassWords::PassWords(const PassWords &other) : Pass(other) {
+    
 }
 
 void PassWords::push_subpass(Pass *subpass) {
@@ -341,7 +386,11 @@ void PassWords::process(IR::Node *text) {
     LOG4("Word pass processing done");
 }
 
-PassLines::PassLines() : Pass(PassType::LINES) {
+PassLines::PassLines() : Pass(PassType::LINES_PASS) {
+
+}
+
+PassLines::PassLines(const PassLines &other) : Pass(other) {
 
 }
 
@@ -394,8 +443,12 @@ void PassLines::process(IR::Node *text) {
     LOG1("Processing done");
 }
 
-PassDocuments::PassDocuments() : Pass(PassType::DOCUMENTS) {
+PassDocuments::PassDocuments() : Pass(PassType::DOCUMENTS_PASS) {
     Error::warning("Document pass is not yet implemented");
+}
+
+PassDocuments::PassDocuments(const PassDocuments &other) : Pass(other) {
+
 }
 
 void PassDocuments::process(IR::Node *text) {
@@ -424,6 +477,31 @@ EbelNode::EbelNode(GPEngineParams *params){
         pass->push_back(inst);
     }
     this->nodes->push_back(pass);
+}
+
+EbelNode::EbelNode(const EbelNode &other) {
+    this->nodes = new std::list<Pass *>();
+    for(auto pass: *other.nodes) {
+        // Copy pass
+        IR::Pass *pass_copy = nullptr;
+        if(pass->get_type() == IR::PassType::WORDS_PASS) {
+            pass_copy = new IR::PassWords(*dynamic_cast<IR::PassWords *>(pass));
+        }
+        else if(pass->get_type() == IR::PassType::LINES_PASS) {
+            pass_copy = new IR::PassLines(*dynamic_cast<IR::PassLines *>(pass));
+        }
+        else if(pass->get_type() == IR::PassType::DOCUMENTS_PASS) {
+            pass_copy = new IR::PassDocuments(*dynamic_cast<IR::PassDocuments *>(pass));
+        }
+        else if(pass->get_type() == IR::PassType::EXPRESSION_PASS) {
+            pass_copy = new IR::PassExpression(*dynamic_cast<IR::PassExpression *>(pass));
+        }
+        else {
+            Error::error(Error::ErrorCode::INTERNAL, (std::string("Pass of type '")
+                        +std::to_string(pass->get_type())+"' cannot be copies").c_str());
+        }
+        this->nodes->push_back(pass_copy);
+    }
 }
 
 EbelNode::~EbelNode(){
@@ -488,7 +566,7 @@ namespace IR {
 
     std::ostream& format_print_pass(std::ostream &out, const IR::Pass& pass, const char * INDENT){
         out << "PASS ";
-        if(pass.type == IR::PassType::EXPRESSION){
+        if(pass.type == IR::PassType::EXPRESSION_PASS){
             out << IR::get_type_name(dynamic_cast<const IR::PassExpression &>(pass).expr_type) << " ";
         }
         out << pass.pass_name << std::endl;
@@ -506,7 +584,7 @@ namespace IR {
                 out << std::endl;
             }
         }
-        if(pass.type == IR::PassType::EXPRESSION){
+        if(pass.type == IR::PassType::EXPRESSION_PASS){
             out << INDENT << "RETURN";
         }
         return out;
@@ -526,7 +604,7 @@ namespace IR {
 
     std::ostream& Pass::print_pass_noinline(std::ostream &out, const char *indent) {
         out << "PASS ";
-        if(type == IR::PassType::EXPRESSION){
+        if(type == IR::PassType::EXPRESSION_PASS){
             out << IR::get_type_name(dynamic_cast<const IR::PassExpression *>(this)->expr_type) << " ";
         }
         out << pass_name << std::endl;

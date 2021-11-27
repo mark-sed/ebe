@@ -152,7 +152,7 @@ protected:
      * @param engine_id ID of the specific engine
      */
     GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id);
-    virtual ~GPEngine() {}
+    virtual ~GPEngine();
 
     /**
      * Evaluates all the candidates and saves their fitness to fitness list

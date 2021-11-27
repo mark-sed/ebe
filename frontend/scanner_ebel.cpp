@@ -89,7 +89,7 @@ void ScannerEbel::touch_pass() {
 void ScannerEbel::add_concat(int offset) {
     this->touch_pass();
     // Check if pass is lines
-    if(this->current_pass->get_type() != IR::PassType::LINES){
+    if(this->current_pass->get_type() != IR::PassType::LINES_PASS){
         this->error(Error::ErrorCode::SEMANTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
                     "CONCAT can be used only in PASS lines", nullptr, false);
         this->error_found(Error::ErrorCode::SEMANTIC);
@@ -120,8 +120,8 @@ void ScannerEbel::add_nop() {
 void ScannerEbel::add_pass_expression(IR::Type type) {
     this->touch_pass();
     if(this->current_pass == nullptr 
-      || this->current_pass->type != IR::PassType::WORDS) {
-        if(this->current_pass->type == IR::PassType::EXPRESSION){
+      || this->current_pass->type != IR::PassType::WORDS_PASS) {
+        if(this->current_pass->type == IR::PassType::EXPRESSION_PASS){
             this->error(Error::ErrorCode::SEMANTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
                         "PASS expression can be only inside of PASS words. Perhaps a RETURN instruction is missing", nullptr, false);
             this->error_found(Error::SEMANTIC);
@@ -134,7 +134,7 @@ void ScannerEbel::add_pass_expression(IR::Type type) {
     // Expression pass cannot be the same as other passes as the previous pass
     // has to continue after expression has ended - it is nested pass
 
-    if(this->current_pass->type != IR::PassType::EXPRESSION){
+    if(this->current_pass->type != IR::PassType::EXPRESSION_PASS){
         // Store parent pass to be popped in return instruction
         this->parent_pass = this->current_pass;
     }
@@ -186,7 +186,7 @@ void ScannerEbel::add_return() {
 
 // Expression instructions
 void ScannerEbel::assert_expr_inst(const char * iname) {
-    if(current_pass == nullptr || current_pass->type != IR::PassType::EXPRESSION) {
+    if(current_pass == nullptr || current_pass->type != IR::PassType::EXPRESSION_PASS) {
         this->error(Error::ErrorCode::SEMANTIC, this->current_file_name, loc->begin.line, loc->begin.column, 
                     (std::string(iname) + " can only appear inside of an expression pass").c_str(), nullptr, false);
         this->error_found(Error::SEMANTIC);

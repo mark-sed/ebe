@@ -35,6 +35,10 @@ Population::~Population(){
     delete this->candidates;
 }
 
+Phenotype::~Phenotype() {
+    delete program;
+}
+
 namespace GP {
     std::ostream& operator<< (std::ostream &out, const GP::Population& popul){
         size_t i = 0;
