@@ -19,7 +19,7 @@ Interpreter::Interpreter(IR::EbelNode *ebel) : Compiler("Interpreter"), ebel{ebe
 
 void Interpreter::parse(IR::Node *text) {
     // Iterate through passes
-    for(auto pass: (*this->ebel->nodes)){
+    for(auto pass: (*this->ebel->nodes)) {
         pass->process(text);
     }
 }

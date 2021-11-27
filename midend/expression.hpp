@@ -31,7 +31,7 @@ namespace Expr {
         IDIV,
         MOD,
         POW,
-        EQ
+        ASSIGN
     };
 
     /**

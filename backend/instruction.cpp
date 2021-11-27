@@ -254,7 +254,19 @@ void MOVE::exec(Vars::SymbolTable *sym_table) {
         sym_table->copy(dst, isrc1);
     }
     else {
-        sym_table->set(dst, src1);
+        if(src1->type == IR::Type::NUMBER){
+            sym_table->set(dst, dynamic_cast<Vars::NumberVar*>(src1));
+        }
+        else if(src1->type == IR::Type::FLOAT) {
+            sym_table->set(dst, dynamic_cast<Vars::FloatVar*>(src1));
+        }
+        else if(src1->type == IR::Type::TEXT) {
+            sym_table->set(dst, dynamic_cast<Vars::TextVar*>(src1));
+        }
+        else {
+            throw Exception::EbeTypeException(std::string("Type '")+IR::get_type_name(src1->type)
+                                             +"' cannot be used MOVE instruction");
+        }
     }
 
 }

@@ -218,12 +218,14 @@ namespace Inst {
     // Sort instructions alphabetically
 
     class CALL : public Instruction {
-    public:
+    private:
         size_t arg1;
+    public:
+        size_t get_arg1() { return arg1; }
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
-        CALL(size_t arg1) { pragma = true; }
+        CALL(size_t arg1) : arg1{arg1} { pragma = true; }
         CALL *copy() const override {
             return new CALL(arg1);
         }

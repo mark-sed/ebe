@@ -125,9 +125,9 @@ word      : TEXT       { scanner->add_text($1);      }
           | RPAR       { scanner->add_symbol(")");   }
           | FALSE_EXPR_BEGIN { scanner->add_symbol("{"); scanner->add_symbol("!"); }
           | FALSE_EXPR_END   { scanner->add_symbol("!"); scanner->add_symbol("}"); }
-          | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::EQ, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2}), IR::Type::NUMBER); }
+          | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2}), IR::Type::NUMBER); }
           | EXPR_BEGIN expr EXPR_END { auto e = Expression(Node(Type::NUMBER, std::to_string($2)), std::vector<Expression>{});
-                                       scanner->add_expr(new Expression(Node(Type::EQ, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::NUMBER);}
+                                       scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::NUMBER);}
           ;
 
 varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()); }

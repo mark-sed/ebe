@@ -44,23 +44,29 @@ const char *IR::get_type_name(Type type) {
     return "none";
 }
 
-Word::Word(std::string text, Type type, Expr::Expression *expr) : text{text}, type{type}, expr{expr} {
+Word::Word(std::string text, 
+           Type type, 
+           Expr::Expression *expr, 
+           IR::PassExpression *code, 
+           Inst::Instruction *return_inst) 
+          : text{text}, type{type}, expr{expr}, code{code}, return_inst{return_inst} {
 
 }
 
 Word::Word(const Word &other){
-    // FIXME: This might not work when expr is set (differently written expr, but same value)
+    // FIXME: Copy the expression as well?
     this->text = other.text;
     this->type = other.type;
 }
 
 Word::~Word() {
-    if(this->expr != nullptr){
+    if(this->expr != nullptr) {
         delete this->expr;
     }
 }
 
 Word& Word::operator=(const Word &other){
+    // FIXME: This might not work when expr is set (differently written expr, but same value)
     this->text = other.text;
     this->type = other.type;
     return *this;
@@ -268,7 +274,7 @@ void PassWords::process(IR::Node *text) {
     if(this->pipeline->empty()){
         return;
     }
-    LOG1("Words pass processing:\n" << *text);
+    LOG4("Words pass processing:\n" << *text);
     // Iterate through lines of text
     size_t line_number = 0;
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
@@ -311,7 +317,7 @@ void PassWords::process(IR::Node *text) {
             LOGMAX("Current instruction: " << inst->get_name() << "; Current word: " << **word);
             // Check if instruction is subprocess call
             if(inst->get_name() == std::string("CALL")){
-                auto index = dynamic_cast<Inst::CALL *>(inst)->arg1;
+                auto index = dynamic_cast<Inst::CALL *>(inst)->get_arg1();
                 auto subpass = dynamic_cast<PassExpression *>((*this->subpass_table)[index]);
                 // Check if type matches pass type
                 if(subpass->expr_type == (*word)->type || subpass->expr_type == IR::Type::DERIVED) {
@@ -332,7 +338,7 @@ void PassWords::process(IR::Node *text) {
         }
         ++line_number;
     }
-    LOG1("Word pass processing done");
+    LOG4("Word pass processing done");
 }
 
 PassLines::PassLines() : Pass(PassType::LINES) {
@@ -435,7 +441,6 @@ bool operator==(IR::Word &lhs, IR::Word &rhs){
     return lhs.text == rhs.text;
 }
 
-
 namespace IR {
     std::ostream& operator<< (std::ostream &out, const Node& node){
         static const std::set<char> NOT_PRINT{' ', '\t', '\v', '\f', '\n'};
@@ -491,7 +496,7 @@ namespace IR {
             if(inst->get_name() == std::string(Inst::CALL::NAME)){
                 out << INDENT;
                 // Subpass printing
-                size_t index = dynamic_cast<Inst::CALL*>(inst)->arg1;
+                size_t index = dynamic_cast<Inst::CALL*>(inst)->get_arg1();
                 auto subpass = (*pass.subpass_table)[index];
                 format_print_pass(out, *subpass, "    ");
             }

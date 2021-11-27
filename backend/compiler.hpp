@@ -128,7 +128,7 @@ namespace Error {
      * @param msg Message to print
      */ 
     inline void warning(const char *msg) {
-        std::cerr << Colors::colorize(Colors::PURPLE) << "WARNING: " << Colors::reset() << msg << std::endl;
+        std::cerr << Colors::colorize(Colors::PURPLE) << "WARNING: " << Colors::reset() << msg << "." << std::endl;
     }
 
     /**

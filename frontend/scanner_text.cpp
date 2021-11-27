@@ -130,8 +130,11 @@ static void expr2strs(std::stringstream &ss, const Expr::Expression *e) {
     }
 }
 
-int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int var_num) {
+int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int *var_num, bool last) {
     // TODO: If more than 1 argument instructions are added for loop will be needed
+    // Save variable number assigned
+    int curr_var_num = *var_num;
+
     Vars::Variable *arg1 = nullptr;
     int iarg1 = -1;
     if(expr->children.size() > 0 && expr->children[0].children.empty()){
@@ -139,14 +142,17 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
         if(expr->children[0].value.type == Expr::Type::NUMBER) {
             arg1 = new Vars::NumberVar(atoi(expr->children[0].value.text.c_str()));
         }
+        else if(expr->children[0].value.type == Expr::Type::VAR) {
+            iarg1 = atoi(expr->children[0].value.text.c_str());
+        }
         else {
             this->error(Error::ErrorCode::INTERNAL, this->current_file_name, loc->begin.line, loc->begin.column, 
-                    (std::string("There is no variable binding for type with id "
-                    +expr->children[0].value.type)).c_str());
+                    (std::string("There is no variable binding for type with id '"
+                    +std::to_string(expr->children[0].value.type))+"'").c_str());
         }
     }
-    else {
-        iarg1 = walk_expr(&expr->children[0], pass, var_num+1);
+    else if(expr->children.size() > 1) {
+        iarg1 = walk_expr(&expr->children[0], pass, var_num);
     }
 
     Vars::Variable *arg2 = nullptr;
@@ -154,74 +160,94 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
     if(expr->children.size() > 1 && expr->children[1].children.empty()){
         // Leaf - Arg1
         if(expr->children[1].value.type == Expr::Type::NUMBER) {
-            arg1 = new Vars::NumberVar(atoi(expr->children[1].value.text.c_str()));
+            arg2 = new Vars::NumberVar(atoi(expr->children[1].value.text.c_str()));
+        }
+        else if(expr->children[1].value.type == Expr::Type::VAR) {
+            iarg2 = atoi(expr->children[1].value.text.c_str());
         }
         else {
             this->error(Error::ErrorCode::INTERNAL, this->current_file_name, loc->begin.line, loc->begin.column, 
-                    (std::string("There is no variable binding for type with id "
-                    +expr->children[1].value.type)).c_str());
+                    (std::string("There is no variable binding for type with id '"
+                    +std::to_string(expr->children[1].value.type))+"'").c_str());
         }
     }
-    else {
-        iarg1 = walk_expr(&expr->children[1], pass, var_num+1);
+    else if(expr->children.size() > 1) {
+        iarg2 = walk_expr(&expr->children[1], pass, var_num);
     }
     
-    
+    LOGMAX(expr->value.text <<" iarg1: " << iarg1 << ", arg1: " << arg1 << ", iarg2: " << iarg2 << ", arg2: " << arg2);
+
+    if(last) {
+        *var_num = 0;
+    }
+
+    bool dont_inc_var = false;
+
     switch(expr->value.type) {
         case VAR:
             // Just `$` expression
             // No need to generate any code
-            return 0;
+            dont_inc_var = true;
         break;
         case NUMBER:
             // Just 42 expression (constant assignment)
             pass->push_back(new Inst::MOVE(0, new Vars::NumberVar(atoi(expr->value.text.c_str()))));
-            return 0;
+            dont_inc_var = true;
         break;
         case ADD:
-            pass->push_back(new Inst::ADD(var_num, iarg1, iarg2, arg1, arg2));
+            pass->push_back(new Inst::ADD(*var_num, iarg1, iarg2, arg1, arg2));
         break;
         case IMUL:
-
+            pass->push_back(new Inst::MUL(*var_num, iarg1, iarg2, arg1, arg2));
         break;
         case SUB:
-
+            pass->push_back(new Inst::SUB(*var_num, iarg1, iarg2, arg1, arg2));
         break;
         case IDIV:
-
+            pass->push_back(new Inst::DIV(*var_num, iarg1, iarg2, arg1, arg2));
         break;
         case MOD:
-
+            pass->push_back(new Inst::MOD(*var_num, iarg1, iarg2, arg1, arg2));
         break;
         case POW:
-
+            pass->push_back(new Inst::POW(*var_num, iarg1, iarg2, arg1, arg2));
         break;
-        case EQ:
-            walk_expr(&expr->children[0], pass, var_num);
+        case ASSIGN:
+            walk_expr(&expr->children[1], pass, var_num, true);
+            dont_inc_var = true;
         break;
         default:
             this->error(Error::ErrorCode::INTERNAL, this->current_file_name, loc->begin.line, loc->begin.column, 
-                    (std::string("There is no instruction binding for expression type with id "
-                    +expr->value.type)).c_str());
+                    (std::string("There is no instruction binding for expression type with id '"
+                    +std::to_string(expr->value.type))+"'").c_str());
     }
 
-    return var_num;
+    if(!dont_inc_var){
+        curr_var_num = *var_num;
+        ++(*var_num);
+    }
+
+    return curr_var_num;
 }
 
 IR::PassExpression *ScannerText::expr2pass(Expr::Expression *expr, IR::Type type) {
     auto pass = new IR::PassExpression(type);
-    walk_expr(expr, pass, 0);
+    int var_num = 1;
+    walk_expr(expr, pass, &var_num);
     return pass;
 }
 
 void ScannerText::add_expr(Expr::Expression *e, IR::Type type) {
+    // FIXME: When return instruction in defined in the syntax return it rather than just NOP
     this->touch_line();
+    // Parse expression to string
     std::stringstream ss;
     ss << '(' << IR::get_type_name(type) << ')';
     expr2strs(ss, e);
+    // Parse expression to ebel code
     auto expr_pass = expr2pass(e, type);
-    std::cout << *expr_pass << std::endl;
-    current_line->push_back(new IR::Word(ss.str(), IR::Type::EXPRESSION, e));
+    LOG1("Expression code generated:\n" << *expr_pass);
+    current_line->push_back(new IR::Word(ss.str(), IR::Type::EXPRESSION, e, expr_pass, new Inst::NOP()));
     // Expression was parsed, so notify that expression is no longer being parsed
     this->expr_end();
 }

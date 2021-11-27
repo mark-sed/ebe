@@ -66,10 +66,11 @@ private:
      * @param expr Expression to walk
      * @param pass Output pass
      * @param var_num Destination variable
+     * @param last True should be set only for the 2nd argument of root assignment expression
      * @note This method is recursive
      * @return Destination variable used
      */ 
-    int walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int var_num);
+    int walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int *var_num, bool last=false);
 public:
     TextFile::ParserText::location_type *loc = nullptr;
     ScannerText();

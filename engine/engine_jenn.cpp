@@ -29,6 +29,7 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
         // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
         iterations = 200;
     }
+
     auto params = new GPEngineParams(default_gpparams);
     set_params(params);
     LOG1("Engine Jenn params:\n" << *params << TAB1 << "iterations = " << iterations);
@@ -62,7 +63,6 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
         LOG3(iter << ". iteration started");
         // Eval population
         auto perfect_pheno = this->evaluate();
-        LOG1("P: " << perfect_pheno);
         if(perfect_pheno){
             // 100 % precision found, return
             if(precision){
@@ -71,6 +71,10 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
             LOG1("Perfect phenotype found in iteration " << iter << " - ending evolution");
             LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iter << "\n" TAB1 "Mutations: " << cnt_mutation 
                  << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
+            if(expr_pass != nullptr) {
+                // Preappend user defined expressions
+                perfect_pheno->program->nodes->push_front(expr_pass);
+            }
             return perfect_pheno->program;
         }
         // Sort population based on fitness
@@ -117,5 +121,10 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
          << " on phenotype:\n" << *this->population->candidates->front()->program);
     LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iterations << "\n" TAB1 "Mutations: " << cnt_mutation 
          << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
-    return this->population->candidates->front()->program;
+    auto best = this->population->candidates->front()->program;
+    if(expr_pass != nullptr) {
+        // Preappend user defined expressions
+        best->nodes->push_front(expr_pass);
+    }
+    return best;
 }

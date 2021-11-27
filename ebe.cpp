@@ -60,7 +60,7 @@ void compile(const char *f_in, const char *f_out) {
         }
         // In case MiRANDa is used generate a warning to let the user know
         if(engine_id == EngineUtils::EngineID::MIRANDA){
-            Error::warning("Using MiRANDa engine, which uses only pure randomness and is NOT meant for real use.");
+            Error::warning("Using MiRANDa engine, which uses only pure randomness and is NOT meant for real use");
         }
     }
     IR::EbelNode *best_program = nullptr;
@@ -180,7 +180,6 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
             std::cout << "# Interpreted " << input_f << ": " << std::endl;
         }
         std::cout << text_ir->output();
-        std::cout << std::endl;
 
         delete text_ir;
         delete text_scanner;

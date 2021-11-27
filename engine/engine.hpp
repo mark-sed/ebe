@@ -27,6 +27,7 @@ namespace GP {
 namespace IR {
     class Node;
     class EbelNode;
+    class PassWords;
 }
 
 /**
@@ -141,6 +142,7 @@ class GPEngine : public Engine {
 protected:
     GPEngineParams *params;
     GP::Population *population;
+    IR::PassWords *expr_pass = nullptr;
 
     /**
      * Constructor

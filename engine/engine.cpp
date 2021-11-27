@@ -22,6 +22,7 @@
 #include "interpreter.hpp"
 #include "rng.hpp"
 #include "logging.hpp"
+#include "arg_parser.hpp"
 
 #include <iostream>
 
@@ -117,7 +118,11 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
             const auto& ir1_word_end = (*ir1_line)->end();
             const auto& ir2_word_end = (*ir2_line)->end();
             while(ir1_word != ir1_word_end && ir2_word != ir2_word_end){
-                if(**ir1_word == **ir2_word){
+                // User defined expressions are always a match
+                if((*ir1_word)->type == IR::Type::EXPRESSION || (*ir2_word)->type == IR::Type::EXPRESSION){
+                    ++matched;
+                }
+                else if(**ir1_word == **ir2_word){
                     ++matched;
                 }
                 ir1_word = std::next(ir1_word);
@@ -235,13 +240,45 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
 }
 
 GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id) : 
-                   Engine(text_in, text_out, iterations, engine_id) {
+                   Engine(text_in, text_out, iterations, engine_id), expr_pass{nullptr} {
     params = &default_gpparams;
+
+    // Checking input text if it contains expression to do those first
+    if(Args::arg_opts.expr){
+        bool contains_expr = false;
+        auto w_pass = new IR::PassWords();
+        auto line1 = (text_out->nodes)->begin();
+        // Check only first line
+        // FIXME: When line subpasses are implemented check more than just first line
+        if(line1 != (text_out->nodes)->end()){
+            for(auto word: **line1) {
+                if(word->type == IR::Type::EXPRESSION) {
+                    if(word->code != nullptr && word->return_inst != nullptr) {
+                        w_pass->push_subpass(word->code);
+                        w_pass->push_back(word->return_inst);
+                        contains_expr = true;
+                    }
+                    else {
+                        Error::error(Error::ErrorCode::INTERNAL, std::string("Somehow expression code was not"
+                        " generated for '"+word->text).c_str());
+                    }
+                }
+                else {
+                    w_pass->push_back(new Inst::NOP());
+                }
+            }
+        }
+        // Append pass to phenotype
+        if(contains_expr){
+            this->expr_pass = w_pass;
+        }
+    }
 }
 
 GP::Phenotype *GPEngine::evaluate() {
     GP::Phenotype *perfect_program = nullptr;
     for(auto &pheno: *this->population->candidates){
+        // If expression is set then insert it at the begining
         auto interpreter = new Interpreter(pheno->program);
         IR::Node text_copy = *this->text_in;
         interpreter->parse(&text_copy);
@@ -251,6 +288,7 @@ GP::Phenotype *GPEngine::evaluate() {
         if(fit >= 1.0f){
             // Program which does what it's supposed to do
             perfect_program = pheno;
+            break;
         }
     }
     return perfect_program;

@@ -40,6 +40,9 @@ struct GPEngineParams;
  */
 namespace IR {
 
+    // Forward declaration
+    class PassExpression;
+
     /**
      * Word datatypes - types for input text file
      * @note Every new datatype's name should be added to the get_type_name function
@@ -70,17 +73,25 @@ namespace IR {
         friend std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node);
         friend std::ostream& operator<< (std::ostream &out, const IR::Word& word);
     public:
-        std::string text;  ///< Text represantation of the word (as was in the file)
-        Type type;         ///< Type parsed type of the word
-        Expr::Expression *expr = nullptr;
+        std::string text;                   ///< Text represantation of the word (as was in the file)
+        Type type;                          ///< Type parsed type of the word
+        Expr::Expression *expr = nullptr;   ///< Expression abstract syntax tree if type is IR::Type EXPRESSION
+        IR::PassExpression *code = nullptr; ///< Code generated for the expression if type is IR::Type::EXPRESSION
+        Inst::Instruction *return_inst = nullptr; ///< Return instruction of the expression
 
         /**
          * Constructor 
          * @param text Words text representation
          * @param type Words parsed type
          * @param expr Node's expression as a syntactic tree
+         * @param code Node's expression as an ebel code
+         * @param return_inst Expressions return instruction
          */
-        Word(std::string text, Type type, Expr::Expression *expr=nullptr);
+        Word(std::string text, 
+             Type type, 
+             Expr::Expression *expr=nullptr,
+             IR::PassExpression *code=nullptr,
+             Inst::Instruction *return_inst=nullptr);
         /** Copy constructor */
         Word(const Word &other);
         /** Destructor, frees expr when allocated */
