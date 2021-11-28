@@ -65,8 +65,7 @@ inline void MOVE::format_args(std::ostream &out) {
     if(isrc1 >= 0)
         out << "$" << isrc1;
     else
-        out << *src1; 
-    out << ", ";
+        out << *src1;
 }
 
 inline void CALL::format_args(std::ostream &out){

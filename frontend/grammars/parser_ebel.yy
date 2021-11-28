@@ -82,6 +82,7 @@
 %token DIV
 %token MOD
 %token POW
+%token MOVE
 
 /* Passes */
 %token WORDS "words"
@@ -159,6 +160,9 @@ expr_inst   : ADD VAR COMMA VAR COMMA VAR       { scanner->add_add($2, $4, $6); 
             | POW VAR COMMA VAR COMMA INT       { scanner->add_pow($2, $4, new Vars::NumberVar($6)); }
             | POW VAR COMMA INT COMMA VAR       { scanner->add_pow($2, new Vars::NumberVar($4), $6); }
             | POW VAR COMMA INT COMMA INT       { scanner->add_pow($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+            
+            | MOVE VAR COMMA VAR                { scanner->add_move($2, $4);                         }
+            | MOVE VAR COMMA INT                { scanner->add_move($2, new Vars::NumberVar($4));    }
             ;
 
 pass        : PASS type EXPRESSION { scanner->add_pass_expression($2);                }
@@ -166,6 +170,7 @@ pass        : PASS type EXPRESSION { scanner->add_pass_expression($2);          
             | PASS WORDS           { scanner->add_pass_words();                       }
             | PASS LINES           { scanner->add_pass_lines();                       }
             | PASS DOCUMENTS       { scanner->add_pass_documents();                   }
+            ;
 
 type        : TEXT      { $$ = IR::Type::TEXT;      }
             | NUMBER    { $$ = IR::Type::NUMBER;    }

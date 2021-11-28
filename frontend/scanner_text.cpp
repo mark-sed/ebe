@@ -137,7 +137,7 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
 
     Vars::Variable *arg1 = nullptr;
     int iarg1 = -1;
-    if(expr->children.size() > 0 && expr->children[0].children.empty()){
+    if(expr->value.type != Expr::Type::ASSIGN && expr->children.size() > 0 && expr->children[0].children.empty()){
         // Leaf - Arg1
         if(expr->children[0].value.type == Expr::Type::NUMBER) {
             arg1 = new Vars::NumberVar(atoi(expr->children[0].value.text.c_str()));
@@ -151,13 +151,13 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
                     +std::to_string(expr->children[0].value.type))+"'").c_str());
         }
     }
-    else if(expr->children.size() > 1) {
+    else if(expr->value.type != Expr::Type::ASSIGN &&  expr->children.size() > 1) {
         iarg1 = walk_expr(&expr->children[0], pass, var_num);
     }
 
     Vars::Variable *arg2 = nullptr;
     int iarg2 = -1;
-    if(expr->children.size() > 1 && expr->children[1].children.empty()){
+    if(expr->value.type != Expr::Type::ASSIGN && expr->children.size() > 1 && expr->children[1].children.empty()){
         // Leaf - Arg1
         if(expr->children[1].value.type == Expr::Type::NUMBER) {
             arg2 = new Vars::NumberVar(atoi(expr->children[1].value.text.c_str()));
@@ -171,7 +171,7 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
                     +std::to_string(expr->children[1].value.type))+"'").c_str());
         }
     }
-    else if(expr->children.size() > 1) {
+    else if(expr->value.type != Expr::Type::ASSIGN && expr->children.size() > 1) {
         iarg2 = walk_expr(&expr->children[1], pass, var_num);
     }
     

@@ -318,3 +318,14 @@ void ScannerEbel::add_pow(int dst, Vars::Variable *src1, Vars::Variable *src2) {
     assert_expr_inst(Inst::POW::NAME);
     this->current_pass->push_back(new Inst::POW(dst, src1, src2));
 }
+
+// MOVE
+void ScannerEbel::add_move(int dst, int src1) {
+    assert_expr_inst(Inst::MOVE::NAME);
+    this->current_pass->push_back(new Inst::MOVE(dst, src1));
+}
+
+void ScannerEbel::add_move(int dst, Vars::Variable *src1) {
+    assert_expr_inst(Inst::MOVE::NAME);
+    this->current_pass->push_back(new Inst::MOVE(dst, src1));
+}

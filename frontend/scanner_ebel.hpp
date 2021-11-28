@@ -106,6 +106,9 @@ public:
     void add_pow(int dst, int src1, Vars::Variable *src2);
     void add_pow(int dst, Vars::Variable *src1, int src2);
     void add_pow(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_move(int dst, int src1);
+    void add_move(int dst, Vars::Variable *src1);
     /** @} */
 
     /**

@@ -81,6 +81,7 @@ SPACE   [ \t]
 "DIV"{SPACE}+                   {   return token::DIV;        }
 "MOD"{SPACE}+                   {   return token::MOD;        }
 "POW"{SPACE}+                   {   return token::POW;        }
+"MOVE"{SPACE}+                  {   return token::MOVE;       }
 
 "TEXT"{SPACE}+                  {   return token::TEXT;       }
 "NUMBER"{SPACE}+                {   return token::NUMBER;     }
