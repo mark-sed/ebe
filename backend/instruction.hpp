@@ -36,7 +36,7 @@ namespace Inst {
      */
     class Instruction {
     public:
-        bool pragma;  ///< If true, then the instruction does not process and is used for the interpreter/compiler
+        bool control;  ///< If true, then the instruction does not process and is used for the interpreter/compiler
 
         /** Destructor */ 
         virtual ~Instruction(){};
@@ -172,31 +172,31 @@ namespace Inst {
         void format_args(std::ostream &out) override;
 
         ArithmeticInstruction(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
-            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { pragma = false; }
+            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{src1}, src2{src2} { control = false; }
         /** 
          * Constructor for instruction signature:
          * $, $, $
          */ 
         ArithmeticInstruction(int dst, int isrc1, int isrc2) 
-            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{nullptr}, src2{nullptr} { pragma = false; }
+            : dst{dst}, isrc1{isrc1}, isrc2{isrc2}, src1{nullptr}, src2{nullptr} { control = false; }
         /** 
          * Constructor for instruction signature:
          * $, $, #
          */ 
         ArithmeticInstruction(int dst, int isrc1, Vars::Variable *src2) 
-            : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{nullptr}, src2{src2} { pragma = false; }
+            : dst{dst}, isrc1{isrc1}, isrc2{-1}, src1{nullptr}, src2{src2} { control = false; }
         /** 
          * Constructor for instruction signature:
          * $, #, $
          */ 
         ArithmeticInstruction(int dst, Vars::Variable *src1, int isrc2) 
-            : dst{dst}, isrc1{-1}, isrc2{isrc2}, src1{src1}, src2{nullptr} { pragma = false; }
+            : dst{dst}, isrc1{-1}, isrc2{isrc2}, src1{src1}, src2{nullptr} { control = false; }
         /** 
          * Constructor for instruction signature:
          * $, #, #
          */ 
         ArithmeticInstruction(int dst, Vars::Variable *src1, Vars::Variable *src2) 
-            : dst{dst}, isrc1{-1}, isrc2{-1}, src1{src1}, src2{src2} { pragma = false; }
+            : dst{dst}, isrc1{-1}, isrc2{-1}, src1{src1}, src2{src2} { control = false; }
 
         ~ArithmeticInstruction() {
             if(src1 != nullptr) {
@@ -225,7 +225,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
-        CALL(size_t arg1) : arg1{arg1} { pragma = true; }
+        CALL(size_t arg1) : arg1{arg1} { control = true; }
         CALL *copy() const override {
             return new CALL(arg1);
         }
@@ -241,7 +241,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
-        CONCAT(int arg1) : arg1{arg1} { pragma = false; }
+        CONCAT(int arg1) : arg1{arg1} { control = false; }
         CONCAT *copy() const override {
             return new CONCAT(arg1);
         }
@@ -254,7 +254,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        DEL(){ pragma = false; }
+        DEL(){ control = false; }
         virtual ~DEL() {}
         DEL *copy() const override {
             return new DEL();
@@ -268,7 +268,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        LOOP(){ pragma = true; }
+        LOOP(){ control = true; }
         LOOP *copy() const override {
             return new LOOP();
         }
@@ -281,7 +281,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        NOP(){ pragma = false; }
+        NOP(){ control = false; }
         NOP *copy() const override {
             return new NOP();
         }
@@ -296,7 +296,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        PASS(const char *arg1) { pragma = true; }
+        PASS(const char *arg1) { control = true; }
         PASS *copy() const override {
             return new PASS(arg1);
         }
@@ -312,7 +312,7 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         void format_args(std::ostream &out) override;
-        SWAP(int arg1) : arg1{arg1} { pragma = false; }
+        SWAP(int arg1) : arg1{arg1} { control = false; }
         SWAP *copy() const override {
             return new SWAP(arg1);
         }
@@ -333,13 +333,13 @@ namespace Inst {
         void format_args(std::ostream &out) override;
         // For custom settings
         MOVE(int dst, int isrc1, Vars::Variable *src1) 
-            : dst{dst}, isrc1{isrc1}, src1{src1} { pragma = true; }
+            : dst{dst}, isrc1{isrc1}, src1{src1} { control = true; }
         // $, $
         MOVE(int dst, int isrc1) 
-            : dst{dst}, isrc1{isrc1}, src1{nullptr} { pragma = true; }
+            : dst{dst}, isrc1{isrc1}, src1{nullptr} { control = true; }
         // $, #
         MOVE(int dst, Vars::Variable *src1) 
-            : dst{dst}, isrc1{-1}, src1{src1} { pragma = true; }
+            : dst{dst}, isrc1{-1}, src1{src1} { control = true; }
         MOVE *copy() const override {
             return new MOVE(dst, isrc1, src1);
         }

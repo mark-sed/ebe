@@ -194,7 +194,7 @@ std::string Node::output(){
     return out.str();
 }
 
-Pass::Pass(PassType type) : type{type}, env{}, subpass_table{nullptr} {
+Pass::Pass(PassType type) : type{type}, env{}, subpass_table{nullptr}, last_executed_index{-1} {
     if(type == PassType::EXPRESSION_PASS){
         this->pass_name = "Expression";
     }
@@ -245,6 +245,7 @@ Pass::Pass(const Pass &other) {
     for(auto inst: *other.pipeline) {
         this->pipeline->push_back(inst->copy());
     }
+    this->last_executed_index = -1;
 }
 
 Pass::~Pass(){
@@ -320,10 +321,13 @@ void PassWords::process(IR::Node *text) {
         return;
     }
     LOG4("Words pass processing:\n" << *text);
+    LOG5("Processing over: " << *this);
+    // Reset optimization variables
+    this->last_executed_index = -1;
     // Iterate through lines of text
     size_t line_number = 0;
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
-        size_t column = 0;
+        ssize_t column = 0;
         env.loop_inst = nullptr;
         bool checked_executable_loop = false;  // Used to detect inf loops
         auto word = (*line)->begin();
@@ -341,13 +345,17 @@ void PassWords::process(IR::Node *text) {
             Inst::Instruction *inst = (*this->pipeline)[column];
             // To make sure loops are not executed on the first pass the loop control is before instruction execution
             ++column;
+            // Save column if its bigger than biggest column number so far (for optimization)
+            if(static_cast<ssize_t>(column) > this->last_executed_index) {
+                this->last_executed_index = column;
+            }
             if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
                 // If it was not yet checked, make sure there are actual non-pragma instructions in the loop
                 if(!checked_executable_loop){
                     bool found = false;
                     // Loop through previous instruction and check if any of them is non-pragma
                     for(auto i = pipeline->begin(); *i != this->env.loop_inst; ++i){
-                        if(!(*i)->pragma){
+                        if(!(*i)->control){
                             found = true;
                             checked_executable_loop = true;
                         }
@@ -398,6 +406,8 @@ void PassLines::process(IR::Node *text) {
     if(this->pipeline->empty()){
         return;
     }
+    // Reset optimization variables
+    this->last_executed_index = -1;
     size_t column = 0;
     env.loop_inst = nullptr;
     bool checked_executable_loop = false;
@@ -415,13 +425,17 @@ void PassLines::process(IR::Node *text) {
         Inst::Instruction *inst = (*this->pipeline)[column];
         // To make sure loops are not executed on the first pass the loop control is before instruction execution
         ++column;
+        // Save the biggest instruction index executed for optimizations
+        if(static_cast<ssize_t>(column) > this->last_executed_index) {
+            this->last_executed_index = column;
+        }
         if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
             // If it was not yet checked, make sure there are actual non-pragma instructions in the loop
             if(!checked_executable_loop){
                 bool found = false;
                 // Loop through previous instruction and check if any of them is non-pragma
                 for(auto i = pipeline->begin(); *i != this->env.loop_inst; ++i){
-                    if(!(*i)->pragma){
+                    if(!(*i)->control){
                         found = true;
                         checked_executable_loop = true;
                     }

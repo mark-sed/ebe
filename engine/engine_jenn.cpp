@@ -16,6 +16,7 @@
 #include "arg_parser.hpp"
 #include "rng.hpp"
 #include "logging.hpp"
+#include "interpreter.hpp"
 
 #include <iostream>
 
@@ -27,7 +28,7 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
     if(Args::arg_opts.iterations == 0){
         // TODO: Call initialized when implemented and set iterations in case its not set 
         // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
-        iterations = 200;
+        iterations = 400;
     }
 
     auto params = new GPEngineParams(default_gpparams);
@@ -60,8 +61,16 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
     size_t cnt_mutation = 0;
     for(size_t iter = 0; iter < iterations; ++iter){
         LOG3(iter << ". iteration started");
+        // Prune
+        for(auto p: *this->population->candidates) {
+            for(auto pass: *p->program->nodes) {
+                if(pass->pipeline->size() > 2*this->text_in->nodes->front()->size()) {
+                    pass->pipeline->resize(pass->pipeline->size()/2);
+                }
+            }
+        }
         // Eval population
-        auto perfect_pheno = this->evaluate();
+        auto perfect_pheno = this->evaluate(false);
         if(perfect_pheno){
             // 100 % precision found, return
             if(precision){
@@ -74,6 +83,11 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                 // Preappend user defined expressions
                 perfect_pheno->program->nodes->push_front(expr_pass);
             }
+            // Reinterpret to optimize
+            auto interpreter = new Interpreter(perfect_pheno->program);
+            auto text_in_copy = *text_in;
+            interpreter->parse(&text_in_copy);
+            interpreter->optimize();
             return perfect_pheno->program;
         }
         // Sort population based on fitness
@@ -111,7 +125,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
             LOG4("Population after " << iter << " iteration: " << *population);
         }
     }
-    this->evaluate();
+    this->evaluate(true);
     if(precision){
         // Set precision if pointer is valid
         *precision = this->population->candidates->front()->fitness; 

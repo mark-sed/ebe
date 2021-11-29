@@ -192,6 +192,11 @@ namespace IR {
         std::vector<Inst::Instruction *> *pipeline;  ///< Pipeline of instructions
         std::vector<Pass *> *subpass_table;          ///< Table of subpasses
         PassEnvironment env;                         ///< Current environment
+        /**
+         * Index of the last instruction that was executed by the iterator.
+         * This is used by the optimizer when interpreting ebel for GP
+         */  
+        ssize_t last_executed_index;
     private:
         friend std::ostream& operator<< (std::ostream &out, const IR::Pass& pass);
     protected:

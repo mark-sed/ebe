@@ -201,11 +201,23 @@ void GPEngine::mutate(GP::Phenotype *pheno) {
 
 void GPEngine::crossover_insert(GP::Phenotype *pheno) {
     // TODO: Add option to replace part of the pipeline not just insert
+    if(pheno->program->nodes->empty()) {
+        return;
+    }
     std::unordered_set<GP::Phenotype *> excl{pheno};
     auto rand_pheno = RNG::rand_list_elem(population->candidates, &excl);
+    if((*rand_pheno)->program->nodes->empty()) {
+        return;
+    }
     auto rand_pass = RNG::rand_list_elem((*rand_pheno)->program->nodes, nullptr);
+    if((*rand_pass)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
     auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
+    if((*rand_pass_og)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
     /*if((*rand_pos)->get_name() == std::string("CALL")){
         return;
@@ -223,11 +235,23 @@ void GPEngine::crossover_insert(GP::Phenotype *pheno) {
 }
 
 void GPEngine::crossover_switch(GP::Phenotype *pheno) {
+    if(pheno->program->nodes->empty()) {
+        return;
+    }
     std::unordered_set<GP::Phenotype *> excl{pheno};
     auto rand_pheno = RNG::rand_list_elem(population->candidates, &excl);
+    if((*rand_pheno)->program->nodes->empty()) {
+        return;
+    }
     auto rand_pass = RNG::rand_list_elem((*rand_pheno)->program->nodes, nullptr);
+    if((*rand_pass)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
     auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
+    if((*rand_pass_og)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
     /*if((*rand_pos)->get_name() == std::string("CALL") || (*rand_pass)->type == IR::PassType::EXPRESSION_PASS){
         std::cout << "AAAAA\n";
@@ -282,13 +306,17 @@ GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, Eng
     }
 }
 
-GP::Phenotype *GPEngine::evaluate() {
+GP::Phenotype *GPEngine::evaluate(bool run_time_optimize) {
     GP::Phenotype *perfect_program = nullptr;
     for(auto &pheno: *this->population->candidates){
         // If expression is set then insert it at the begining
         auto interpreter = new Interpreter(pheno->program);
         IR::Node text_copy = *this->text_in;
         interpreter->parse(&text_copy);
+        if(run_time_optimize) {
+            // Run optimizations
+            interpreter->optimize();
+        }
         float fit = compare(text_out, &text_copy);
         // Set the fitness
         pheno->fitness = fit;

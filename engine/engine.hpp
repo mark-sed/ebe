@@ -156,9 +156,10 @@ protected:
 
     /**
      * Evaluates all the candidates and saves their fitness to fitness list
+     * @param run_time_optimize If true interpreter optimizations are run over each phenotype
      * @return Returns a node with 1.0f if present otherwise nullptr
      */ 
-    GP::Phenotype *evaluate();
+    GP::Phenotype *evaluate(bool run_time_optimize=false);
 
     /**
      * Sorts population based on phenotype's fitness.
