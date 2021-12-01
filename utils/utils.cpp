@@ -32,6 +32,10 @@ void Utils::to_upper(std::vector<std::string> *text){
     }
 }
 
+std::string Utils::capitalize(std::string text) {
+    return std::string(1, std::toupper(text[0]))+std::string(&text[1]);
+}
+
 std::set<std::string> Utils::split_csv(std::string csv, char delim) {
     std::set<std::string> splitted;
     std::string value;
@@ -85,5 +89,31 @@ template<> unsigned int Cast::to(std::string v){
         return c;
     }catch (std::exception & e){
         throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to unsigned int"));
+    }
+}
+
+template<> int Cast::to(std::string v){
+    try{
+        char *pos = 0;
+        auto c = std::strtol(v.c_str(), &pos, 10);
+        if(*pos != '\0'){
+            throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to int"));
+        }
+        return c;
+    }catch (std::exception & e){
+        throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to int"));
+    }
+}
+
+template<> float Cast::to(std::string v){
+    try{
+        char *pos = 0;
+        auto c = std::strtof(v.c_str(), &pos);
+        if(*pos != '\0'){
+            throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to float"));
+        }
+        return c;
+    }catch (std::exception & e){
+        throw Exception::EbeTypeException(std::string("Could not convert value \""+v+"\" to float"));
     }
 }

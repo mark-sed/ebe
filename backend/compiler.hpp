@@ -14,12 +14,78 @@
 #define _COMPILER_HPP_
 
 #include <iostream>
+#include <unistd.h>
 #include "exceptions.hpp"
 
 /**
  * Namespace holding resources for error and warning handling
  */
 namespace Error {
+    
+    /**
+     * Namespace for terminal colorization
+     */ 
+    namespace Colors {
+
+        extern const char * NO_COLOR;
+        extern const char * BLACK;
+        extern const char * GRAY;
+        extern const char * RED;
+        extern const char * LIGHT_RED;
+        extern const char * GREEN;
+        extern const char * LIGHT_GREEN;
+        extern const char * BROWN;
+        extern const char * YELLOW;
+        extern const char * BLUE;
+        extern const char * LIGHT_BLUE;
+        extern const char * PURPLE;
+        extern const char * LIGHT_PURPLE;
+        extern const char * CYAN;
+        extern const char * LIGHT_CYAN;
+        extern const char * LIGHT_GRAY;
+        extern const char * WHITE;
+        extern const char * RESET;
+
+        /**
+         * Checks if stderr is redirected to a file
+         * @return true if stderr is redirected
+         */ 
+        inline bool is_cerr_redirected() {
+            static bool initialized(false);
+            static bool is_redir;
+            if (!initialized) {
+                initialized = true;
+                is_redir = ttyname(fileno(stderr)) == nullptr;
+            }
+            return is_redir;
+        }
+
+        /**
+         * Returns passes in color in case the output is not redirected.
+         * If output is redirected then this returns empty string ("")
+         * @param color Colors to sanitize
+         * @return color if output if not redirected otherwise empty string
+         */ 
+        inline const char *colorize(const char * color) {
+            // Check if stderr is redirected
+            if(is_cerr_redirected()) {
+                return "";
+            }
+            return color;
+        }
+
+        /**
+         * Resets set color to default terminal settings
+         * @return Colors::RESET if output is not redirected otherwise empty string
+         */ 
+        inline const char *reset() {
+            // Check if stderr is redirected
+            if(is_cerr_redirected()) {
+                return "";
+            }
+            return Colors::RESET;
+        }
+    }
 
     /**
      * Possible enum codes
@@ -33,7 +99,8 @@ namespace Error {
         ARGUMENTS,     ///< Problem with user arguments
         SYNTACTIC,     ///< Syntactical error
         SEMANTIC,      ///< Semantical error
-        UNIMPLEMENTED  ///< Problems with instruction
+        UNIMPLEMENTED, ///< Problems with instruction
+        RUNTIME        ///< Runtime errors
     };
 
     /**
@@ -53,12 +120,15 @@ namespace Error {
      */
     void error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc=nullptr, bool exit=true);
 
+    void error(Error::ErrorCode code, const char *file, long line, long column, const char *msg, 
+               Exception::EbeException *exc=nullptr, bool exit=true);
+
     /**
      * Prints warning to std::cerr
      * @param msg Message to print
      */ 
     inline void warning(const char *msg) {
-        std::cerr << "WARNING: " << msg << std::endl;
+        std::cerr << Colors::colorize(Colors::PURPLE) << "WARNING: " << Colors::reset() << msg << "." << std::endl;
     }
 
     /**

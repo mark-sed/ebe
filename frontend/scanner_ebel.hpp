@@ -23,7 +23,10 @@
 #include "ir.hpp"
 #include "scanner.hpp"
 #include "parser_ebel.hpp"
+#include "symbol_table.hpp"
 
+
+/** Handeling of files containing ebel code */
 namespace EbelFile {
 
 /**
@@ -35,6 +38,7 @@ private:
 
     IR::EbelNode *current_parse;          ///< Holds program that is currently being parsed during process method
     IR::Pass *current_pass;               ///< Holds line currently being parsed during process method
+    IR::Pass *parent_pass;                ///< Hold parent pass to current pass (used for expressions)
     const char *current_file_name;        ///< File currently being parsed
     /**
      * Indicates that an error was found by lexer or parser.
@@ -45,10 +49,14 @@ private:
 
     /** If current pass is nullptr allocates a new one */
     void touch_pass();
+
+    /** General assertion for expression instructions */
+    void assert_expr_inst(const char * iname);
 public:
     EbelFile::ParserEbel::location_type *loc = nullptr;     ///< Current parsing location
 
     ScannerEbel();
+    virtual ~ScannerEbel() {}
 
     virtual int eelex(EbelFile::ParserEbel::semantic_type *const lval,
                       EbelFile::ParserEbel::location_type *location);
@@ -56,17 +64,51 @@ public:
     /**
      * @defgroup instparse Instruction parsers
      * Receive instruction and add it to the current_parse.
-     * @param v Text of the word
      * @{
      */  
     void add_concat(int offset);
     void add_del();
     void add_loop();
     void add_nop();
+    void add_pass_expression(IR::Type type);
     void add_pass_words();
     void add_pass_lines();
     void add_pass_documents();
     void add_swap(int offset);
+    void add_return();
+    
+    void add_add(int dst, int src1, int src2);
+    void add_add(int dst, int src1, Vars::Variable *src2);
+    void add_add(int dst, Vars::Variable *src1, int src2);
+    void add_add(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_sub(int dst, int src1, int src2);
+    void add_sub(int dst, int src1, Vars::Variable *src2);
+    void add_sub(int dst, Vars::Variable *src1, int src2);
+    void add_sub(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_mul(int dst, int src1, int src2);
+    void add_mul(int dst, int src1, Vars::Variable *src2);
+    void add_mul(int dst, Vars::Variable *src1, int src2);
+    void add_mul(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_div(int dst, int src1, int src2);
+    void add_div(int dst, int src1, Vars::Variable *src2);
+    void add_div(int dst, Vars::Variable *src1, int src2);
+    void add_div(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_mod(int dst, int src1, int src2);
+    void add_mod(int dst, int src1, Vars::Variable *src2);
+    void add_mod(int dst, Vars::Variable *src1, int src2);
+    void add_mod(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_pow(int dst, int src1, int src2);
+    void add_pow(int dst, int src1, Vars::Variable *src2);
+    void add_pow(int dst, Vars::Variable *src1, int src2);
+    void add_pow(int dst, Vars::Variable *src1, Vars::Variable *src2);
+
+    void add_move(int dst, int src1);
+    void add_move(int dst, Vars::Variable *src1);
     /** @} */
 
     /**
@@ -77,6 +119,13 @@ public:
      * @note Passing in NO_ERROR won't change the error to NO_ERROR
      */ 
     void error_found(Error::ErrorCode code);
+
+    /**
+     * Error handeling from parser and lexer
+     * @param code Error code to report
+     * @param err_message Error message
+     */ 
+    void sub_error(Error::ErrorCode code, const std::string &err_message);
 
     IR::EbelNode *process(std::istream *text, const char *file_name);
 };

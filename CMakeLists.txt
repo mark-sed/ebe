@@ -4,6 +4,15 @@ cmake_minimum_required(VERSION 3.8)
 project(ebe)
 set(CMAKE_CXX_STANDARD 17)
 
+# TODO: Possibly always request the type to be specified
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3 -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g")
+
 # Includes for headers
 include_directories(.)
 include_directories(backend)
@@ -18,6 +27,7 @@ set(SOURCES
     backend/compiler.cpp
     backend/instruction.cpp
     backend/interpreter.cpp
+    backend/symbol_table.cpp
     engine/engine.cpp
     engine/engine_jenn.cpp
     engine/engine_miRANDa.cpp
@@ -31,6 +41,8 @@ set(SOURCES
     frontend/scanner.cpp
     gp/gp.cpp
     midend/ir.cpp
+    midend/tree.cpp
+    midend/expression.cpp
     utils/arg_parser.cpp
     utils/exceptions.cpp
     utils/logging.cpp
@@ -56,6 +68,7 @@ add_executable(
     ebe.cpp
     ${SOURCES}
 )
+target_link_libraries(${PROJECT_NAME} m)
 
 # ebetests target
 add_executable(

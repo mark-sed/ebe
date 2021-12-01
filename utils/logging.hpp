@@ -19,6 +19,7 @@
 #include <set>
 #include <algorithm>
 #include <ios>
+#include <cstring>
 #include "utils.hpp"
 
 
@@ -132,6 +133,9 @@ public:
 #define MAX_LOGGING_LEVEL 5
 #endif
 
+/// Helper macro to strip file's path
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
 /// Logging macro
 #ifndef DISABLE_LOGGING
     /// @param level Verbosity level
@@ -140,21 +144,21 @@ public:
         std::stringstream out; \
         out.setf(Logger::get().get_flags()); \
         out << message; \
-        Logger::get().debug(level, std::string(__FILE__)+std::string("::")+std::string(__func__), out.str()); }
+        Logger::get().debug(level, std::string(__FILENAME__)+std::string("::")+std::string(__func__), out.str()); }
     /// Logs whole container
     #define LOG_CONT(level, message, container) if ((level) <= MAX_LOGGING_LEVEL) { \
         std::stringstream out; \
         out.setf(Logger::get().get_flags()); \
         out << message << std::endl; \
         for(auto v: (container)) { out << TAB1 << v << std::endl; } \
-        Logger::get().debug(level, std::string(__FILE__)+std::string("::")+std::string(__func__), out.str()); }
+        Logger::get().debug(level, std::string(__FILENAME__)+std::string("::")+std::string(__func__), out.str()); }
     /// Logs container of strings which will be sanitized (removes escape sequences)
     #define LOG_CONT_SANITIZE(level, message, container) if ((level) <= MAX_LOGGING_LEVEL) { \
         std::stringstream out; \
         out.setf(Logger::get().get_flags()); \
         out << message << std::endl; \
         for(auto v: (container)) { out << Utils::sanitize(v) << std::endl; } \
-        Logger::get().debug(level, std::string(__FILE__)+std::string("::")+std::string(__func__), out.str()); }
+        Logger::get().debug(level, std::string(__FILENAME__)+std::string("::")+std::string(__func__), out.str()); }
 #else
     #define LOG(level, message)
     #define LOG_CONT(level, message, container)

@@ -42,8 +42,10 @@
 
 
 // Unqualified %code blocks.
-#line 43 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+#line 48 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 
+    #include <cmath>
+    #include <sstream>
     // Include compiler to use error
     #include "compiler.hpp"
     #include "scanner_text.hpp"
@@ -52,7 +54,7 @@
     #undef yylex
     #define yylex scanner->yylex
 
-#line 56 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 58 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
 
 
 #ifndef YY_
@@ -145,7 +147,7 @@
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 namespace  TextFile  {
-#line 149 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 151 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
 
   /// Build a parser object.
    ParserText :: ParserText  (ScannerText *scanner_yyarg)
@@ -177,11 +179,28 @@ namespace  TextFile  {
   {
     switch (this->kind ())
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.copy< Expr::Expression > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.copy< int > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.copy< std::string > (YY_MOVE (that.value));
         break;
 
@@ -216,11 +235,28 @@ namespace  TextFile  {
     super_type::move (s);
     switch (this->kind ())
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.move< Expr::Expression > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.move< int > (YY_MOVE (s.value));
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.move< std::string > (YY_MOVE (s.value));
         break;
 
@@ -325,11 +361,28 @@ namespace  TextFile  {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.YY_MOVE_OR_COPY< Expr::Expression > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.YY_MOVE_OR_COPY< std::string > (YY_MOVE (that.value));
         break;
 
@@ -348,11 +401,28 @@ namespace  TextFile  {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.move< Expr::Expression > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.move< int > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.move< std::string > (YY_MOVE (that.value));
         break;
 
@@ -371,11 +441,28 @@ namespace  TextFile  {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.copy< Expr::Expression > (that.value);
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.copy< int > (that.value);
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.copy< std::string > (that.value);
         break;
 
@@ -393,11 +480,28 @@ namespace  TextFile  {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_varexpr: // varexpr
+        value.move< Expr::Expression > (that.value);
+        break;
+
+      case symbol_kind::S_expr: // expr
+        value.move< int > (that.value);
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         value.move< std::string > (that.value);
         break;
 
@@ -659,11 +763,28 @@ namespace  TextFile  {
          when using variants.  */
       switch (yyr1_[yyn])
     {
+      case symbol_kind::S_varexpr: // varexpr
+        yylhs.value.emplace< Expr::Expression > ();
+        break;
+
+      case symbol_kind::S_expr: // expr
+        yylhs.value.emplace< int > ();
+        break;
+
       case symbol_kind::S_TEXT: // TEXT
       case symbol_kind::S_NUMBER: // NUMBER
       case symbol_kind::S_DELIMITER: // DELIMITER
       case symbol_kind::S_SYMBOL: // SYMBOL
       case symbol_kind::S_FLOAT: // FLOAT
+      case symbol_kind::S_LPAR: // "("
+      case symbol_kind::S_RPAR: // ")"
+      case symbol_kind::S_VAR: // "$"
+      case symbol_kind::S_PLUS: // "+"
+      case symbol_kind::S_IMUL: // "*"
+      case symbol_kind::S_MINUS: // "-"
+      case symbol_kind::S_IDIV: // "/"
+      case symbol_kind::S_MOD: // "%"
+      case symbol_kind::S_POW: // "^"
         yylhs.value.emplace< std::string > ();
         break;
 
@@ -688,43 +809,290 @@ namespace  TextFile  {
           switch (yyn)
             {
   case 6: // word: TEXT
-#line 81 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
-                      { scanner->add_text(yystack_[0].value.as < std::string > ());      }
-#line 694 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 111 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_text(yystack_[0].value.as < std::string > ());      }
+#line 815 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
     break;
 
   case 7: // word: NUMBER
-#line 82 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
-                      { scanner->add_number(yystack_[0].value.as < std::string > ());    }
-#line 700 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 112 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_number(yystack_[0].value.as < std::string > ());    }
+#line 821 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
     break;
 
   case 8: // word: DELIMITER
-#line 83 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
-                      { scanner->add_delimiter(yystack_[0].value.as < std::string > ()); }
-#line 706 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 113 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_delimiter(yystack_[0].value.as < std::string > ()); }
+#line 827 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
     break;
 
   case 9: // word: SYMBOL
-#line 84 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
-                      { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
-#line 712 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 114 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 833 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
     break;
 
   case 10: // word: FLOAT
-#line 85 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
-                      { scanner->add_float(yystack_[0].value.as < std::string > ());     }
-#line 718 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 115 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_float(yystack_[0].value.as < std::string > ());     }
+#line 839 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
     break;
 
   case 11: // word: NEWLINE
-#line 86 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
-                      { scanner->add_newline();   }
-#line 724 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 116 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_newline();     }
+#line 845 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 12: // word: "$"
+#line 117 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 851 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 13: // word: "+"
+#line 118 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 857 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 14: // word: "*"
+#line 119 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 863 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 15: // word: "-"
+#line 120 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 869 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 16: // word: "/"
+#line 121 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 875 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 17: // word: "%"
+#line 122 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 881 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 18: // word: "^"
+#line 123 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(yystack_[0].value.as < std::string > ());    }
+#line 887 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 19: // word: "("
+#line 124 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol("(");   }
+#line 893 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 20: // word: ")"
+#line 125 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                       { scanner->add_symbol(")");   }
+#line 899 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 21: // word: "{!"
+#line 126 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                             { scanner->add_symbol("{"); scanner->add_symbol("!"); }
+#line 905 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 22: // word: "!}"
+#line 127 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                             { scanner->add_symbol("!"); scanner->add_symbol("}"); }
+#line 911 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 23: // word: "expression begin" varexpr "expression end"
+#line 128 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                        { scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), yystack_[1].value.as < Expr::Expression > ()}), IR::Type::NUMBER); }
+#line 917 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 24: // word: "expression begin" expr "expression end"
+#line 129 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                     { auto e = Expression(Node(Type::NUMBER, std::to_string(yystack_[1].value.as < int > ())), std::vector<Expression>{});
+                                       scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::NUMBER);}
+#line 924 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 25: // varexpr: "$"
+#line 133 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::VAR, yystack_[0].value.as < std::string > ()), std::vector<Expression>()); }
+#line 930 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 26: // varexpr: "(" varexpr ")"
+#line 134 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                              { yylhs.value.as < Expr::Expression > () = yystack_[1].value.as < Expr::Expression > (); }
+#line 936 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 27: // varexpr: expr "^" varexpr
+#line 135 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                             { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::POW, "^"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string(yystack_[2].value.as < int > ())), std::vector<Expression>{}), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 942 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 28: // varexpr: expr "%" varexpr
+#line 136 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                             { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::MOD, "%"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string(yystack_[2].value.as < int > ())), std::vector<Expression>{}), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 948 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 29: // varexpr: expr "*" varexpr
+#line 137 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                              { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string(yystack_[2].value.as < int > ())), std::vector<Expression>{}), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 954 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 30: // varexpr: expr "/" varexpr
+#line 138 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                              { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string(yystack_[2].value.as < int > ())), std::vector<Expression>{}), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 960 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 31: // varexpr: expr "-" varexpr
+#line 139 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                               { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::SUB, "-"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string(yystack_[2].value.as < int > ())), std::vector<Expression>{}), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 966 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 32: // varexpr: expr "+" varexpr
+#line 140 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                              { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::ADD, "+"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string(yystack_[2].value.as < int > ())), std::vector<Expression>{}), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 972 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 33: // varexpr: varexpr "^" expr
+#line 141 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                             { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::POW, "^"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), Expression(Node(Type::NUMBER, std::to_string(yystack_[0].value.as < int > ())), std::vector<Expression>{})}); }
+#line 978 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 34: // varexpr: varexpr "%" expr
+#line 142 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                             { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::MOD, "%"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), Expression(Node(Type::NUMBER, std::to_string(yystack_[0].value.as < int > ())), std::vector<Expression>{})}); }
+#line 984 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 35: // varexpr: varexpr "*" expr
+#line 143 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                              { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), Expression(Node(Type::NUMBER, std::to_string(yystack_[0].value.as < int > ())), std::vector<Expression>{})}); }
+#line 990 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 36: // varexpr: varexpr "/" expr
+#line 144 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                              { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), Expression(Node(Type::NUMBER, std::to_string(yystack_[0].value.as < int > ())), std::vector<Expression>{})}); }
+#line 996 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 37: // varexpr: varexpr "-" expr
+#line 145 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                               { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::SUB, "-"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), Expression(Node(Type::NUMBER, std::to_string(yystack_[0].value.as < int > ())), std::vector<Expression>{})}); }
+#line 1002 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 38: // varexpr: varexpr "+" expr
+#line 146 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                              { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::ADD, "+"),  std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), Expression(Node(Type::NUMBER, std::to_string(yystack_[0].value.as < int > ())), std::vector<Expression>{})}); }
+#line 1008 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 39: // varexpr: varexpr "^" varexpr
+#line 147 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::POW, "^"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 1014 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 40: // varexpr: varexpr "%" varexpr
+#line 148 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::MOD, "%"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 1020 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 41: // varexpr: varexpr "*" varexpr
+#line 149 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                 { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 1026 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 42: // varexpr: varexpr "/" varexpr
+#line 150 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                 { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 1032 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 43: // varexpr: varexpr "-" varexpr
+#line 151 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                  { yylhs.value.as < Expr::Expression > () =Expression(Node(Type::SUB, "-"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 1038 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 44: // varexpr: varexpr "+" varexpr
+#line 152 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                                 { yylhs.value.as < Expr::Expression > () = Expression(Node(Type::ADD, "+"), std::vector<Expression>{yystack_[2].value.as < Expr::Expression > (), yystack_[0].value.as < Expr::Expression > ()}); }
+#line 1044 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 45: // expr: NUMBER
+#line 155 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                   { yylhs.value.as < int > () = atoi(yystack_[0].value.as < std::string > ().c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
+#line 1050 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 46: // expr: "(" expr ")"
+#line 156 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                           { yylhs.value.as < int > () = yystack_[1].value.as < int > (); }
+#line 1056 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 47: // expr: expr "^" expr
+#line 157 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                          { yylhs.value.as < int > () = static_cast<int>(std::pow(yystack_[2].value.as < int > (), yystack_[0].value.as < int > ()));}
+#line 1062 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 48: // expr: expr "%" expr
+#line 158 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                          { yylhs.value.as < int > () = yystack_[2].value.as < int > () % yystack_[0].value.as < int > ();}
+#line 1068 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 49: // expr: expr "*" expr
+#line 159 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                           { yylhs.value.as < int > () = yystack_[2].value.as < int > () * yystack_[0].value.as < int > ();}
+#line 1074 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 50: // expr: expr "/" expr
+#line 160 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                           { yylhs.value.as < int > () = yystack_[2].value.as < int > () / yystack_[0].value.as < int > ();}
+#line 1080 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 51: // expr: expr "-" expr
+#line 161 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                            { yylhs.value.as < int > () = yystack_[2].value.as < int > () - yystack_[0].value.as < int > ();}
+#line 1086 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+    break;
+
+  case 52: // expr: expr "+" expr
+#line 162 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+                           { yylhs.value.as < int > () = yystack_[2].value.as < int > () + yystack_[0].value.as < int > ();}
+#line 1092 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
     break;
 
 
-#line 728 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 1096 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
 
             default:
               break;
@@ -756,7 +1124,8 @@ namespace  TextFile  {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        std::string msg = YY_("syntax error");
+        context yyctx (*this, yyla);
+        std::string msg = yysyntax_error_ (yyctx);
         error (yyla.location, YY_MOVE (msg));
       }
 
@@ -901,107 +1270,319 @@ namespace  TextFile  {
     error (yyexc.location, yyexc.what ());
   }
 
-#if YYDEBUG || 0
-  const char *
+  /* Return YYSTR after stripping away unnecessary quotes and
+     backslashes, so that it's suitable for yyerror.  The heuristic is
+     that double-quoting is unnecessary unless the string contains an
+     apostrophe, a comma, or backslash (other than backslash-backslash).
+     YYSTR is taken from yytname.  */
+  std::string
+   ParserText ::yytnamerr_ (const char *yystr)
+  {
+    if (*yystr == '"')
+      {
+        std::string yyr;
+        char const *yyp = yystr;
+
+        for (;;)
+          switch (*++yyp)
+            {
+            case '\'':
+            case ',':
+              goto do_not_strip_quotes;
+
+            case '\\':
+              if (*++yyp != '\\')
+                goto do_not_strip_quotes;
+              else
+                goto append;
+
+            append:
+            default:
+              yyr += *yyp;
+              break;
+
+            case '"':
+              return yyr;
+            }
+      do_not_strip_quotes: ;
+      }
+
+    return yystr;
+  }
+
+  std::string
    ParserText ::symbol_name (symbol_kind_type yysymbol)
   {
-    return yytname_[yysymbol];
+    return yytnamerr_ (yytname_[yysymbol]);
   }
-#endif // #if YYDEBUG || 0
+
+
+
+  //  ParserText ::context.
+   ParserText ::context::context (const  ParserText & yyparser, const symbol_type& yyla)
+    : yyparser_ (yyparser)
+    , yyla_ (yyla)
+  {}
+
+  int
+   ParserText ::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  {
+    // Actual number of expected tokens
+    int yycount = 0;
+
+    const int yyn = yypact_[+yyparser_.yystack_[0].state];
+    if (!yy_pact_value_is_default_ (yyn))
+      {
+        /* Start YYX at -YYN if negative to avoid negative indexes in
+           YYCHECK.  In other words, skip the first -YYN actions for
+           this state because they are default actions.  */
+        const int yyxbegin = yyn < 0 ? -yyn : 0;
+        // Stay within bounds of both yycheck and yytname.
+        const int yychecklim = yylast_ - yyn + 1;
+        const int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+          if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
+              && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+            {
+              if (!yyarg)
+                ++yycount;
+              else if (yycount == yyargn)
+                return 0;
+              else
+                yyarg[yycount++] = YY_CAST (symbol_kind_type, yyx);
+            }
+      }
+
+    if (yyarg && yycount == 0 && 0 < yyargn)
+      yyarg[0] = symbol_kind::S_YYEMPTY;
+    return yycount;
+  }
 
 
 
 
 
 
+  int
+   ParserText ::yy_syntax_error_arguments_ (const context& yyctx,
+                                                 symbol_kind_type yyarg[], int yyargn) const
+  {
+    /* There are many possibilities here to consider:
+       - If this state is a consistent state with a default action, then
+         the only way this function was invoked is if the default action
+         is an error action.  In that case, don't check for expected
+         tokens because there are none.
+       - The only way there can be no lookahead present (in yyla) is
+         if this state is a consistent state with a default action.
+         Thus, detecting the absence of a lookahead is sufficient to
+         determine that there is no unexpected or expected token to
+         report.  In that case, just report a simple "syntax error".
+       - Don't assume there isn't a lookahead just because this state is
+         a consistent state with a default action.  There might have
+         been a previous inconsistent state, consistent state with a
+         non-default action, or user semantic action that manipulated
+         yyla.  (However, yyla is currently not documented for users.)
+       - Of course, the expected token list depends on states to have
+         correct lookahead information, and it depends on the parser not
+         to perform extra reductions after fetching a lookahead from the
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
+    */
+
+    if (!yyctx.lookahead ().empty ())
+      {
+        if (yyarg)
+          yyarg[0] = yyctx.token ();
+        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
+        return yyn + 1;
+      }
+    return 0;
+  }
+
+  // Generate an error message.
+  std::string
+   ParserText ::yysyntax_error_ (const context& yyctx) const
+  {
+    // Its maximum.
+    enum { YYARGS_MAX = 5 };
+    // Arguments of yyformat.
+    symbol_kind_type yyarg[YYARGS_MAX];
+    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
+
+    char const* yyformat = YY_NULLPTR;
+    switch (yycount)
+      {
+#define YYCASE_(N, S)                         \
+        case N:                               \
+          yyformat = S;                       \
+        break
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+#undef YYCASE_
+      }
+
+    std::string yyres;
+    // Argument number.
+    std::ptrdiff_t yyi = 0;
+    for (char const* yyp = yyformat; *yyp; ++yyp)
+      if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
+        {
+          yyres += symbol_name (yyarg[yyi++]);
+          ++yyp;
+        }
+      else
+        yyres += *yyp;
+    return yyres;
+  }
 
 
-
-  const signed char  ParserText ::yypact_ninf_ = -8;
+  const signed char  ParserText ::yypact_ninf_ = -25;
 
   const signed char  ParserText ::yytable_ninf_ = -1;
 
   const signed char
    ParserText ::yypact_[] =
   {
-       0,    -8,    -8,    -8,    -8,    -8,    -8,    -8,     1,     9,
-      -8,    -8,    -8,    -8
+      39,   -25,   -25,    75,   -25,   -25,   -25,   -25,   -25,   -25,
+     -25,   -25,   -25,   -25,   -25,   -25,   -25,   -25,   -25,   -25,
+       2,    61,   -25,   -25,    75,   -25,    78,    84,   -25,   -25,
+     -25,   -13,    92,   -25,    75,    75,    75,    75,    75,    75,
+     -25,    75,    75,    75,    75,    75,    75,   -25,   -25,    97,
+     102,   -12,     3,    97,   102,   -12,     3,   -12,     3,   -12,
+       3,    97,   102,   -12,     3,    97,   102,   -12,     3,   -12,
+       3,   -12,     3
   };
 
   const signed char
    ParserText ::yydefact_[] =
   {
-       0,     2,    11,     6,     7,     8,     9,    10,     0,     0,
-       4,     1,     3,     5
+       0,     2,    11,     0,    21,    22,     6,     7,     8,     9,
+      10,    19,    20,    12,    13,    14,    15,    16,    17,    18,
+       0,     0,     4,    45,     0,    25,     0,     0,     1,     3,
+       5,     0,     0,    23,     0,     0,     0,     0,     0,     0,
+      24,     0,     0,     0,     0,     0,     0,    26,    46,    44,
+      38,    41,    35,    43,    37,    42,    36,    40,    34,    39,
+      33,    32,    52,    29,    49,    31,    51,    30,    50,    28,
+      48,    27,    47
   };
 
   const signed char
    ParserText ::yypgoto_[] =
   {
-      -8,    -8,    -8,    -7
+     -25,   -25,   -25,     4,   -24,    -8
   };
 
   const signed char
    ParserText ::yydefgoto_[] =
   {
-       0,     8,     9,    10
+       0,    20,    21,    22,    26,    27
   };
 
   const signed char
    ParserText ::yytable_[] =
   {
-       1,    11,    13,     2,     3,     4,     5,     6,     7,    12,
-       0,     0,     2,     3,     4,     5,     6,     7
+      31,    47,    28,    34,    35,    36,    37,    38,    39,    39,
+      49,    51,    53,    55,    57,    59,    32,    61,    63,    65,
+      67,    69,    71,     0,    46,    30,    50,    52,    54,    56,
+      58,    60,     0,    62,    64,    66,    68,    70,    72,     1,
+       0,     0,     2,     3,     0,     4,     5,     6,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    29,     0,     0,     2,     3,     0,     4,     5,     6,
+       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+      17,    18,    19,    33,    23,     0,     0,     0,    24,    40,
+      25,     0,     0,     0,    34,    35,    36,    37,    38,    39,
+      41,    42,    43,    44,    45,    46,    48,     0,    41,    42,
+      43,    44,    45,    46,    35,     0,    37,    38,    39,    42,
+       0,    44,    45,    46
   };
 
   const signed char
    ParserText ::yycheck_[] =
   {
-       0,     0,     9,     3,     4,     5,     6,     7,     8,     0,
-      -1,    -1,     3,     4,     5,     6,     7,     8
+      24,    14,     0,    16,    17,    18,    19,    20,    21,    21,
+      34,    35,    36,    37,    38,    39,    24,    41,    42,    43,
+      44,    45,    46,    -1,    21,    21,    34,    35,    36,    37,
+      38,    39,    -1,    41,    42,    43,    44,    45,    46,     0,
+      -1,    -1,     3,     4,    -1,     6,     7,     8,     9,    10,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,     0,    -1,    -1,     3,     4,    -1,     6,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,     5,     9,    -1,    -1,    -1,    13,     5,
+      15,    -1,    -1,    -1,    16,    17,    18,    19,    20,    21,
+      16,    17,    18,    19,    20,    21,    14,    -1,    16,    17,
+      18,    19,    20,    21,    17,    -1,    19,    20,    21,    17,
+      -1,    19,    20,    21
   };
 
   const signed char
    ParserText ::yystos_[] =
   {
-       0,     0,     3,     4,     5,     6,     7,     8,    10,    11,
-      12,     0,     0,    12
+       0,     0,     3,     4,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+      23,    24,    25,     9,    13,    15,    26,    27,     0,     0,
+      25,    26,    27,     5,    16,    17,    18,    19,    20,    21,
+       5,    16,    17,    18,    19,    20,    21,    14,    14,    26,
+      27,    26,    27,    26,    27,    26,    27,    26,    27,    26,
+      27,    26,    27,    26,    27,    26,    27,    26,    27,    26,
+      27,    26,    27
   };
 
   const signed char
    ParserText ::yyr1_[] =
   {
-       0,     9,    10,    10,    11,    11,    12,    12,    12,    12,
-      12,    12
+       0,    22,    23,    23,    24,    24,    25,    25,    25,    25,
+      25,    25,    25,    25,    25,    25,    25,    25,    25,    25,
+      25,    25,    25,    25,    25,    26,    26,    26,    26,    26,
+      26,    26,    26,    26,    26,    26,    26,    26,    26,    26,
+      26,    26,    26,    26,    26,    27,    27,    27,    27,    27,
+      27,    27,    27
   };
 
   const signed char
    ParserText ::yyr2_[] =
   {
        0,     2,     1,     2,     1,     2,     1,     1,     1,     1,
-       1,     1
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     3,     3,     1,     3,     3,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
+       3,     3,     3,     3,     3,     1,     3,     3,     3,     3,
+       3,     3,     3
   };
 
 
-#if YYDEBUG
+#if YYDEBUG || 1
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
   const  ParserText ::yytname_[] =
   {
-  "\"EOF\"", "error", "\"invalid token\"", "NEWLINE", "TEXT", "NUMBER",
-  "DELIMITER", "SYMBOL", "FLOAT", "$accept", "text_file", "sentence",
-  "word", YY_NULLPTR
+  "\"EOF\"", "error", "\"invalid token\"", "NEWLINE",
+  "\"expression begin\"", "\"expression end\"", "\"{!\"", "\"!}\"", "TEXT",
+  "NUMBER", "DELIMITER", "SYMBOL", "FLOAT", "\"(\"", "\")\"", "\"$\"",
+  "\"+\"", "\"*\"", "\"-\"", "\"/\"", "\"%\"", "\"^\"", "$accept",
+  "text_file", "sentence", "word", "varexpr", "expr", YY_NULLPTR
   };
 #endif
 
 
 #if YYDEBUG
-  const signed char
+  const unsigned char
    ParserText ::yyrline_[] =
   {
-       0,    71,    71,    72,    76,    77,    81,    82,    83,    84,
-      85,    86
+       0,   101,   101,   102,   106,   107,   111,   112,   113,   114,
+     115,   116,   117,   118,   119,   120,   121,   122,   123,   124,
+     125,   126,   127,   128,   129,   133,   134,   135,   136,   137,
+     138,   139,   140,   141,   142,   143,   144,   145,   146,   147,
+     148,   149,   150,   151,   152,   155,   156,   157,   158,   159,
+     160,   161,   162
   };
 
   void
@@ -1066,10 +1647,11 @@ namespace  TextFile  {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21
     };
     // Last valid token kind.
-    const int code_max = 263;
+    const int code_max = 276;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -1081,13 +1663,21 @@ namespace  TextFile  {
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1085 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
+#line 1667 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.cpp"
 
-#line 89 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
+#line 165 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 
 
 /* Error method */
 void TextFile::ParserText::error(const location_type &l, const std::string &err_message) {
-    // Since this should never happen, there is no need for additional information
-    Error::error(Error::ErrorCode::INTERNAL, "Somehow input file was parsed as incorrect. Please report this.");
+    if(scanner->is_in_expr()) {
+        // Error in user expression
+        auto msg = err_message+". Incorrect expression";
+        scanner->sub_error(Error::ErrorCode::SYNTACTIC, msg.c_str());
+    }
+    else {
+        // Since this should never happen, there is no need for additional information
+        auto msg = std::string("Somehow text file wasn't parsed correctly: \"")+err_message+"\". Please report this";
+        scanner->sub_error(Error::ErrorCode::INTERNAL, msg.c_str());
+    }
 }

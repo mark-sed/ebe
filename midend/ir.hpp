@@ -16,13 +16,17 @@
 #include <vector>
 #include <string>
 #include <ostream>
-#include "instruction.hpp"
 #include "engine.hpp"
 #include "gp.hpp"
+#include "tree.hpp"
+#include "expression.hpp"
+
+#include <iostream>
 
 // Forward declarations
 namespace Inst {
     class Instruction;
+    class ExprInstruction;
 }
 
 namespace GP {
@@ -31,24 +35,27 @@ namespace GP {
 
 struct GPEngineParams;
 
-#include <iostream>
-
 /**
  * Namespace for intermediate representation (IR) resources
  */
 namespace IR {
+
+    // Forward declaration
+    class PassExpression;
 
     /**
      * Word datatypes - types for input text file
      * @note Every new datatype's name should be added to the get_type_name function
      */
     enum Type {
-        TEXT,       ///< Word which is not number not special character
+        TEXT = 0,   ///< Word which is not number not special character
         NUMBER,     ///< Whole number
         FLOAT,      ///< Real number
         DELIMITER,  ///< Separating character
-        SYMBOL,     ///< Symbol such as '$' for example
+        SYMBOL,     ///< Symbol such as '#' for example
+        EXPRESSION, ///< Expression
         EMPTY,      ///< Empty symbol for empty line
+        DERIVED     ///< Type used for automatically deriving the type (for expressions)
     };
 
     /**
@@ -64,18 +71,31 @@ namespace IR {
     class Word {
     private:
         friend std::ostream& operator<< (std::ostream &out, const std::list<IR::Word>& node);
+        friend std::ostream& operator<< (std::ostream &out, const IR::Word& word);
     public:
-        std::string text;  ///< Text represantation of the word (as was in the file)
-        Type type;         ///< Type parsed type of the word
+        std::string text;                   ///< Text represantation of the word (as was in the file)
+        Type type;                          ///< Type parsed type of the word
+        Expr::Expression *expr = nullptr;   ///< Expression abstract syntax tree if type is IR::Type EXPRESSION
+        IR::PassExpression *code = nullptr; ///< Code generated for the expression if type is IR::Type::EXPRESSION
+        Inst::Instruction *return_inst = nullptr; ///< Return instruction of the expression
 
         /**
-         * Constructor
+         * Constructor 
          * @param text Words text representation
          * @param type Words parsed type
+         * @param expr Node's expression as a syntactic tree
+         * @param code Node's expression as an ebel code
+         * @param return_inst Expressions return instruction
          */
-        Word(std::string text, Type type);
+        Word(std::string text, 
+             Type type, 
+             Expr::Expression *expr=nullptr,
+             IR::PassExpression *code=nullptr,
+             Inst::Instruction *return_inst=nullptr);
         /** Copy constructor */
         Word(const Word &other);
+        /** Destructor, frees expr when allocated */
+        ~Word();
 
         /** Copy operator */
         Word& operator=(const Word &other);
@@ -83,6 +103,19 @@ namespace IR {
         /** Comparison operator */
         bool operator==(const Word &other) const;
         bool operator!=(const Word &other) const;
+
+        /**
+         * @defgroup wordgetters Word value extractors
+         * Extract values of specified type from the word
+         * @return Variable's value
+         * @note This calls Cast::to so it's exceptions may be raised
+         * @throws EbeTypeException if incorrect type is requested
+         * @{
+         */  
+        template<IR::Type type> int to_int();
+        template<IR::Type type> float to_float();
+        template<IR::Type type> std::string to_string();
+        /** @} */
     };
 
     /**
@@ -140,21 +173,40 @@ namespace IR {
     };
 
     /**
+     * Pass types
+     */
+    enum PassType {
+        EXPRESSION_PASS,
+        WORDS_PASS,
+        LINES_PASS,
+        DOCUMENTS_PASS
+    };
+
+    /**
      * Abstract class for all passes
      */
     class Pass {
     public:
         const char *pass_name;                       ///< Name of the pass (needed for error printing)
+        PassType type;                               ///< Pass type ID
         std::vector<Inst::Instruction *> *pipeline;  ///< Pipeline of instructions
-        PassEnvironment env;
+        std::vector<Pass *> *subpass_table;          ///< Table of subpasses
+        PassEnvironment env;                         ///< Current environment
+        /**
+         * Index of the last instruction that was executed by the iterator.
+         * This is used by the optimizer when interpreting ebel for GP
+         */  
+        ssize_t last_executed_index;
     private:
         friend std::ostream& operator<< (std::ostream &out, const IR::Pass& pass);
     protected:
         /** 
          * Constructor
-         * @param pass_name Name of the pass that inherits this class
+         * @param type Name of the pass that inherits this class
          */
-        Pass(const char *pass_name);
+        Pass(PassType type);
+        /** Copy constructor */
+        Pass(const Pass &other);
     public:
         /** Destructor */
         virtual ~Pass();
@@ -163,6 +215,13 @@ namespace IR {
          * @param inst Instruction to be pushed
          */
         void push_back(Inst::Instruction *inst);
+
+        /**
+         * Pushes a subpass into the pipeline
+         * @param subpass Sub pass to push
+         * @note This method can only be used for pass words with expression pass at the moment
+         */
+        virtual void push_subpass(Pass *subpass);
 
         /**
          * Sets the pipeline
@@ -185,6 +244,32 @@ namespace IR {
          * Getter for pass name
          */ 
         const char *get_name() { return this->pass_name; }
+
+        /** Getter for pass type */
+        PassType get_type() { return this->type; }
+
+        /**
+         * Debugging print that won't replace CALL with the subpass (unlike << does)
+         * @param out Stream to print to
+         * @param indent Indentation
+         */ 
+        std::ostream& print_pass_noinline(std::ostream &out, const char *indent);
+    };
+
+    /**
+     * Pass over current word
+     */
+    class PassExpression : public Pass {
+    public:
+        Type expr_type;
+
+        /** Constructor */
+        PassExpression(Type expr_type);
+        /** Copy constructor */
+        PassExpression(const PassExpression &other);
+
+        void process(IR::Node *text) override;
+        void process(IR::Word *word, size_t line, size_t column);
     };
 
     /**
@@ -194,8 +279,11 @@ namespace IR {
     public:
         /** Constructor */
         PassWords();
+        /** Copy constructor */
+        PassWords(const PassWords &other);
 
         void process(IR::Node *text) override;
+        void push_subpass(IR::Pass *subpass) override;
     };
 
     /**
@@ -205,6 +293,8 @@ namespace IR {
     public:
         /** Constructor */
         PassLines();
+        /** Copy constructor */
+        PassLines(const PassLines &other);
 
         void process(IR::Node *text) override;
     };
@@ -216,6 +306,8 @@ namespace IR {
     public:
         /** Constructor */
         PassDocuments();
+        /** Copy constructor */
+        PassDocuments(const PassDocuments &other);
 
         void process(IR::Node *text) override;
     };
@@ -231,6 +323,8 @@ namespace IR {
 
         /** Constructor */
         EbelNode();
+        /** Copy constructor */
+        EbelNode(const EbelNode &other);
 
         /**
          * Constructor for generating random node
@@ -246,6 +340,13 @@ namespace IR {
          * @param pass Pass to be pushed
          */
         void push_back(Pass *pass);
+
+        /**
+         * Debug print for ebel code without inlining subpasses
+         * @param out Output stream
+         * @return The output stream
+         */ 
+        std::ostream &dbprint_no_inline(std::ostream &out);
 
         friend std::ostream& operator<< (std::ostream &out, const GP::Population& popul);
     };

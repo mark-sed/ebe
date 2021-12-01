@@ -7,6 +7,10 @@ This program does not require any knowledge of any programming language to edit 
 
 _This project was created as my diploma thesis._
 
+## Ebe workflow
+
+![workflow](https://github.com/mark-sed/ebe/blob/main/docs/ebe_workflow.png?raw=true)
+
 ## What edits can/will Ebe do
 
 Ebe does not change text directly, it takes words (letters separated by whitespace or symbols) as an object with set of possible modifications (such as capitalization). But Ebe mainly focuses on modification of structure of these objects (moving words around, deleting them, splitting...).

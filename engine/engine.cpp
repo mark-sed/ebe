@@ -22,6 +22,7 @@
 #include "interpreter.hpp"
 #include "rng.hpp"
 #include "logging.hpp"
+#include "arg_parser.hpp"
 
 #include <iostream>
 
@@ -117,7 +118,11 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
             const auto& ir1_word_end = (*ir1_line)->end();
             const auto& ir2_word_end = (*ir2_line)->end();
             while(ir1_word != ir1_word_end && ir2_word != ir2_word_end){
-                if(**ir1_word == **ir2_word){
+                // User defined expressions are always a match
+                if((*ir1_word)->type == IR::Type::EXPRESSION || (*ir2_word)->type == IR::Type::EXPRESSION){
+                    ++matched;
+                }
+                else if(**ir1_word == **ir2_word){
                     ++matched;
                 }
                 ir1_word = std::next(ir1_word);
@@ -169,6 +174,11 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
     return static_cast<float>(matched) / max_size;
 }
 
+GPEngine::~GPEngine() {
+    delete params;
+    delete population;
+}
+
 void GPEngine::sort_population() {
     this->population->candidates->sort([](auto a, auto b){ return a->fitness > b->fitness; });
 }
@@ -179,6 +189,10 @@ void GPEngine::mutate(GP::Phenotype *pheno) {
     // TODO: Add logs
     auto rand_pass = RNG::rand_list_elem(pheno->program->nodes, nullptr);
     auto rand_inst = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
+    /*// Dont mutate CALLs
+    if((*rand_inst)->get_name() == std::string("CALL")) {
+        return;
+    }*/
     auto old_inst = *rand_inst;
     delete old_inst;
     // FIXME: Use exclude list or some other format when rand_instruction is properly coded
@@ -187,70 +201,129 @@ void GPEngine::mutate(GP::Phenotype *pheno) {
 
 void GPEngine::crossover_insert(GP::Phenotype *pheno) {
     // TODO: Add option to replace part of the pipeline not just insert
+    if(pheno->program->nodes->empty()) {
+        return;
+    }
     std::unordered_set<GP::Phenotype *> excl{pheno};
     auto rand_pheno = RNG::rand_list_elem(population->candidates, &excl);
+    if((*rand_pheno)->program->nodes->empty()) {
+        return;
+    }
     auto rand_pass = RNG::rand_list_elem((*rand_pheno)->program->nodes, nullptr);
+    if((*rand_pass)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
     auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
+    if((*rand_pass_og)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
+    /*if((*rand_pos)->get_name() == std::string("CALL")){
+        return;
+    }*/
     ++rand_pos_og; // Increment iterator because insert inserts before the instruction
     // Get how many instructions to insert
     auto amount = RNG::rand_int(1, std::distance(rand_pos, (*rand_pass)->pipeline->end()));
-    //std::cout << "DIST: " << std::distance(rand_pos, (*rand_pass)->pipeline->end()) << "  RND: " << amount << std::endl;
     // TODO: Add logs for crossing
-    //std::cout << "CROSSING: \n" << *pheno << **rand_pheno << "---------\n";
-    //std::cout << "BEFORE: \n" << *pheno << std::endl;
     for(int i = 0; i < amount; ++i){
         // Create copy of instruction
         auto inst_copy = (*rand_pos)->copy();
         rand_pos_og = (*rand_pass_og)->pipeline->insert(rand_pos_og, inst_copy);
         ++rand_pos;
     }
-    //std::cout << "AFTER: \n" << *pheno << std::endl; 
-    //std::cout << "-----------\n\n";
 }
 
 void GPEngine::crossover_switch(GP::Phenotype *pheno) {
+    if(pheno->program->nodes->empty()) {
+        return;
+    }
     std::unordered_set<GP::Phenotype *> excl{pheno};
     auto rand_pheno = RNG::rand_list_elem(population->candidates, &excl);
+    if((*rand_pheno)->program->nodes->empty()) {
+        return;
+    }
     auto rand_pass = RNG::rand_list_elem((*rand_pheno)->program->nodes, nullptr);
+    if((*rand_pass)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
     auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
+    if((*rand_pass_og)->pipeline->empty()) {
+        return;
+    }
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
+    /*if((*rand_pos)->get_name() == std::string("CALL") || (*rand_pass)->type == IR::PassType::EXPRESSION_PASS){
+        std::cout << "AAAAA\n";
+        return;
+    }*/
     // Get how many instructions to insert
     auto min_len = std::min(std::distance(rand_pos, (*rand_pass)->pipeline->end()), std::distance(rand_pos_og, (*rand_pass_og)->pipeline->end()));
     auto amount = RNG::rand_int(1, min_len);
-    //std::cout << "DIST: " << std::distance(rand_pos, (*rand_pass)->pipeline->end()) << "  RND: " << amount << std::endl;
     // TODO: Add logs for crossing
-    //std::cout << "CROSSING: \n" << *pheno << **rand_pheno << "---------\n";
-    //std::cout << "BEFORE: \n" << *pheno << std::endl << **rand_pheno << "\n";
     for(int i = 0; i < amount; ++i){
         // Create copy of instruction
         std::swap(*rand_pos, *rand_pos_og);
         ++rand_pos;
         ++rand_pos_og;
     }
-    //std::cout << "AFTER: \n" << *pheno << std::endl << **rand_pheno << "\n"; 
-    //std::cout << "-----------\n\n";
 }
 
 GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id) : 
-                   Engine(text_in, text_out, iterations, engine_id) {
+                   Engine(text_in, text_out, iterations, engine_id), expr_pass{nullptr} {
     params = &default_gpparams;
+
+    // Checking input text if it contains expression to do those first
+    if(Args::arg_opts.expr){
+        bool contains_expr = false;
+        auto w_pass = new IR::PassWords();
+        auto line1 = (text_out->nodes)->begin();
+        // Check only first line
+        // FIXME: When line subpasses are implemented check more than just first line
+        if(line1 != (text_out->nodes)->end()){
+            int index = 0;
+            for(auto word: **line1) {
+                if(word->type == IR::Type::EXPRESSION) {
+                    if(word->code != nullptr && word->return_inst != nullptr) {
+                        w_pass->push_subpass(word->code);
+                        w_pass->push_back(word->return_inst);
+                        contains_expr = true;
+                    }
+                    else {
+                        Error::error(Error::ErrorCode::INTERNAL, std::string("Somehow expression code was not"
+                        " generated for '"+word->text).c_str());
+                    }
+                }
+                else {
+                    w_pass->push_back(new Inst::NOP());
+                }
+            }
+        }
+        // Append pass to phenotype
+        if(contains_expr){
+            this->expr_pass = w_pass;
+        }
+    }
 }
 
-GP::Phenotype *GPEngine::evaluate() {
+GP::Phenotype *GPEngine::evaluate(bool run_time_optimize) {
     GP::Phenotype *perfect_program = nullptr;
     for(auto &pheno: *this->population->candidates){
+        // If expression is set then insert it at the begining
         auto interpreter = new Interpreter(pheno->program);
         IR::Node text_copy = *this->text_in;
         interpreter->parse(&text_copy);
+        if(run_time_optimize) {
+            // Run optimizations
+            interpreter->optimize();
+        }
         float fit = compare(text_out, &text_copy);
         // Set the fitness
         pheno->fitness = fit;
         if(fit >= 1.0f){
             // Program which does what it's supposed to do
             perfect_program = pheno;
+            break;
         }
     }
     return perfect_program;

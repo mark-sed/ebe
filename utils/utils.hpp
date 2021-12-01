@@ -32,6 +32,13 @@ namespace Utils {
     void to_upper(std::vector<std::string> *text);
 
     /**
+     * Capializes string (makes first letter capital)
+     * @param text Text to capitalize
+     * @return Capitalized text
+     */ 
+    std::string capitalize(std::string text);
+
+    /**
      * Parses csv values
      * @param csv String of csv values
      * @param delim CSV delimiter. Comma by default.
@@ -62,6 +69,11 @@ namespace Cast {
 
     /// @note Default base (base 10) is used
     template<> unsigned int to(std::string v);
+
+    /// @note Default base (base 10) is used
+    template<> int to(std::string v);
+
+    template<> float to(std::string v);
 }
 
 #endif//_UTILS_HPP_

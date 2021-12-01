@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.8.2.
+// A Bison parser, made by GNU Bison 3.7.6.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
@@ -44,19 +44,22 @@
 
 
 // Unqualified %code blocks.
-#line 41 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+#line 43 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 
     // Include compiler to use error
     #include <sstream>
     #include <cctype>
     #include "compiler.hpp"
     #include "scanner_ebel.hpp"
+    #include "symbol_table.hpp"
+
+    #include <iostream>
 
     // Set correct token method
     #undef yylex
     #define yylex scanner->eelex
 
-#line 60 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+#line 63 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
 
 #ifndef YY_
@@ -149,7 +152,7 @@
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 namespace  EbelFile  {
-#line 153 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+#line 156 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
   /// Build a parser object.
    ParserEbel :: ParserEbel  (ScannerEbel *scanner_yyarg)
@@ -168,9 +171,9 @@ namespace  EbelFile  {
    ParserEbel ::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
-  /*---------.
-  | symbol.  |
-  `---------*/
+  /*---------------.
+  | symbol kinds.  |
+  `---------------*/
 
   // basic_symbol.
   template <typename Base>
@@ -181,7 +184,12 @@ namespace  EbelFile  {
   {
     switch (this->kind ())
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.copy< IR::Type > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_VAR: // "variable"
         value.copy< int > (YY_MOVE (that.value));
         break;
 
@@ -193,14 +201,12 @@ namespace  EbelFile  {
 
 
 
-
   template <typename Base>
    ParserEbel ::symbol_kind_type
    ParserEbel ::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
-
 
   template <typename Base>
   bool
@@ -216,7 +222,12 @@ namespace  EbelFile  {
     super_type::move (s);
     switch (this->kind ())
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.move< IR::Type > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_VAR: // "variable"
         value.move< int > (YY_MOVE (s.value));
         break;
 
@@ -228,27 +239,25 @@ namespace  EbelFile  {
   }
 
   // by_kind.
-   ParserEbel ::by_kind::by_kind () YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind ()
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-   ParserEbel ::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (by_kind&& that)
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-   ParserEbel ::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (const by_kind& that)
     : kind_ (that.kind_)
   {}
 
-   ParserEbel ::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
+   ParserEbel ::by_kind::by_kind (token_kind_type t)
     : kind_ (yytranslate_ (t))
   {}
-
-
 
   void
    ParserEbel ::by_kind::clear () YY_NOEXCEPT
@@ -269,13 +278,11 @@ namespace  EbelFile  {
     return kind_;
   }
 
-
    ParserEbel ::symbol_kind_type
    ParserEbel ::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
-
 
 
   // by_state.
@@ -321,7 +328,12 @@ namespace  EbelFile  {
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.YY_MOVE_OR_COPY< IR::Type > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_VAR: // "variable"
         value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
         break;
 
@@ -340,7 +352,12 @@ namespace  EbelFile  {
   {
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.move< IR::Type > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_VAR: // "variable"
         value.move< int > (YY_MOVE (that.value));
         break;
 
@@ -359,7 +376,12 @@ namespace  EbelFile  {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.copy< IR::Type > (that.value);
+        break;
+
+      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_VAR: // "variable"
         value.copy< int > (that.value);
         break;
 
@@ -377,7 +399,12 @@ namespace  EbelFile  {
     state = that.state;
     switch (that.kind ())
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        value.move< IR::Type > (that.value);
+        break;
+
+      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_VAR: // "variable"
         value.move< int > (that.value);
         break;
 
@@ -441,7 +468,7 @@ namespace  EbelFile  {
   }
 
   void
-   ParserEbel ::yypop_ (int n) YY_NOEXCEPT
+   ParserEbel ::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -484,13 +511,13 @@ namespace  EbelFile  {
   }
 
   bool
-   ParserEbel ::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
+   ParserEbel ::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-   ParserEbel ::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
+   ParserEbel ::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
@@ -639,7 +666,12 @@ namespace  EbelFile  {
          when using variants.  */
       switch (yyr1_[yyn])
     {
-      case symbol_kind::S_NUMBER: // "number"
+      case symbol_kind::S_type: // type
+        yylhs.value.emplace< IR::Type > ();
+        break;
+
+      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_VAR: // "variable"
         yylhs.value.emplace< int > ();
         break;
 
@@ -663,56 +695,290 @@ namespace  EbelFile  {
         {
           switch (yyn)
             {
-  case 10: // instruction: CONCAT "number"
-#line 86 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_concat(yystack_[0].value.as < int > ());       }
-#line 670 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+  case 13: // instruction: CONCAT "number"
+#line 123 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_concat(yystack_[0].value.as < int > ());          }
+#line 702 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
-  case 11: // instruction: DEL
-#line 87 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_del();            }
-#line 676 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+  case 14: // instruction: DEL
+#line 124 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_del();               }
+#line 708 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
-  case 12: // instruction: LOOP
-#line 88 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_loop();           }
-#line 682 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+  case 15: // instruction: LOOP
+#line 125 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_loop();              }
+#line 714 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
-  case 13: // instruction: NOP
-#line 89 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_nop();            }
-#line 688 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
-    break;
-
-  case 14: // instruction: "PASS words"
-#line 90 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_pass_words();     }
-#line 694 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
-    break;
-
-  case 15: // instruction: "PASS lines"
-#line 91 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_pass_lines();     }
-#line 700 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
-    break;
-
-  case 16: // instruction: "PASS documents"
-#line 92 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_pass_documents(); }
-#line 706 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+  case 16: // instruction: NOP
+#line 126 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_nop();               }
+#line 720 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
   case 17: // instruction: SWAP "number"
-#line 93 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
-                                { scanner->add_swap(yystack_[0].value.as < int > ());         }
-#line 712 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+#line 127 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_swap(yystack_[0].value.as < int > ());            }
+#line 726 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 18: // instruction: RETURN SWAP "number"
+#line 128 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_return(); scanner->add_swap(yystack_[0].value.as < int > ()); }
+#line 732 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 19: // instruction: RETURN DEL
+#line 129 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_return(); scanner->add_del(); }
+#line 738 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 20: // instruction: RETURN NOP
+#line 130 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_return(); scanner->add_nop(); }
+#line 744 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 21: // instruction: RETURN
+#line 131 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_return(); scanner->add_nop(); }
+#line 750 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 22: // expr_inst: ADD "variable" "," "variable" "," "variable"
+#line 134 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_add(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ());                      }
+#line 756 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 23: // expr_inst: ADD "variable" "," "variable" "," "number"
+#line 135 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_add(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 762 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 24: // expr_inst: ADD "variable" "," "number" "," "variable"
+#line 136 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_add(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), yystack_[0].value.as < int > ()); }
+#line 768 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 25: // expr_inst: ADD "variable" "," "number" "," "number"
+#line 137 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_add(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 774 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 26: // expr_inst: SUB "variable" "," "variable" "," "variable"
+#line 139 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_sub(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ());                      }
+#line 780 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 27: // expr_inst: SUB "variable" "," "variable" "," "number"
+#line 140 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_sub(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 786 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 28: // expr_inst: SUB "variable" "," "number" "," "variable"
+#line 141 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_sub(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), yystack_[0].value.as < int > ()); }
+#line 792 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 29: // expr_inst: SUB "variable" "," "number" "," "number"
+#line 142 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_sub(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 798 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 30: // expr_inst: MUL "variable" "," "variable" "," "variable"
+#line 144 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mul(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ());                      }
+#line 804 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 31: // expr_inst: MUL "variable" "," "variable" "," "number"
+#line 145 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mul(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 810 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 32: // expr_inst: MUL "variable" "," "number" "," "variable"
+#line 146 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mul(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), yystack_[0].value.as < int > ()); }
+#line 816 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 33: // expr_inst: MUL "variable" "," "number" "," "number"
+#line 147 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mul(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 822 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 34: // expr_inst: DIV "variable" "," "variable" "," "variable"
+#line 149 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_div(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ());                      }
+#line 828 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 35: // expr_inst: DIV "variable" "," "variable" "," "number"
+#line 150 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_div(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 834 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 36: // expr_inst: DIV "variable" "," "number" "," "variable"
+#line 151 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_div(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), yystack_[0].value.as < int > ()); }
+#line 840 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 37: // expr_inst: DIV "variable" "," "number" "," "number"
+#line 152 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_div(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 846 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 38: // expr_inst: MOD "variable" "," "variable" "," "variable"
+#line 154 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mod(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ());                      }
+#line 852 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 39: // expr_inst: MOD "variable" "," "variable" "," "number"
+#line 155 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mod(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 858 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 40: // expr_inst: MOD "variable" "," "number" "," "variable"
+#line 156 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mod(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), yystack_[0].value.as < int > ()); }
+#line 864 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 41: // expr_inst: MOD "variable" "," "number" "," "number"
+#line 157 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_mod(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 870 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 42: // expr_inst: POW "variable" "," "variable" "," "variable"
+#line 159 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_pow(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), yystack_[0].value.as < int > ());                      }
+#line 876 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 43: // expr_inst: POW "variable" "," "variable" "," "number"
+#line 160 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_pow(yystack_[4].value.as < int > (), yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 882 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 44: // expr_inst: POW "variable" "," "number" "," "variable"
+#line 161 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_pow(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), yystack_[0].value.as < int > ()); }
+#line 888 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 45: // expr_inst: POW "variable" "," "number" "," "number"
+#line 162 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_pow(yystack_[4].value.as < int > (), new Vars::NumberVar(yystack_[2].value.as < int > ()), new Vars::NumberVar(yystack_[0].value.as < int > ())); }
+#line 894 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 46: // expr_inst: MOVE "variable" "," "variable"
+#line 164 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_move(yystack_[2].value.as < int > (), yystack_[0].value.as < int > ());                         }
+#line 900 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 47: // expr_inst: MOVE "variable" "," "number"
+#line 165 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                                { scanner->add_move(yystack_[2].value.as < int > (), new Vars::NumberVar(yystack_[0].value.as < int > ()));    }
+#line 906 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 48: // pass: PASS type "expression"
+#line 168 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_pass_expression(yystack_[1].value.as < IR::Type > ());                }
+#line 912 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 49: // pass: PASS "expression"
+#line 169 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_pass_expression(IR::Type::DERIVED); }
+#line 918 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 50: // pass: PASS "words"
+#line 170 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_pass_words();                       }
+#line 924 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 51: // pass: PASS "lines"
+#line 171 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_pass_lines();                       }
+#line 930 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 52: // pass: PASS "documents"
+#line 172 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                                   { scanner->add_pass_documents();                   }
+#line 936 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 53: // type: TEXT
+#line 175 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                        { yylhs.value.as < IR::Type > () = IR::Type::TEXT;      }
+#line 942 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 54: // type: NUMBER
+#line 176 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                        { yylhs.value.as < IR::Type > () = IR::Type::NUMBER;    }
+#line 948 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 55: // type: FLOAT
+#line 177 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                        { yylhs.value.as < IR::Type > () = IR::Type::FLOAT;     }
+#line 954 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 56: // type: DELIMITER
+#line 178 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                        { yylhs.value.as < IR::Type > () = IR::Type::DELIMITER; }
+#line 960 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 57: // type: SYMBOL
+#line 179 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                        { yylhs.value.as < IR::Type > () = IR::Type::SYMBOL;    }
+#line 966 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 58: // type: EMPTY
+#line 180 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                        { yylhs.value.as < IR::Type > () = IR::Type::EMPTY;     }
+#line 972 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+    break;
+
+  case 59: // type: DERIVED
+#line 181 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+                        { yylhs.value.as < IR::Type > () = IR::Type::DERIVED;   }
+#line 978 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
     break;
 
 
-#line 716 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+#line 982 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
             default:
               break;
@@ -950,16 +1216,16 @@ namespace  EbelFile  {
     // Actual number of expected tokens
     int yycount = 0;
 
-    const int yyn = yypact_[+yyparser_.yystack_[0].state];
+    int yyn = yypact_[+yyparser_.yystack_[0].state];
     if (!yy_pact_value_is_default_ (yyn))
       {
         /* Start YYX at -YYN if negative to avoid negative indexes in
            YYCHECK.  In other words, skip the first -YYN actions for
            this state because they are default actions.  */
-        const int yyxbegin = yyn < 0 ? -yyn : 0;
+        int yyxbegin = yyn < 0 ? -yyn : 0;
         // Stay within bounds of both yycheck and yytname.
-        const int yychecklim = yylast_ - yyn + 1;
-        const int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        int yychecklim = yylast_ - yyn + 1;
+        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
         for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
           if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
               && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
@@ -977,9 +1243,6 @@ namespace  EbelFile  {
       yyarg[0] = symbol_kind::S_YYEMPTY;
     return yycount;
   }
-
-
-
 
 
 
@@ -1064,74 +1327,129 @@ namespace  EbelFile  {
   }
 
 
-  const signed char  ParserEbel ::yypact_ninf_ = -12;
+  const signed char  ParserEbel ::yypact_ninf_ = -14;
 
   const signed char  ParserEbel ::yytable_ninf_ = -1;
 
   const signed char
    ParserEbel ::yypact_[] =
   {
-       0,   -12,   -11,   -12,    19,   -12,   -12,   -12,   -12,   -12,
-     -12,    22,     4,    21,   -12,   -12,   -12,   -12,   -12,   -12,
-      12,     8,   -12,   -12
+      14,   -14,   -13,   -14,    76,   -14,   -14,   -14,     7,    77,
+       8,    82,    39,   -14,   -14,   -14,   -14,   -14,   -14,   -14,
+     -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,    59,   -14,
+     -14,   -14,    80,   -14,   -14,    54,    -7,   -14,   -14,   -14,
+      79,    81,    83,    84,    85,    86,    87,   -14,   -14,   -14,
+      89,    90,    91,    92,    93,    94,    95,    37,    40,    41,
+      44,    45,    48,    49,    96,    97,    98,    99,   100,   101,
+     102,   103,   104,   105,   106,   107,   -14,   -14,    52,    53,
+      56,    57,    60,    61,    64,    65,    68,    69,    72,    73,
+     -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,
+     -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,   -14,
+     -14,   -14,   -14,   -14
   };
 
   const signed char
    ParserEbel ::yydefact_[] =
   {
-       0,     2,     0,     7,     0,    11,    12,    13,    14,    15,
-      16,     0,     0,     0,     6,     5,    10,    17,     1,     3,
-       0,     8,     4,     9
+       0,     2,     0,     3,     0,    14,    15,    16,     0,     0,
+      21,     0,     0,     7,     8,     6,    13,    50,    51,    52,
+      49,    53,    54,    55,    56,    57,    58,    59,     0,    17,
+      19,    20,     0,     1,     4,     0,     9,    48,    18,     5,
+       0,     0,     0,     0,     0,     0,     0,    10,    11,    12,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    47,    46,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+      25,    24,    23,    22,    29,    28,    27,    26,    33,    32,
+      31,    30,    37,    36,    35,    34,    41,    40,    39,    38,
+      45,    44,    43,    42
   };
 
   const signed char
    ParserEbel ::yypgoto_[] =
   {
-     -12,   -12,   -12,     6
+     -14,   -14,   -14,    78,   -14,    88,   -14
   };
 
   const signed char
    ParserEbel ::yydefgoto_[] =
   {
-       0,    12,    13,    14
+       0,    11,    12,    13,    48,    14,    28
   };
 
   const signed char
    ParserEbel ::yytable_[] =
   {
-       1,     2,    15,     3,    18,     4,     5,     6,     7,     8,
-       9,    10,    11,     4,     5,     6,     7,     8,     9,    10,
-      11,    19,    20,    16,    21,    22,    17,    23
+       4,     5,     6,     7,     8,     9,    10,    40,    41,    42,
+      43,    44,    45,    46,     1,     2,    30,     3,    31,    15,
+      32,     4,     5,     6,     7,     8,     9,    10,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    34,
+      35,    64,    36,    65,    66,    68,    67,    69,    70,    72,
+      71,    73,    74,    76,    75,    77,    90,    92,    91,    93,
+      94,    96,    95,    97,    98,   100,    99,   101,   102,   104,
+     103,   105,   106,   108,   107,   109,   110,   112,   111,   113,
+      16,    29,    33,    37,    38,    50,    39,    51,     0,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
+      63,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+      87,    88,    89,     0,    47,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    49
   };
 
   const signed char
    ParserEbel ::yycheck_[] =
   {
-       0,     1,    13,     3,     0,     5,     6,     7,     8,     9,
-      10,    11,    12,     5,     6,     7,     8,     9,    10,    11,
-      12,     0,     1,     4,     3,    13,     4,    21
+       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+      17,    18,    19,    20,     0,     1,     8,     3,    10,    32,
+      12,     7,     8,     9,    10,    11,    12,    13,    21,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,     0,
+       1,     4,     3,     6,     4,     4,     6,     6,     4,     4,
+       6,     6,     4,     4,     6,     6,     4,     4,     6,     6,
+       4,     4,     6,     6,     4,     4,     6,     6,     4,     4,
+       6,     6,     4,     4,     6,     6,     4,     4,     6,     6,
+       4,     4,     0,    24,     4,     6,    32,     6,    -1,     6,
+       6,     6,     6,     6,     5,     5,     5,     5,     5,     5,
+       5,     5,     5,     5,     5,     5,     5,     5,     5,     5,
+       5,     5,     5,    -1,    36,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    36
   };
 
   const signed char
    ParserEbel ::yystos_[] =
   {
-       0,     0,     1,     3,     5,     6,     7,     8,     9,    10,
-      11,    12,    15,    16,    17,    13,     4,     4,     0,     0,
-       1,     3,    13,    17
+       0,     0,     1,     3,     7,     8,     9,    10,    11,    12,
+      13,    34,    35,    36,    38,    32,     4,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    30,    31,    39,     4,
+       8,    10,    12,     0,     0,     1,     3,    24,     4,    32,
+      14,    15,    16,    17,    18,    19,    20,    36,    37,    38,
+       6,     6,     6,     6,     6,     6,     6,     5,     5,     5,
+       5,     5,     5,     5,     4,     6,     4,     6,     4,     6,
+       4,     6,     4,     6,     4,     6,     4,     6,     5,     5,
+       5,     5,     5,     5,     5,     5,     5,     5,     5,     5,
+       4,     6,     4,     6,     4,     6,     4,     6,     4,     6,
+       4,     6,     4,     6,     4,     6,     4,     6,     4,     6,
+       4,     6,     4,     6
   };
 
   const signed char
    ParserEbel ::yyr1_[] =
   {
-       0,    14,    15,    15,    15,    15,    16,    16,    16,    16,
-      17,    17,    17,    17,    17,    17,    17,    17
+       0,    33,    34,    34,    34,    34,    34,    35,    35,    35,
+      35,    35,    35,    36,    36,    36,    36,    36,    36,    36,
+      36,    36,    37,    37,    37,    37,    37,    37,    37,    37,
+      37,    37,    37,    37,    37,    37,    37,    37,    37,    37,
+      37,    37,    37,    37,    37,    37,    37,    37,    38,    38,
+      38,    38,    38,    39,    39,    39,    39,    39,    39,    39
   };
 
   const signed char
    ParserEbel ::yyr2_[] =
   {
-       0,     2,     1,     2,     3,     2,     1,     1,     2,     3,
-       2,     1,     1,     1,     1,     1,     1,     2
+       0,     2,     1,     1,     2,     3,     2,     1,     1,     2,
+       3,     3,     3,     2,     1,     1,     1,     2,     3,     2,
+       2,     1,     6,     6,     6,     6,     6,     6,     6,     6,
+       6,     6,     6,     6,     6,     6,     6,     6,     6,     6,
+       6,     6,     6,     6,     6,     6,     4,     4,     3,     2,
+       2,     2,     2,     1,     1,     1,     1,     1,     1,     1
   };
 
 
@@ -1142,19 +1460,26 @@ namespace  EbelFile  {
   const  ParserEbel ::yytname_[] =
   {
   "\"end of file\"", "error", "\"invalid token\"", "\"new line\"",
-  "\"number\"", "CONCAT", "DEL", "LOOP", "NOP", "\"PASS words\"",
-  "\"PASS lines\"", "\"PASS documents\"", "SWAP", "'\\n'", "$accept",
-  "program", "code", "instruction", YY_NULLPTR
+  "\"number\"", "\",\"", "\"variable\"", "CONCAT", "DEL", "LOOP", "NOP",
+  "PASS", "SWAP", "RETURN", "ADD", "SUB", "MUL", "DIV", "MOD", "POW",
+  "MOVE", "\"words\"", "\"lines\"", "\"documents\"", "\"expression\"",
+  "TEXT", "NUMBER", "FLOAT", "DELIMITER", "SYMBOL", "EMPTY", "DERIVED",
+  "'\\n'", "$accept", "program", "code", "instruction", "expr_inst",
+  "pass", "type", YY_NULLPTR
   };
 #endif
 
 
 #if YYDEBUG
-  const signed char
+  const unsigned char
    ParserEbel ::yyrline_[] =
   {
-       0,    74,    74,    75,    76,    77,    80,    81,    82,    83,
-      86,    87,    88,    89,    90,    91,    92,    93
+       0,   108,   108,   109,   110,   111,   112,   115,   116,   117,
+     118,   119,   120,   123,   124,   125,   126,   127,   128,   129,
+     130,   131,   134,   135,   136,   137,   139,   140,   141,   142,
+     144,   145,   146,   147,   149,   150,   151,   152,   154,   155,
+     156,   157,   159,   160,   161,   162,   164,   165,   168,   169,
+     170,   171,   172,   175,   176,   177,   178,   179,   180,   181
   };
 
   void
@@ -1185,7 +1510,7 @@ namespace  EbelFile  {
 #endif // YYDEBUG
 
    ParserEbel ::symbol_kind_type
-   ParserEbel ::yytranslate_ (int t) YY_NOEXCEPT
+   ParserEbel ::yytranslate_ (int t)
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -1194,7 +1519,7 @@ namespace  EbelFile  {
     translate_table[] =
     {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      13,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+      32,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1219,31 +1544,29 @@ namespace  EbelFile  {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31
     };
     // Last valid token kind.
-    const int code_max = 267;
+    const int code_max = 286;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
     else if (t <= code_max)
-      return static_cast <symbol_kind_type> (translate_table[t]);
+      return YY_CAST (symbol_kind_type, translate_table[t]);
     else
       return symbol_kind::S_YYUNDEF;
   }
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 1238 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
+#line 1565 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.cpp"
 
-#line 96 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
+#line 184 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 
 
 /* Error method */
 void EbelFile::ParserEbel::error(const location_type &l, const std::string &err_message) {
-    std::stringstream mss;
-    mss << static_cast<char>(std::toupper(err_message[0])) << &(err_message.c_str()[1]) 
-        << " at line " << scanner->loc->begin.line << ", column " << scanner->loc->begin.column;
-    Error::error(Error::ErrorCode::SYNTACTIC, mss.str().c_str(), nullptr, false);
-    scanner->error_found(Error::ErrorCode::SYNTACTIC);
+    scanner->sub_error(Error::ErrorCode::SYNTACTIC, err_message);
 }

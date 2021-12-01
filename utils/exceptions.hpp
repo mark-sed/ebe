@@ -84,6 +84,108 @@ namespace Exception {
          */ 
         EbeTypeException(std::string msg) : EbeException(msg, TYPE) {}
     };
+
+
+    /**
+     * Exception for when there's problem with data types
+     * of variables in symbol table
+     */
+    class EbeSymTableTypeException : public EbeException {
+    private:
+        static constexpr const char *TYPE = "Symbol table type exception";
+    public:
+        /**
+         * Constructor
+         * @param msg C style string with the error message
+         */ 
+        EbeSymTableTypeException(const char *msg) : EbeException(msg, TYPE) {}
+
+        /**
+         * Constructor
+         * @param msg string with the error message
+         */ 
+        EbeSymTableTypeException(std::string msg) : EbeException(msg, TYPE) {}
+    };
+
+    /**
+     * Exception for when the variable index is out of range
+     */
+    class EbeSymTableOutOfRangeException : public EbeException {
+    private:
+        static constexpr const char *TYPE = "Symbol table out of range exception";
+    public:
+        /**
+         * Constructor
+         * @param msg C style string with the error message
+         */ 
+        EbeSymTableOutOfRangeException(const char *msg) : EbeException(msg, TYPE) {}
+
+        /**
+         * Constructor
+         * @param msg string with the error message
+         */ 
+        EbeSymTableOutOfRangeException(std::string msg) : EbeException(msg, TYPE) {}
+    };
+    
+    /**
+     * Exception for when the compiler requests type that the symbol table cannot hold
+     */
+    class EbeSymTableUnknwonTypeException : public EbeException {
+    private:
+        static constexpr const char *TYPE = "Symbol table out of range exception";
+    public:
+        /**
+         * Constructor
+         * @param msg C style string with the error message
+         */ 
+        EbeSymTableUnknwonTypeException(const char *msg) : EbeException(msg, TYPE) {}
+
+        /**
+         * Constructor
+         * @param msg string with the error message
+         */ 
+        EbeSymTableUnknwonTypeException(std::string msg) : EbeException(msg, TYPE) {}
+    };
+
+    /**
+     * Exception for when the compiler requests variable that was not yet defined
+     */
+    class EbeSymTableUndefinedVarException : public EbeException {
+    private:
+        static constexpr const char *TYPE = "Symbol table out of range exception";
+    public:
+        /**
+         * Constructor
+         * @param msg C style string with the error message
+         */ 
+        EbeSymTableUndefinedVarException(const char *msg) : EbeException(msg, TYPE) {}
+
+        /**
+         * Constructor
+         * @param msg string with the error message
+         */ 
+        EbeSymTableUndefinedVarException(std::string msg) : EbeException(msg, TYPE) {}
+    };
+
+    /**
+     * Exception for division by zero
+     */
+    class EbeDivisionByZeroException : public EbeException {
+    private:
+        static constexpr const char *TYPE = "Division by zero exception";
+    public:
+        /**
+         * Constructor
+         * @param msg C style string with the error message
+         */ 
+        EbeDivisionByZeroException(const char *msg) : EbeException(msg, TYPE) {}
+
+        /**
+         * Constructor
+         * @param msg string with the error message
+         */ 
+        EbeDivisionByZeroException(std::string msg) : EbeException(msg, TYPE) {}
+    };
 }
 
 #endif//_EXCEPTIONS_HPP_

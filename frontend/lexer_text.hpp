@@ -2,9 +2,9 @@
 #define yyHEADER_H 1
 #define yyIN_HEADER 1
 
-#line 6 "frontend/lexer_text.hpp"
+#line 5 "frontend/lexer_text.hpp"
 
-#line 8 "frontend/lexer_text.hpp"
+#line 7 "frontend/lexer_text.hpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -426,9 +426,9 @@ static int yy_flex_strlen ( const char * );
 #undef yyTABLES_NAME
 #endif
 
-#line 85 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
+#line 113 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 
 
-#line 433 "frontend/lexer_text.hpp"
+#line 432 "frontend/lexer_text.hpp"
 #undef yyIN_HEADER
 #endif /* yyHEADER_H */

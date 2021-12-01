@@ -22,6 +22,7 @@
 #include "ir.hpp"
 #include "scanner.hpp"
 #include "parser_text.hpp"
+#include "expression.hpp"
 
 /**
  * Namespace for lexers and parsers used by flex and bison/yacc.
@@ -34,14 +35,45 @@ namespace TextFile {
 class ScannerText : public Scanner, public yyFlexLexer {
 private:
     TextFile::ParserText::semantic_type *yylval = nullptr;
-    TextFile::ParserText::location_type *loc = nullptr;
+    bool inside_expression = false;
+    const char *current_file_name;
 
     IR::Node *current_parse;              ///< Holds node that is currently being parsed during process method
     std::list<IR::Word *> *current_line;  ///< Holds line currently being parsed during process method
 
     /** If current line is nullptr allocates a new one */
     void touch_line();
+
+    /** 
+     * Used by the lexer to denot that expression might start now
+     */ 
+    void expr_start();
+
+    /**
+     * Used by lexer to denote that an expression ends
+     */ 
+    void expr_end();
+
+    /**
+     * Parses abstract syntax tree into an expression pass
+     * @param expr Abstract syntax tree expression
+     * @param type Expression input type
+     * @return Passed in expression in as a pass of ebel instructions
+     */
+    IR::PassExpression *expr2pass(Expr::Expression *expr, IR::Type type); 
+
+    /**
+     * Walks expression creating expression pass, used by expr2pass.
+     * @param expr Expression to walk
+     * @param pass Output pass
+     * @param var_num Destination variable
+     * @param last True should be set only for the 2nd argument of root assignment expression
+     * @note This method is recursive
+     * @return Destination variable used
+     */ 
+    int walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int *var_num, bool last=false);
 public:
+    TextFile::ParserText::location_type *loc = nullptr;
     ScannerText();
 
     virtual int yylex(TextFile::ParserText::semantic_type *const lval,
@@ -59,7 +91,21 @@ public:
     void add_symbol(const std::string &v);
     void add_float(const std::string &v);
     void add_newline();
+    void add_expr(Expr::Expression *e, IR::Type type);
     /** @} */
+
+    /**
+     * Error handeling from parser and lexer
+     * @param code Error code to report
+     * @param err_message Error message
+     */ 
+    void sub_error(Error::ErrorCode code, const std::string &err_message);
+
+    /**
+     * Used by the lexer and parser to tell it if it is currently inside of an expression
+     * @return true if currently it's inside of an expression
+     */ 
+    bool is_in_expr();
 
     IR::Node *process(std::istream *text, const char *file_name) override;
 };

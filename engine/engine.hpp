@@ -27,6 +27,7 @@ namespace GP {
 namespace IR {
     class Node;
     class EbelNode;
+    class PassWords;
 }
 
 /**
@@ -141,6 +142,7 @@ class GPEngine : public Engine {
 protected:
     GPEngineParams *params;
     GP::Population *population;
+    IR::PassWords *expr_pass = nullptr;
 
     /**
      * Constructor
@@ -150,13 +152,14 @@ protected:
      * @param engine_id ID of the specific engine
      */
     GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id);
-    virtual ~GPEngine() {}
+    virtual ~GPEngine();
 
     /**
      * Evaluates all the candidates and saves their fitness to fitness list
+     * @param run_time_optimize If true interpreter optimizations are run over each phenotype
      * @return Returns a node with 1.0f if present otherwise nullptr
      */ 
-    GP::Phenotype *evaluate();
+    GP::Phenotype *evaluate(bool run_time_optimize=false);
 
     /**
      * Sorts population based on phenotype's fitness.

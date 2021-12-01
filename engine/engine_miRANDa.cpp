@@ -27,6 +27,10 @@ EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(tex
         // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
         iterations = 100;
     }
+    if(Args::arg_opts.expr){
+        // TODO: This should be printed only once
+        Error::warning("MiRANDa does not support expressions");
+    }
     // TODO: Set params with initializer when implemented
     this->min_program_size = 0;
     this->max_program_size = 30;
