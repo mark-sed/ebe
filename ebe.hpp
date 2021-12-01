@@ -15,6 +15,6 @@
 
 #define EBE_VERSION_MAJOR 0  ///< Compiler's major version
 #define EBE_VERSION_MINOR 2  ///< Compiler's minor version
-#define EBE_VERSION_PATCH 3  ///< Compiler's patch
+#define EBE_VERSION_PATCH 4  ///< Compiler's patch
 
 #endif//_EBE_HPP_ 
