@@ -90,6 +90,9 @@
 %left IMUL IDIV MOD
 %right POW
 
+%precedence NUMBER
+%precedence FLOAT
+
 %precedence NEG
 
 %type <Expr::Expression> varexpr
@@ -110,21 +113,23 @@ sentence  : word
           ;
 
 /* Word can be of many types */
-word      : TEXT       { scanner->add_text($1);      }
-          | NUMBER     { scanner->add_number($1);    }
-          | DELIMITER  { scanner->add_delimiter($1); }
-          | SYMBOL     { scanner->add_symbol($1);    }
-          | FLOAT      { scanner->add_float($1);     }
-          | NEWLINE    { scanner->add_newline();     }
-          | VAR        { scanner->add_symbol($1);    }
-          | PLUS       { scanner->add_symbol($1);    }
-          | IMUL       { scanner->add_symbol($1);    }
-          | MINUS      { scanner->add_symbol($1);    }
-          | IDIV       { scanner->add_symbol($1);    }
-          | MOD        { scanner->add_symbol($1);    }
-          | POW        { scanner->add_symbol($1);    }
-          | LPAR       { scanner->add_symbol("(");   }
-          | RPAR       { scanner->add_symbol(")");   }
+word      : TEXT         { scanner->add_text($1);      }
+          | MINUS NUMBER { scanner->add_number($1+$2); }
+          | NUMBER       { scanner->add_number($1);    }
+          | MINUS FLOAT  { scanner->add_float($1+$2);  }
+          | FLOAT        { scanner->add_float($1);     }
+          | DELIMITER    { scanner->add_delimiter($1); }
+          | SYMBOL       { scanner->add_symbol($1);    }
+          | NEWLINE      { scanner->add_newline();     }
+          | VAR          { scanner->add_symbol($1);    }
+          | PLUS         { scanner->add_symbol($1);    }
+          | IMUL         { scanner->add_symbol($1);    }
+          | MINUS        { scanner->add_symbol($1);    }
+          | IDIV         { scanner->add_symbol($1);    }
+          | MOD          { scanner->add_symbol($1);    }
+          | POW          { scanner->add_symbol($1);    }
+          | LPAR         { scanner->add_symbol("(");   }
+          | RPAR         { scanner->add_symbol(")");   }
           | FALSE_EXPR_BEGIN { scanner->add_symbol("{"); scanner->add_symbol("!"); }
           | FALSE_EXPR_END   { scanner->add_symbol("!"); scanner->add_symbol("}"); }
           | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2}), IR::Type::NUMBER); }
