@@ -349,12 +349,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[32] =
+static const flex_int16_t yy_accept[31] =
     {   0,
         0,    0,   21,   19,   12,   18,   13,   19,    9,    5,
        10,   11,    6,    3,    7,    8,   16,   17,    4,   19,
-        2,   16,    0,   16,   17,    1,   15,    0,    0,   14,
-        0
+        2,    0,   16,   17,    1,   15,    0,    0,   14,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -395,42 +394,40 @@ static const YY_CHAR yy_meta[21] =
         2,    2,    1,    1,    3,    4,    4,    1,    1,    1
     } ;
 
-static const flex_int16_t yy_base[34] =
+static const flex_int16_t yy_base[33] =
     {   0,
-        0,    0,   40,   41,   41,   41,   41,   19,   41,   41,
-       41,   41,   41,   41,   23,   41,    8,    0,   41,   32,
-       41,   13,   21,    0,    0,   41,   12,   20,   19,    7,
-       41,   27,   30
+        0,    0,   37,   38,   38,   38,   38,   16,   38,   38,
+       38,   38,   38,   38,   38,   38,    8,    0,   38,   30,
+       38,   19,    0,    0,   38,   11,   18,   12,    7,   38,
+       26,   29
     } ;
 
-static const flex_int16_t yy_def[34] =
+static const flex_int16_t yy_def[33] =
     {   0,
-       31,    1,   31,   31,   31,   31,   31,   31,   31,   31,
-       31,   31,   31,   31,   31,   31,   31,   32,   31,   31,
-       31,   31,   31,   17,   32,   31,   31,   33,   31,   31,
-        0,   31,   31
+       30,    1,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   31,   30,   30,
+       30,   30,   17,   31,   30,   30,   32,   30,   30,    0,
+       30,   30
     } ;
 
-static const flex_int16_t yy_nxt[62] =
+static const flex_int16_t yy_nxt[59] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,    7,   16,   17,   18,   18,   19,   20,    4,
-       23,   30,   24,   25,   25,   23,   27,   22,   28,   25,
-       25,   29,   29,   30,   30,   27,   26,   22,   21,   31,
-        3,   31,   31,   31,   31,   31,   31,   31,   31,   31,
-       31,   31,   31,   31,   31,   31,   31,   31,   31,   31,
-       31
+       22,   29,   23,   24,   24,   26,   29,   27,   24,   24,
+       28,   28,   29,   26,   25,   21,   30,    3,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30
     } ;
 
-static const flex_int16_t yy_chk[62] =
+static const flex_int16_t yy_chk[59] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       17,   30,   17,   17,   17,   22,   27,   22,   27,   32,
-       32,   33,   33,   29,   28,   23,   20,   15,    8,    3,
-       31,   31,   31,   31,   31,   31,   31,   31,   31,   31,
-       31,   31,   31,   31,   31,   31,   31,   31,   31,   31,
-       31
+       17,   29,   17,   17,   17,   26,   28,   26,   31,   31,
+       32,   32,   27,   22,   20,    8,    3,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30,   30,   30,   30
     } ;
 
 /* Table of booleans, true if rule could match eol. */
@@ -471,10 +468,10 @@ using token = TextFile::ParserText::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 474 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 471 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 /* Define what scanner class is used */
 /* Macros for symbol types */
-#line 477 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 474 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 #define INITIAL 0
 
@@ -613,7 +610,7 @@ YY_DECL
     yylval = lval;    
 
 
-#line 616 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 613 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -640,13 +637,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 32 )
+				if ( yy_current_state >= 31 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 41 );
+		while ( yy_base[yy_current_state] != 38 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -821,7 +818,7 @@ YY_RULE_SETUP
 #line 113 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 824 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 821 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1238,7 +1235,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 32 )
+			if ( yy_current_state >= 31 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1266,11 +1263,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 32 )
+		if ( yy_current_state >= 31 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 31);
+	yy_is_jam = (yy_current_state == 30);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }

@@ -90,6 +90,8 @@
 %left IMUL IDIV MOD
 %right POW
 
+%precedence NEG
+
 %type <Expr::Expression> varexpr
 %type <int> expr
 
@@ -131,6 +133,7 @@ word      : TEXT       { scanner->add_text($1);      }
           ;
 
 varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()); }
+          | MINUS VAR %prec NEG { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::string("-1")), std::vector<Expression>{}), Expression(Node(Type::VAR, $2), std::vector<Expression>())}); }
           | LPAR varexpr RPAR { $$ = $2; }
           | expr POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
           | expr MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
@@ -148,11 +151,12 @@ varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()
           | varexpr MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, $3}); }
           | varexpr IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, $3}); }
           | varexpr IDIV varexpr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{$1, $3}); }
-          | varexpr MINUS varexpr { $$ =Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, $3}); }
+          | varexpr MINUS varexpr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, $3}); }
           | varexpr PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{$1, $3}); }
           ;
 
 expr      : NUMBER { $$ = atoi($1.c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
+          | MINUS expr %prec NEG { $$ = -$2; /* Unary minus */}
           | LPAR expr RPAR { $$ = $2; }
           | expr POW expr { $$ = static_cast<int>(std::pow($1, $3));}
           | expr MOD expr { $$ = $1 % $3;}
