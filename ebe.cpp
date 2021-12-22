@@ -204,6 +204,7 @@ int main(int argc, char *argv[]){
     Logger::get().set_logging_level(Args::arg_opts.logging_level);
     Logger::get().set_flags(std::ios_base::boolalpha);
     LOG1("Argument params: \n" << Args::arg_opts);
+    Analytics::get().set_flags(std::ios_base::boolalpha);
     RNG::init();
 
     // Start compilation of example input files

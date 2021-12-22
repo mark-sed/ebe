@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <ios>
 #include <cstring>
+#include <map>
 #include "utils.hpp"
 
 
@@ -109,16 +110,53 @@ public:
     void set_enabled(std::set<std::string> enabled) { this->enabled = enabled; }
 };
 
-
 /**
  * Analytics class for logging statistical and other info
  */ 
 class Analytics : public BaseLogger {
+private:
+    std::set<std::string> enabled;  ///< Set of enabled units
+    const char *folder_path = "";   ///< Output folder path
+    std::map<std::string, std::ostream *> stream_map;  ///< Map holding output streams based on their unit name
 public:
+    /**
+     * Class containing Unit name mapping to const variables
+     */
+    class UnitNames {
+    public:
+        const static std::string JENN_FITNESS;
+        const static std::string MIRANDA_FITNESS;
+    };
+
     /** Constructor */
     Analytics();
     ~Analytics();
-    // TODO: Add anlytics functions
+
+    /**
+     * Analytics instalnce getter
+     * @return Analytics instance
+     */
+    static Analytics &get();
+
+    /**
+     * Logs attribute and its value for certain unit
+     * @param unit Unit name
+     * @param attr 
+     * @param value 
+     */
+    void log(const std::string &unit, const std::string &attr, const std::string &value);
+
+    /**
+     * Sets set of analytics units to be logged to output file
+     * @param enabled Set of analytics units names
+     */
+    void set_enabled(std::set<std::string> enabled);
+
+    /**
+     * @brief Set the folder_path variable
+     * @param folder_path Path to the output folder
+     */
+    void set_folder_path(const char *folder_path) { this->folder_path = folder_path; }
 };
 
 /// Tabs for logging
@@ -163,7 +201,7 @@ public:
     #define LOG(level, message)
     #define LOG_CONT(level, message, container)
     #define LOG_CONT_SANITIZE(level, message, container)
-#endif
+#endif//DISABLE_LOGGING
 
 #define LOG1(message) LOG(1, message)
 #define LOG2(message) LOG(2, message)
@@ -171,5 +209,13 @@ public:
 #define LOG4(message) LOG(4, message)
 #define LOG5(message) LOG(5, message)
 #define LOGMAX(message) LOG(MAX_LOGGING_LEVEL, message)
+
+// Analytics logging
+/// Analytics macro
+#ifndef DISABLE_ANALYTICS
+    #define STAT_LOG(unit, attr, value) Analytics::get().log((unit), (attr), (value));
+#else
+    #define STAT_LOG(unit, attr, value)
+#endif//DISABLE_ANALYTICS
 
 #endif//_LOGGING_HPP_
