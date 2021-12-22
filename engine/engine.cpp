@@ -236,12 +236,24 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
     // Get how many instructions to insert
     auto min_len = std::min(std::distance(rand_pos, (*rand_pass)->pipeline->end()), std::distance(rand_pos_og, (*rand_pass_og)->pipeline->end()));
     auto amount = RNG::rand_int(1, min_len);
-    // TODO: Add logs for crossing
-    for(int i = 0; i < amount; ++i){
-        // Create copy of instruction
-        std::swap(*rand_pos, *rand_pos_og);
-        ++rand_pos;
-        ++rand_pos_og;
+    // If the second phenotype is the elite and elitism is used then dont switch
+    if(*rand_pheno == population->candidates->front()) {
+        // Just copy in this case
+        for(int i = 0; i < amount; ++i){
+            // Create copy of instruction
+            auto inst_copy = (*rand_pos)->copy();
+            rand_pos_og = (*rand_pass_og)->pipeline->insert(rand_pos_og, inst_copy);
+            ++rand_pos;
+        }
+    }
+    else {
+        // TODO: Add logs for crossing
+        for(int i = 0; i < amount; ++i){
+            // Create copy of instruction
+            std::swap(*rand_pos, *rand_pos_og);
+            ++rand_pos;
+            ++rand_pos_og;
+        }
     }
 }
 

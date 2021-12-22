@@ -304,6 +304,40 @@ void Args::parse_args(int argc, char *argv[]){
         parse_v(argv, argc, "-vvvvv", "-v5");
     }
 
+    // Analytics outout folder
+    // Note: This has to be done before logs file (to set their correct output path)
+    if(exists_option(argv, argv+argc, "-aout", "--analytics-out")) {
+        const char *path;
+        if(!(path = get_option_value(argv, argv+argc, "-aout", "--analytics-out"))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing analytics folder path");
+        }
+        // Check existence of the folder
+        auto o_path = std::filesystem::path(path);
+        if(!o_path.empty() && !std::filesystem::exists(o_path)){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Folder for analytics output does not exist");
+        }
+        // Remove possible trailing slash
+        // TODO: Remove \, but only on Windows
+        if(o_path.string().back() == '/') {
+            o_path.string().pop_back();
+        }
+        Analytics::get().set_folder_path(path);
+    }
+
+    // Analytics logs
+    if(exists_option(argv, argv+argc, "-a", "--analytics")) {
+        const char *unit_names;
+        if(!(unit_names = get_option_value(argv, argv+argc, "-a", "--analytics"))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing unit names for analytics prints");
+        }
+        if(std::string(unit_names) == std::string("all")){
+            Analytics::get().set_log_everything(true);
+        } else {
+            // Parse file functions to add to the logger
+            Analytics::get().set_enabled(Utils::split_csv(std::string(unit_names)));
+        }
+    }
+
     // Check if needed switches are set
     if(!arg_opts.interpret_mode){
         if(!arg_opts.file_in){

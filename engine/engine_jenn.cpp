@@ -78,9 +78,11 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
         }
         // Sort population based on fitness
         this->sort_population();
+        // Log best fitness
+        STAT_LOG(Analytics::UnitNames::JENN_FITNESS, std::to_string(iter), std::to_string(this->population->candidates->front()->fitness));
         // Mutate and crossover
         size_t pheno_number = 0;
-        for(auto &pheno: *this->population->candidates){
+        for(auto *pheno: *this->population->candidates){
             if(pheno == *this->population->candidates->begin() && params->elitism){
                 // In case of elitism no modification should be done to the phenotype
                 continue;

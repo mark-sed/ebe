@@ -8,6 +8,9 @@ docs/docs.html
 # GTests
 tests/Testing
 
+# Outputs
+logs/
+
 # Prerequisites
 *.d
 
