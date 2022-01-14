@@ -1,6 +1,6 @@
-#line 1 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
+#line 2 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
-#line 3 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
+#line 4 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -589,11 +589,11 @@ using token = EbelFile::ParserEbel::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 592 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
+#line 593 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 /* Define what scanner class is used */
 /* Ebel code is caseless, so case can be ignored */
 /* Macros for tokens */
-#line 596 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
+#line 597 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
 #define INITIAL 0
 
@@ -732,7 +732,7 @@ YY_DECL
     yylval = lval;    
 
 
-#line 735 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
+#line 736 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -995,7 +995,7 @@ YY_RULE_SETUP
 #line 108 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 998 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
+#line 999 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

@@ -38,3 +38,7 @@ These tools are not needed to compile `ebe` program, but when using `cmake` they
 * `cmake`
 * `doxygen` and `dot` for documentation
 * `flex` and `bison` for recompiling lexers and parsers
+
+## Ebe Tools
+
+Tools for advanced work and analysis of Ebe can be found in its own [repository](https://github.com/mark-sed/ebe-tools).

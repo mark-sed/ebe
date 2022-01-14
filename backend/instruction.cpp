@@ -35,13 +35,13 @@ const char * const NOP::NAME = "NOP";
 const char * const PASS::NAME = "PASS";
 const char * const SWAP::NAME = "SWAP";
 // ExprInstructions
-const char * const MOVE::NAME = "MOVE";
 const char * const ADD::NAME = "ADD";
-const char * const SUB::NAME = "SUB";
-const char * const MUL::NAME = "MUL";
 const char * const DIV::NAME = "DIV";
 const char * const MOD::NAME = "MOD";
+const char * const MOVE::NAME = "MOVE";
+const char * const MUL::NAME = "MUL";
 const char * const POW::NAME = "POW";
+const char * const SUB::NAME = "SUB";
 
 inline void Instruction::format_args(std::ostream &out){
     
@@ -264,7 +264,7 @@ void MOVE::exec(Vars::SymbolTable *sym_table) {
         }
         else {
             throw Exception::EbeTypeException(std::string("Type '")+IR::get_type_name(src1->type)
-                                             +"' cannot be used MOVE instruction");
+                                             +"' cannot be used in MOVE instruction");
         }
     }
 
