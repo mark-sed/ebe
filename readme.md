@@ -1,4 +1,4 @@
-<img align="left" width="80" height="80" src="https://raw.githubusercontent.com/mark-sed/ebe/main/docs/logo.png" alt="Logo">
+<img align="left" width="80" height="80" src="https://raw.githubusercontent.com/mark-sed/ebe/main/docs/logo.png?token=GHSAT0AAAAAABM6N4FHMCMAWTBBH3ASNV3IYPN4B6Q" alt="Logo">
 
 # Ebe (Edit By Example)
 
