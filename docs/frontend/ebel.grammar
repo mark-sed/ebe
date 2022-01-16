@@ -1,0 +1,48 @@
+program     : EOF 
+            | '\n'
+            | code EOF
+            ;
+
+code        : instruction
+            | pass
+            | code '\n' (instruction|expr_inst|pass)?
+            ;
+
+instruction : 'concat' INT           
+            | 'del'                  
+            | 'loop'                 
+            | 'nop'                  
+            | 'swap' INT             
+            | 'return' instruction               
+            ;
+
+expr_inst   : 'add'  VAR ',' (VAR|INT) ',' (VAR|INT)
+            | 'sub'  VAR ',' (VAR|INT) ',' (VAR|INT)
+            | 'mul'  VAR ',' (VAR|INT) ',' (VAR|INT)
+            | 'div'  VAR ',' (VAR|INT) ',' (VAR|INT)
+            | 'mod'  VAR ',' (VAR|INT) ',' (VAR|INT)
+            | 'pow'  VAR ',' (VAR|INT) ',' (VAR|INT)
+            | 'move' VAR ',' (VAR|INT) ',' (VAR|INT)           
+            ;
+
+pass        : 'pass' type 'expression[s]?'
+            | 'pass' expr_type     
+            ;
+
+VAR         : '$[0-9]*';
+INT         : '[-]?[0-9]+';
+
+expr_type   : 'expression[s]?'
+            | 'word[s]?'
+            | 'line[s]?'
+            | 'document[s]?'
+            ;
+
+type        : 'text'     
+            | 'number'    
+            | 'float'    
+            | 'delimiter' 
+            | 'symbol'    
+            | 'empty'     
+            | 'derived'
+            ;

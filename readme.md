@@ -1,3 +1,5 @@
+<img align="left" width="80" height="80" src="https://raw.githubusercontent.com/mark-sed/ebe/master/docs/logo.png" alt="Logo">
+
 # Ebe (Edit By Example)
 
 [Ebe wiki](https://github.com/mark-sed/ebe/wiki)
