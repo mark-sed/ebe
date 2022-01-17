@@ -27,21 +27,23 @@
 /** Text to be displayed to user when --help option is used */
 const char *HELP_TEXT = "Usage: ebe [options] file\n"
 "Options:\n"
-"  --help -h                   Prints this text.\n"
-"  --version                   Prints compiler's version information.\n"
+"  -in <file> --input <file>   File from which will be read input example text.\n"
+"  -out <file> --output <file> File from which will be read output example text.\n"
+"  -o <file>                   File to which will be output program saved.\n"
+"  -i <file>                   Ebel code to be interpreted over all other argument files.\n"
 "  -expr --expressions         Expressions between \"{!\" and \"!}\" will be generated into ebel code.\n"
+"  -it --iterations <amount>   Number of iterations to be done in one evolution.\n"
+"  -e --evolutions <amount>    Number of evolution to be done.\n"
+"  -E --engine <name>          Engine to be used for compilation.\n"
+"  -p --precision <1-100>      Minimal compilation precision, if omitted then 100.\n"
+"  -t --timeout <s>            Compilation timeout (in seconds).\n"
 "  -alpha-num                  Compiler will group text with numbers if they're not separated.\n"
 "  -alpha-sym                  Compiler will group text with symbols if they're not separated.\n"
 "  -group-delim                Multiple delimiters after each other will be parsed as one delimiter.\n"
 "  -group-sym                  Multiple symbols after each other will be parsed as one symbol.\n"
 "  --float-delim <character>   Character used in your locale as a floating point dot (by default this is `.`).\n"
-"  -it --iterations <amount>   Number of iterations to be done in one evolution.\n"
-"  -e --evolutions <amount>    Number of evolution to be done.\n"
-"  -E --engine <name>          Engine to be used for compilation.\n"
-"  -in <file> --input <file>   File from which will be read input example text.\n"
-"  -out <file> --output <file> File from which will be read output example text.\n"
-"  -o <file>                   File to which will be output program saved.\n"
-"  -i <file>                   Ebel code to be interpreted over all other argument files.\n"
+"  --version                   Prints compiler's version information.\n"
+"  --help -h                   Prints this text.\n"
 ;
 // TODO: Add delimiter definition option
 
@@ -50,6 +52,8 @@ using namespace Args;
 /** A global variable that can be used anywhere to read user compilation options */
 ArgOpts Args::arg_opts {
     .logging_level = 0,
+    .timeout = 0,
+    .precision = 0,
     .interpret_mode = false,
     .file_in = nullptr,
     .file_out = nullptr,
@@ -65,7 +69,7 @@ ArgOpts Args::arg_opts {
     .line_delim = '\n',
     .engine = nullptr,
     .evolutions = 0,
-    .iterations = 0
+    .iterations = 0,
 };
 
 namespace Args {
@@ -89,7 +93,9 @@ namespace Args {
             << TAB1"line_delim = " << static_cast<int>(param.line_delim) << std::endl
             << TAB1"engine = " << (param.engine ? param.engine : "") << std::endl
             << TAB1"evolutions = " << param.evolutions << std::endl
-            << TAB1"iterations = " << param.iterations << std::endl;
+            << TAB1"iterations = " << param.iterations << std::endl
+            << TAB1"timeout = " << param.timeout << std::endl
+            << TAB1"precision = " << param.precision << std::endl;
         return out;
     }
 }
@@ -193,6 +199,43 @@ void Args::parse_args(int argc, char *argv[]){
             arg_opts.iterations = Cast::to<unsigned int>(in_value);
         } catch (Exception::EbeException e){
             Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --iterations", &e);
+        }
+    }
+
+    // Timeout
+    if(exists_option(argv, argv+argc, "--timeout", "-t")){
+        char *in_value;
+        if(!(in_value = get_option_value(argv, argv+argc, "--timeout", "-t"))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --timeout");
+        }
+        try{
+            arg_opts.timeout = Cast::to<unsigned int>(in_value);
+        } catch (Exception::EbeException e){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --timeout", &e);
+        }
+        Error::warning("--timeout is not yet supported in this version");
+    }
+
+    // Precission
+    if(exists_option(argv, argv+argc, "--precision", "-p")){
+        char *in_value;
+        if(!(in_value = get_option_value(argv, argv+argc, "--precision", "-p"))){
+            arg_opts.precision = 100;
+        }
+        else {
+            if(in_value[0] == '-') {
+                arg_opts.precision = 100;
+            }
+            else {
+                try{
+                    arg_opts.precision = Cast::to<unsigned int>(in_value);
+                } catch (Exception::EbeException e){
+                    Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --precision", &e);
+                }
+            }
+        }
+        if(arg_opts.precision > 100) {
+            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --precision");
         }
     }
 
@@ -392,7 +435,12 @@ void Args::parse_args(int argc, char *argv[]){
     }
 
     // Check for non-compatible options
-    if(arg_opts.expr && arg_opts.interpret_mode) {
-        Error::error(Error::ErrorCode::ARGUMENTS, "Expressions (-expr) cannot be used in iterpretation mode");
+    if(arg_opts.interpret_mode) {
+        if(arg_opts.expr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, "Expressions (-expr) cannot be used in iterpretation mode");
+        }
+        if(arg_opts.timeout > 0) { 
+            Error::error(Error::ErrorCode::ARGUMENTS, "Timeout (-t) cannot be used in iterpretation mode");
+        }
     }
 }

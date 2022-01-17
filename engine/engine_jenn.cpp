@@ -101,6 +101,25 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                 // In case of elitism no modification should be done to the phenotype
                 continue;
             }
+            // Check if fitness matches desired minimum precission
+            if(Args::arg_opts.precision > 0 && static_cast<unsigned>((pheno->fitness * 100)) >= Args::arg_opts.precision) {
+                if(precision){
+                    *precision = pheno->fitness; 
+                }
+                LOG1("Phenotype with minimum precision found in iteration " << iter << " - ending evolution");
+                LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iter << "\n" TAB1 "Mutations: " << cnt_mutation 
+                    << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
+                if(expr_pass != nullptr) {
+                    // Preappend user defined expressions
+                    pheno->program->nodes->push_front(expr_pass);
+                }
+                // Reinterpret to optimize
+                auto interpreter = new Interpreter(pheno->program);
+                auto text_in_copy = *text_in;
+                interpreter->parse(&text_in_copy);
+                interpreter->optimize();
+                return pheno->program;
+            }
             // Try mutate the phenotype
             auto mutate_roll = RNG::roll(params->mutation_chance);
             auto crossover_roll = RNG::roll(params->crossover_chance); // This might be used, depending on params

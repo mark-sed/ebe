@@ -67,7 +67,7 @@ void compile(const char *f_in, const char *f_out) {
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
     Engine *engine = nullptr;
-    for(size_t e = 0; e < evolutions; ++e){
+    for(size_t e = 1; e <= evolutions || Args::arg_opts.precision != 0; ++e){
         if(engine != nullptr && best_program != nullptr) { 
             // Before deletion, best program has to be copied to not be lost
             auto best_program_copy = new IR::EbelNode(*best_program);
@@ -93,6 +93,13 @@ void compile(const char *f_in, const char *f_out) {
             best_program = program;
             best_precision = precision;
             LOG3("Perfectly fitting program found, compilation ended");
+            break;
+        }
+        else if(Args::arg_opts.precision > 0 && static_cast<unsigned>((precision * 100)) >= Args::arg_opts.precision) {
+            std::cout << "Minimum precision program found." << std::endl;
+            best_program = program;
+            best_precision = precision;
+            LOG3("Minimum precision program found, compilation ended");
             break;
         }
         LOG4(e << ". evolution finished. Best program (with " << (precision*100) << "% precision):\n" << *program);

@@ -27,6 +27,8 @@ namespace Args {
      */
     struct ArgOpts {
         unsigned logging_level;///< Verbosity of logging
+        unsigned timeout;      ///< Compilation timeout
+        unsigned precision;    ///< Minimum compilation precision
         bool interpret_mode;   ///< Interpret mode
         const char *file_in;   ///< Path to the input example file
         const char *file_out;  ///< Path to the output example file
