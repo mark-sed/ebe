@@ -102,11 +102,11 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                 continue;
             }
             // Check if fitness matches desired minimum precission
-            if(Args::arg_opts.precision > 0 && static_cast<unsigned>((pheno->fitness * 100)) >= Args::arg_opts.precision) {
+            if(Utils::is_precise(pheno->fitness) || Utils::is_timeout()) {
                 if(precision){
                     *precision = pheno->fitness; 
                 }
-                LOG1("Phenotype with minimum precision found in iteration " << iter << " - ending evolution");
+                LOG1("Timeout or phenotype with minimum precision found in iteration " << iter << " - ending evolution");
                 LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iter << "\n" TAB1 "Mutations: " << cnt_mutation 
                     << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
                 if(expr_pass != nullptr) {

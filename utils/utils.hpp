@@ -14,6 +14,7 @@
 
 #include <string>
 #include <set>
+#include "arg_parser.hpp"
 
 /** Utils namespace */
 namespace Utils {
@@ -51,6 +52,24 @@ namespace Utils {
      * @param text Text to sanitize
      */ 
     std::string sanitize(const std::string &text);
+
+    /**
+     * @return true If timeout has approached
+     * @return false If timeout hasn't yet happened
+     */
+    inline bool is_timeout() {
+        return Args::arg_opts.timeout > 0 
+               && (std::chrono::steady_clock::now() - Args::start_time >= std::chrono::seconds(Args::arg_opts.timeout));
+    }
+
+    /**
+     * @param fitness Programs fitness
+     * @return true If precision is set and fitness is precise enouh
+     * @return false Otherwise
+     */
+    inline bool is_precise(float fitness) {
+        return Args::arg_opts.precision > 0 && static_cast<unsigned>((fitness * 100)) >= Args::arg_opts.precision;
+    }
 }
 
 /**

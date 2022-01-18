@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream> 
 #include <vector>
+#include <iomanip>
 #include "ebe.hpp"
 #include "preprocessor.hpp"
 #include "scanner_text.hpp"
@@ -95,11 +96,18 @@ void compile(const char *f_in, const char *f_out) {
             LOG3("Perfectly fitting program found, compilation ended");
             break;
         }
-        else if(Args::arg_opts.precision > 0 && static_cast<unsigned>((precision * 100)) >= Args::arg_opts.precision) {
+        else if(Utils::is_precise(precision)) {
             std::cout << "Minimum precision program found." << std::endl;
             best_program = program;
             best_precision = precision;
             LOG3("Minimum precision program found, compilation ended");
+            break;
+        }
+        else if(Utils::is_timeout()) {
+            std::cout << "Timeout." << std::endl;
+            best_program = program;
+            best_precision = precision;
+            LOG3("Timeout, compilation ended");
             break;
         }
         LOG4(e << ". evolution finished. Best program (with " << (precision*100) << "% precision):\n" << *program);
@@ -112,7 +120,10 @@ void compile(const char *f_in, const char *f_out) {
 
     if(best_program){
         // Print the best program
-        std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision." << std::endl;
+        std::chrono::duration<float> diff = std::chrono::steady_clock::now()-Args::start_time;
+        std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
+                  << std::setprecision(1) << diff.count() 
+                  << " s)." << std::endl;
 
         // TODO: Create custom output method to have better control
         if(Args::arg_opts.ebel_file) {

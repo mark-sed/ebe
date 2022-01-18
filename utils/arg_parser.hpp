@@ -13,6 +13,7 @@
 #define _ARG_PARSER_HPP_
 
 #include <vector>
+#include <chrono>
 #include <ostream>
 #include <stddef.h>
 
@@ -59,6 +60,9 @@ namespace Args {
 
     /** Variable that holds compile arguments */
     extern ArgOpts arg_opts;
+
+    /** Time when Ebe was started */
+    extern std::chrono::time_point<std::chrono::steady_clock> start_time;
 }
 
 #endif//_ARG_PARSER_HPP_

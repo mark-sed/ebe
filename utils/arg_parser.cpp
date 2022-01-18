@@ -17,6 +17,7 @@
 #include <set>
 #include <string>
 #include <filesystem>
+#include <chrono>
 #include "arg_parser.hpp"
 #include "ebe.hpp"
 #include "compiler.hpp"
@@ -73,6 +74,9 @@ ArgOpts Args::arg_opts {
 };
 
 namespace Args {
+    std::chrono::time_point<std::chrono::steady_clock> start_time;
+
+
     std::ostream& operator<< (std::ostream &out, const ArgOpts& param) {
         out << "ArgOpts:" << std::endl
             << TAB1"logging_level = " << param.logging_level << std::endl
@@ -180,6 +184,9 @@ void Args::parse_args(int argc, char *argv[]){
         print_version();
     }
 
+    // Set start time
+    start_time = std::chrono::steady_clock::now();
+
     // Check if interpreting
     if(exists_option(argv, argv+argc, "-i", "")){
         arg_opts.interpret_mode = true;
@@ -213,7 +220,6 @@ void Args::parse_args(int argc, char *argv[]){
         } catch (Exception::EbeException e){
             Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --timeout", &e);
         }
-        Error::warning("--timeout is not yet supported in this version");
     }
 
     // Precission
