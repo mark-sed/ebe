@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <cmath>
 #include "fitness.hpp"
 #include "ir.hpp"
 
@@ -155,7 +156,7 @@ float Fitness::levenshtein(IR::Node *ir1, IR::Node *ir2) {
     for(long j = 1; j < ir2_size; ++j) {
         for(long i = 1; i < ir1_size; ++i) {
             long cost = 1;
-            if(ir1_v[i]->type == ir2_v[j]->type && ir1_v[i]->text == ir2_v[j]->text) {
+            if(*ir1_v[i] == *ir2_v[j]) {
                 cost = 0;
             }
             dist[i][j] = std::min({dist[i-1][j]+1, dist[i][j-1]+1, dist[i-1][j-1]+cost});
@@ -165,4 +166,92 @@ float Fitness::levenshtein(IR::Node *ir1, IR::Node *ir2) {
     auto max_l = std::max(ir1_size, ir2_size);
     auto score = dist[ir1_size-1][ir2_size-1];
     return (max_l-score)/static_cast<float>(max_l);
+}
+
+float Fitness::jaro_winkler(IR::Node *ir1, IR::Node *ir2) {
+    IR::Word nl(std::string("\n"), IR::Type::DELIMITER);
+
+    // Move IR into linear version
+    std::vector<IR::Word *> ir1_v;
+    auto ir1_line = ir1->nodes->begin();
+    const auto& ir1_end = ir1->nodes->end();
+    long ir1_size = 0;
+    while(ir1_line != ir1_end){
+        // Iterate words in lines
+        auto ir1_word = (*ir1_line)->begin();
+        const auto& ir1_word_end = (*ir1_line)->end();
+        while(ir1_word != ir1_word_end){
+            ir1_v.push_back(*ir1_word);
+            ir1_word = std::next(ir1_word);
+            ++ir1_size;
+        }
+        ir1_v.push_back(&nl);
+        ++ir1_size;
+        ir1_line = std::next(ir1_line);
+    }
+
+    std::vector<IR::Word *> ir2_v;
+    auto ir2_line = ir2->nodes->begin();
+    const auto& ir2_end = ir2->nodes->end();
+    long ir2_size = 0;
+    while(ir2_line != ir2_end){
+        // Iterate words in lines
+        auto ir2_word = (*ir2_line)->begin();
+        const auto& ir2_word_end = (*ir2_line)->end();
+        while(ir2_word != ir2_word_end){
+            ir2_v.push_back(*ir2_word);
+            ir2_word = std::next(ir2_word);
+            ++ir2_size;
+        }
+        ir2_v.push_back(&nl);
+        ++ir2_size;
+        ir2_line = std::next(ir2_line);
+    }
+
+    if(ir1_size == 0 && ir2_size == 0) {
+        return 1.0f;
+    }
+    if(ir1_size == 0 || ir2_size == 0) {
+        return 0.0f;
+    }
+
+    long max_dist = std::floor(std::max(ir1_size, ir2_size) / 2) - 1;
+    long matches = 0;
+
+    bool ir1_hash[ir1_size] = {false, };
+    bool ir2_hash[ir2_size] = {false, };
+
+    for(long i = 0; i < ir1_size; ++i) {
+        for(long j = std::max(0L, i - max_dist); j < std::min(ir2_size, i + max_dist + 1); ++j) {
+            if(!ir2_hash[j] && *ir1_v[i] == *ir2_v[j]) {
+                ir1_hash[i] = true;
+                ir2_hash[j] = true;
+                ++matches;
+                break;
+            }
+        }
+    }
+
+    if(matches == 0)
+        return 0.0f;
+
+    long transp = 0;
+    long index = 0;
+
+    for(long i = 0; i < ir1_size; ++i) {
+        if(ir1_hash[i]) {
+            while(!ir2_hash[index]) {
+                ++index;
+            }
+            if(*ir1_v[i] != *ir2_v[index++]) {
+                ++transp;
+            }
+        }
+    }
+
+    float jaro = (static_cast<float>(matches) / static_cast<float>(ir1_size)
+                 + static_cast<float>(matches) / static_cast<float>(ir2_size)
+                 + (static_cast<float>(matches) - (transp / 2.0f)) / (static_cast<float>(matches))) 
+                 / 3.0f;
+    return jaro;
 }

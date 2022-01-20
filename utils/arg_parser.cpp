@@ -72,7 +72,7 @@ ArgOpts Args::arg_opts {
     .engine = nullptr,
     .evolutions = 0,
     .iterations = 0,
-    .fit_fun = &Fitness::levenshtein,
+    .fit_fun = &Fitness::jaro_winkler,
 };
 
 namespace Args {

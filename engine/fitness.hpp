@@ -36,6 +36,15 @@ namespace Fitness {
      * @return How much are the 2 file similar where 1.0 is identical
      */
     float levenshtein(IR::Node *ir1, IR::Node *ir2);
+
+    /**
+     * @brief Jaro-Winkler similarity
+     * Files are compared using Jaro-Winkler algorithm
+     * @param ir1 IR of first file
+     * @param ir2 IR of second file
+     * @return How much are the 2 file similar where 1.0 is identical
+     */
+    float jaro_winkler(IR::Node *ir1, IR::Node *ir2);
 }
 
 #endif//_FITNESS_HPP_

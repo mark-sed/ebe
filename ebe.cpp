@@ -122,7 +122,7 @@ void compile(const char *f_in, const char *f_out) {
         // Print the best program
         std::chrono::duration<float> diff = std::chrono::steady_clock::now()-Args::start_time;
         std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
-                  << std::setprecision(1) << diff.count() 
+                  << std::fixed << std::setprecision(1) << diff.count() 
                   << " s)." << std::endl;
 
         // TODO: Create custom output method to have better control
