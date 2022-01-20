@@ -24,6 +24,7 @@
 #include "engine.hpp"
 #include "logging.hpp"
 #include "utils.hpp"
+#include "fitness.hpp"
 
 /** Text to be displayed to user when --help option is used */
 const char *HELP_TEXT = "Usage: ebe [options] file\n"
@@ -71,6 +72,7 @@ ArgOpts Args::arg_opts {
     .engine = nullptr,
     .evolutions = 0,
     .iterations = 0,
+    .fit_fun = &Fitness::levenshtein,
 };
 
 namespace Args {

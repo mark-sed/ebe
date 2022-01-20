@@ -16,6 +16,7 @@
 #include <chrono>
 #include <ostream>
 #include <stddef.h>
+#include "fitness.hpp"
 
 /**
  * Namespace for all input argument related resources
@@ -46,6 +47,7 @@ namespace Args {
         char *engine;          ///< Engine to be used for compilation
         size_t evolutions;     ///< How many evolutions at most should be done
         size_t iterations;     ///< How many iterations are in one evolution
+        float (*fit_fun)(IR::Node *ir1, IR::Node *ir2); ///< Fitness function to use for comparisons
 
         friend std::ostream& operator<< (std::ostream &out, const ArgOpts& param);
     };
