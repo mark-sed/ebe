@@ -32,6 +32,12 @@ void Utils::to_upper(std::vector<std::string> *text){
     }
 }
 
+std::string Utils::to_lower(std::string text){
+    std::string outs(text.length(), '\0');
+    std::transform(text.begin(), text.end(), outs.begin(), ::tolower);
+    return outs;
+}
+
 std::string Utils::capitalize(std::string text) {
     return std::string(1, std::toupper(text[0]))+std::string(&text[1]);
 }

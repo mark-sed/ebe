@@ -27,7 +27,9 @@
 #include "fitness.hpp"
 
 /** Text to be displayed to user when --help option is used */
-const char *HELP_TEXT = "Usage: ebe [options] file\n"
+const char *HELP_TEXT = 
+"Compile:   ebe -in <input_example> -out <output_exmaple> -o <output_ebel>\n"
+"Interpret: ebe -i <ebel_file> <file1> <file2> ... <fileN>\n"
 "Options:\n"
 "  -in <file> --input <file>   File from which will be read input example text.\n"
 "  -out <file> --output <file> File from which will be read output example text.\n"
@@ -37,6 +39,7 @@ const char *HELP_TEXT = "Usage: ebe [options] file\n"
 "  -it --iterations <amount>   Number of iterations to be done in one evolution.\n"
 "  -e --evolutions <amount>    Number of evolution to be done.\n"
 "  -E --engine <name>          Engine to be used for compilation.\n"
+"  -f --fitness <name>         Fitness function to be used for compilation\n"
 "  -p --precision <1-100>      Minimal compilation precision, if omitted then 100.\n"
 "  -t --timeout <s>            Compilation timeout (in seconds).\n"
 "  -alpha-num                  Compiler will group text with numbers if they're not separated.\n"
@@ -72,7 +75,7 @@ ArgOpts Args::arg_opts {
     .engine = nullptr,
     .evolutions = 0,
     .iterations = 0,
-    .fit_fun = &Fitness::jaro_winkler,
+    .fit_fun = &Fitness::jaro,
 };
 
 namespace Args {
@@ -101,7 +104,8 @@ namespace Args {
             << TAB1"evolutions = " << param.evolutions << std::endl
             << TAB1"iterations = " << param.iterations << std::endl
             << TAB1"timeout = " << param.timeout << std::endl
-            << TAB1"precision = " << param.precision << std::endl;
+            << TAB1"precision = " << param.precision << std::endl
+            << TAB1"fitness = " << Fitness::get_name(param.fit_fun) << std::endl;
         return out;
     }
 }
@@ -269,6 +273,21 @@ void Args::parse_args(int argc, char *argv[]){
         // Check if engine name is correct in advance so that user does not wait till parsing is done
         if(EngineUtils::get_engine_id(Args::arg_opts.engine) == EngineUtils::EngineID::UNKNOWN){
             Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect engine name");
+        }
+    }
+
+    // Fitness function
+    if(exists_option(argv, argv+argc, "--fitness", "-f")){
+        const char *value;
+        if(!(value = get_option_value(argv, argv+argc, "--fitness", "-f"))){
+            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --fitness");
+        }
+        // Check if engine name is correct in advance so that user does not wait till parsing is done
+        try{
+            // TODO: convert to lowercase
+            arg_opts.fit_fun = Fitness::get_function(std::string(value));
+        } catch(Exception::EbeUnknownFunction e) {
+            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect fitness function name", &e);
         }
     }
 

@@ -33,6 +33,13 @@ namespace Utils {
     void to_upper(std::vector<std::string> *text);
 
     /**
+     * Converts string to lowercase
+     * @param text Text to be converted
+     * @return text in lowercase
+     */
+    std::string to_lower(std::string text);
+
+    /**
      * Capializes string (makes first letter capital)
      * @param text Text to capitalize
      * @return Capitalized text

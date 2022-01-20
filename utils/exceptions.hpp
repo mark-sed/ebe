@@ -186,6 +186,26 @@ namespace Exception {
          */ 
         EbeDivisionByZeroException(std::string msg) : EbeException(msg, TYPE) {}
     };
+
+    /**
+     * Exception for unknown function called by name
+     */
+    class EbeUnknownFunction : public EbeException {
+    private:
+        static constexpr const char *TYPE = "Unknown function exception";
+    public:
+        /**
+         * Constructor
+         * @param msg C style string with the error message
+         */ 
+        EbeUnknownFunction(const char *msg) : EbeException(msg, TYPE) {}
+
+        /**
+         * Constructor
+         * @param msg string with the error message
+         */ 
+        EbeUnknownFunction(std::string msg) : EbeException(msg, TYPE) {}
+    };
 }
 
 #endif//_EXCEPTIONS_HPP_
