@@ -144,7 +144,7 @@ float Fitness::levenshtein(IR::Node *ir1, IR::Node *ir2) {
     }
 
     // Distance matrix
-    long dist[ir1_size][ir2_size];
+    long dist[ir1_size+1][ir2_size+1];
     // Fill 1st column and row
     for(long i = 0; i < ir1_size; ++i) {
         dist[i][0] = i;
@@ -153,10 +153,12 @@ float Fitness::levenshtein(IR::Node *ir1, IR::Node *ir2) {
         dist[0][i] = i;
     }
 
+
     for(long j = 1; j < ir2_size; ++j) {
         for(long i = 1; i < ir1_size; ++i) {
             long cost = 1;
-            if(*ir1_v[i] == *ir2_v[j]) {
+            if(*ir1_v[i-1] == *ir2_v[j-1] || ir1_v[i-1]->type == IR::Type::EXPRESSION || 
+                ir2_v[j-1]->type == IR::Type::EXPRESSION) {
                 cost = 0;
             }
             dist[i][j] = std::min({dist[i-1][j]+1, dist[i][j-1]+1, dist[i-1][j-1]+cost});
@@ -223,7 +225,9 @@ float Fitness::jaro(IR::Node *ir1, IR::Node *ir2) {
 
     for(long i = 0; i < ir1_size; ++i) {
         for(long j = std::max(0L, i - max_dist); j < std::min(ir2_size, i + max_dist + 1); ++j) {
-            if(!ir2_hash[j] && *ir1_v[i] == *ir2_v[j]) {
+            if(!ir2_hash[j] && *ir1_v[i] == *ir2_v[j] 
+                || (!ir2_hash[j] && ir1_v[i]->type == IR::Type::EXPRESSION)
+                || (!ir2_hash[j] && ir2_v[j]->type == IR::Type::EXPRESSION)) {
                 ir1_hash[i] = true;
                 ir2_hash[j] = true;
                 ++matches;
@@ -243,9 +247,10 @@ float Fitness::jaro(IR::Node *ir1, IR::Node *ir2) {
             while(!ir2_hash[index]) {
                 ++index;
             }
-            if(*ir1_v[i] != *ir2_v[index++]) {
+            if(*ir1_v[i] != *ir2_v[index] && ir1_v[i]->type != IR::Type::EXPRESSION && ir2_v[index]->type != IR::Type::EXPRESSION) {
                 ++transp;
             }
+            ++index;
         }
     }
 
@@ -314,7 +319,9 @@ float Fitness::jaro_winkler(IR::Node *ir1, IR::Node *ir2) {
 
     for(long i = 0; i < ir1_size; ++i) {
         for(long j = std::max(0L, i - max_dist); j < std::min(ir2_size, i + max_dist + 1); ++j) {
-            if(!ir2_hash[j] && *ir1_v[i] == *ir2_v[j]) {
+            if(!ir2_hash[j] && *ir1_v[i] == *ir2_v[j] 
+                || (!ir2_hash[j] && ir1_v[i]->type == IR::Type::EXPRESSION)
+                || (!ir2_hash[j] && ir2_v[j]->type == IR::Type::EXPRESSION)) {
                 ir1_hash[i] = true;
                 ir2_hash[j] = true;
                 ++matches;
@@ -334,9 +341,10 @@ float Fitness::jaro_winkler(IR::Node *ir1, IR::Node *ir2) {
             while(!ir2_hash[index]) {
                 ++index;
             }
-            if(*ir1_v[i] != *ir2_v[index++]) {
+            if(*ir1_v[i] != *ir2_v[index] && ir1_v[i]->type != IR::Type::EXPRESSION && ir2_v[index]->type != IR::Type::EXPRESSION) {
                 ++transp;
             }
+            ++index;
         }
     }
 
@@ -353,7 +361,7 @@ float Fitness::jaro_winkler(IR::Node *ir1, IR::Node *ir2) {
     long prefix = 0;
 
     for(long i = 0; i < std::min(ir1_size, ir2_size); ++i) {
-        if(*ir1_v[i] == *ir2_v[i]) {
+        if(*ir1_v[i] == *ir2_v[i] || ir1_v[i]->type == IR::Type::EXPRESSION || ir2_v[i]->type == IR::Type::EXPRESSION) {
             ++prefix;
         }
         else {
