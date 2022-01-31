@@ -68,7 +68,7 @@ void compile(const char *f_in, const char *f_out) {
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
     Engine *engine = nullptr;
-    for(size_t e = 1; e <= evolutions || Args::arg_opts.precision != 0; ++e){
+    for(size_t e = 1; e <= evolutions || Args::arg_opts.precision != 0 || Args::arg_opts.timeout != 0; ++e){
         if(engine != nullptr && best_program != nullptr) { 
             // Before deletion, best program has to be copied to not be lost
             auto best_program_copy = new IR::EbelNode(*best_program);
