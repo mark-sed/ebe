@@ -249,6 +249,10 @@ std::string ExprInstruction::extract_string_var(int var, Vars::Variable *value, 
 
 void MOVE::exec(Vars::SymbolTable *sym_table) {
     if(isrc1 > -1) {
+        // MOVE $, $
+        if(isrc1 == dst) {
+            return;
+        }
         // variable
         sym_table->copy(dst, isrc1);
     }

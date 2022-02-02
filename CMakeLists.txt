@@ -118,3 +118,13 @@ if(BISON_FOUND)
         ADD_FLEX_BISON_DEPENDENCY(lexer_ebel parser_ebel)
     endif(FLEX_FOUND)
 endif (BISON_FOUND)
+
+# Copy ebe to /usr/bin to use as a command
+if(UNIX) 
+    add_custom_command(
+            TARGET ebe
+            POST_BUILD
+            COMMAND sudo cp $<TARGET_FILE:ebe> "/usr/bin"
+            COMMENT "Copying ebe binary to /usr/bin"
+    )
+endif(UNIX)

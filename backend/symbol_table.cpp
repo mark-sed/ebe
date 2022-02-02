@@ -43,9 +43,10 @@ SymbolTable::SymbolTable(IR::Word *var0) : Compiler("Symbol table") {
     else if(var0->type == IR::Type::FLOAT) {
         table[0] = new FloatVar(var0->to_float<IR::Type::FLOAT>());
     }
-    else if(var0->type == IR::Type::TEXT) {
+    else if(var0->type == IR::Type::TEXT || var0->type == IR::Type::SYMBOL || var0->type == IR::Type::DELIMITER) {
         table[0] = new TextVar(var0->to_string<IR::Type::TEXT>());
     }
+
 }
 
 SymbolTable::~SymbolTable() { 

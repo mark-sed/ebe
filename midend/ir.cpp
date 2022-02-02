@@ -84,10 +84,6 @@ template <> int Word::to_int<IR::Type::NUMBER>() {
     return Cast::to<int>(this->text.c_str());
 }
 
-template <> std::string Word::to_string<IR::Type::TEXT>() {
-    return this->text;
-}
-
 template <> float Word::to_float<IR::Type::FLOAT>() {
     return Cast::to<float>(this->text);
 }
@@ -350,10 +346,10 @@ void PassWords::process(IR::Node *text) {
                 this->last_executed_index = column;
             }
             if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
-                // If it was not yet checked, make sure there are actual non-pragma instructions in the loop
+                // If it was not yet checked, make sure there are actual non-controll instructions in the loop
                 if(!checked_executable_loop){
                     bool found = false;
-                    // Loop through previous instruction and check if any of them is non-pragma
+                    // Loop through previous instruction and check if any of them is non-controll
                     for(auto i = pipeline->begin(); *i != this->env.loop_inst; ++i){
                         if(!(*i)->control){
                             found = true;
@@ -377,6 +373,10 @@ void PassWords::process(IR::Node *text) {
                     // FIXME: Column isn't letter column, but word number
                     subpass->process(*word, line_number, column);
                     // Reprocess so that return instruction can be executed
+                }
+                else {
+                    // Skip return instruction
+                    ++column;
                 }
                 env.reprocess_obj = true;
             }

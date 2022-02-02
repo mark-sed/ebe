@@ -114,7 +114,9 @@ namespace IR {
          */  
         template<IR::Type type> int to_int();
         template<IR::Type type> float to_float();
-        template<IR::Type type> std::string to_string();
+        template<IR::Type type> std::string to_string() {
+            return this->text;
+        }
         /** @} */
     };
 
