@@ -120,11 +120,11 @@ if(BISON_FOUND)
 endif (BISON_FOUND)
 
 # Copy ebe to /usr/bin to use as a command
-if(UNIX) 
-    add_custom_command(
-            TARGET ebe
-            POST_BUILD
-            COMMAND sudo cp $<TARGET_FILE:ebe> "/usr/bin"
-            COMMENT "Copying ebe binary to /usr/bin"
-    )
-endif(UNIX)
+#if(UNIX) 
+#    add_custom_command(
+#            TARGET ebe
+#            POST_BUILD
+#            COMMAND sudo cp $<TARGET_FILE:ebe> "/usr/bin"
+#            COMMENT "Copying ebe binary to /usr/bin"
+#    )
+#endif(UNIX)

@@ -35,7 +35,7 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
     set_params(params);
     LOG1("Engine Jenn params:\n" << *params << TAB1 << "iterations = " << iterations);
     // Creates and initializes a new population
-    this->population = new GP::Population(params);
+    this->population = new GP::Population(params, text_in);
 }
 
 EngineJenn::~EngineJenn() {

@@ -90,6 +90,7 @@ template <> float Word::to_float<IR::Type::FLOAT>() {
 
 Node::Node() {
     this->nodes = new std::list<std::list<Word *> *>();
+    this->longest_line = nullptr;
 }
 
 Node::~Node() {
@@ -100,7 +101,6 @@ Node::~Node() {
         delete line;
     }
     delete nodes;
-    
 }
 
 Node::Node(const Node &other){
@@ -110,15 +110,22 @@ Node::Node(const Node &other){
         for(const auto &word: *line){
             line_list->push_back(new Word(*word));
         }
+        if(line == other.longest_line) {
+            this->longest_line = line_list;
+        }
         nodes->push_back(line_list);
     }
 }
 
 Node &Node::operator=(const Node &other){
+    this->nodes = new std::list<std::list<Word *> *>();
     for(const auto &line: *(other.nodes)){
         auto line_list = new std::list<Word *>();
         for(const auto &word: *line){
             line_list->push_back(new Word(*word));
+        }
+        if(line == other.longest_line) {
+            this->longest_line = line_list;
         }
         nodes->push_back(line_list);
     }
@@ -165,7 +172,7 @@ bool Node::operator!=(const Node &other) const {
     return !(*this == other);
 }
 
-void Node::push_back(unsigned long line, Word *value){
+/*void Node::push_back(unsigned long line, Word *value){
     while(line >= this->nodes->size()){
         // Create new nodes until requested line is created
         this->nodes->push_back(new std::list<Word *>());
@@ -173,9 +180,13 @@ void Node::push_back(unsigned long line, Word *value){
     auto index_line = this->nodes->begin();
     std::advance(index_line, line);
     (*index_line)->push_back(value);
-}
+}*/
 
 void Node::push_back(std::list<Word *> *line){
+    size_t length = line->size();
+    if(this->longest_line == nullptr || length > this->longest_line->size()) {
+        this->longest_line = line;
+    }
     this->nodes->push_back(line);
 }
 
@@ -473,24 +484,44 @@ EbelNode::EbelNode() {
     this->nodes = new std::list<Pass *>();
 }
 
-EbelNode::EbelNode(GPEngineParams *params){
+EbelNode::EbelNode(GPEngineParams *params, IR::Node *text_in){
     // Generating randomly filled ebel node for GP engine
     this->nodes = new std::list<Pass *>();
-    // FIXME: Work with pass chances
-    auto pass = new PassWords();
-    // FIXME: Get random size_t not int
-    auto instrs = RNG::rand_int(params->pheno_min_pass_size, params->pheno_max_pass_size);
-    for(size_t i = 0; i < static_cast<size_t>(instrs); i++){
-        auto inst = Inst::rand_instruction();
-        // Make sure the program does not start with loop
-        // TODO: Add this to some checker so that when there are more constraints all are satisfied
-        while(i == 0 && inst->get_name() == Inst::LOOP::NAME){
-            delete inst;
-            inst = Inst::rand_instruction();
+
+    // Generate amount of passes, if only 1 line is in text_in, then no lines passes are needed
+    float lines_pass_chance = text_in->get_lines_count() == 1 ? 0.0f : params->init_pass_lines_chance;
+    float words_pass_chance = 1.0f - lines_pass_chance;
+    int pass_amount = RNG::rand_int(params->pheno_min_passes, params->pheno_max_passes);
+
+    // Generate passes and its instructions
+    for(int i = 0; i < pass_amount; ++i) {
+        IR::Pass *pass = nullptr;
+        if(RNG::roll(words_pass_chance)) {
+            pass = new PassWords();
         }
-        pass->push_back(inst);
+        else {
+            pass = new PassLines();
+        }
+        int instrs = 0;
+        if(pass->type == IR::PassType::WORDS_PASS) {
+            instrs = RNG::rand_int(params->min_words_pass_size, params->max_words_pass_size);
+        }
+        else {
+            instrs = RNG::rand_int(params->min_lines_pass_size, params->max_lines_pass_size);
+        }
+        for(size_t i = 0; i < static_cast<size_t>(instrs); i++){
+            auto size = pass->type == IR::PassType::WORDS_PASS ? text_in->get_max_words_count() : text_in->get_lines_count();
+            auto inst = Inst::rand_instruction(pass->type, size);
+            // Make sure the program does not start with loop
+            while(i == 0 && inst->get_name() == Inst::LOOP::NAME){
+                delete inst;
+                inst = Inst::rand_instruction(pass->type, size);
+            }
+            pass->push_back(inst);
+        }
+        this->nodes->push_back(pass);
     }
-    this->nodes->push_back(pass);
+    LOGMAX("Generated EbelNode: " << *this);
 }
 
 EbelNode::EbelNode(const EbelNode &other) {

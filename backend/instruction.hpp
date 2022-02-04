@@ -209,11 +209,12 @@ namespace Inst {
     };
 
     /**
-     * TODO: Take in chances for instructions
      * Generates a random instruction
+     * @param pass Pass for which the instruction should be
+     * @param pass_length How many objects are in the pass (to use for generating arguments)
      * @return A random instruction
      */ 
-    Instruction *rand_instruction();
+    Instruction *rand_instruction(IR::PassType pass, int pass_length);
 
     // Sort instructions alphabetically
 

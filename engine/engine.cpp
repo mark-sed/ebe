@@ -30,13 +30,14 @@ using namespace EngineUtils;
 
 GPEngineParams default_gpparams {
     .population_size = 100,
-    .pheno_min_pass_size = 1,
-    .pheno_max_pass_size = 3,
+    .min_words_pass_size = 1,
+    .max_words_pass_size = 5,
+    .min_lines_pass_size = 1,
+    .max_lines_pass_size = 3,
     .pheno_min_passes = 1,
-    .pheno_max_passes = 1,
-    .init_pass_words_chance = 1.0f,
-    .init_pass_lines_chance = 0.0f,
-    .init_pass_pages_chance = 0.0f,
+    .pheno_max_passes = 4,
+    .init_pass_words_chance = 0.8f,
+    .init_pass_lines_chance = 0.2f,
     .mutation_chance = 0.15f,
     .crossover_chance = 1.0f,    
     .crossover_insert_chance = 0.05f,
@@ -48,13 +49,14 @@ GPEngineParams default_gpparams {
 std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
     out << "GPEngineParams:" << std::endl
         << TAB1"population_size = " << param.population_size << std::endl
-        << TAB1"pheno_min_pass_size = " << param.pheno_min_pass_size << std::endl
-        << TAB1"pheno_max_pass_size = " << param.pheno_max_pass_size << std::endl
+        << TAB1"min_words_pass_size = " << param.min_words_pass_size << std::endl
+        << TAB1"max_words_pass_size = " << param.max_words_pass_size << std::endl
+        << TAB1"min_lines_pass_size = " << param.min_lines_pass_size << std::endl
+        << TAB1"max_lines_pass_size = " << param.max_lines_pass_size << std::endl
         << TAB1"pheno_min_passes = " << param.pheno_min_passes << std::endl
         << TAB1"pheno_max_passes = " << param.pheno_max_passes << std::endl
         << TAB1"init_pass_words_chance = " << param.init_pass_words_chance << std::endl
         << TAB1"init_pass_lines_chance = " << param.init_pass_lines_chance << std::endl
-        << TAB1"init_pass_pages_chance = " << param.init_pass_pages_chance << std::endl
         << TAB1"mutation_chance = " << param.mutation_chance << std::endl
         << TAB1"crossover_chance = " << param.crossover_chance << std::endl
         << TAB1"crossover_insert_chance = " << param.crossover_insert_chance << std::endl
@@ -122,8 +124,11 @@ void GPEngine::mutate(GP::Phenotype *pheno) {
     }*/
     auto old_inst = *rand_inst;
     delete old_inst;
-    // FIXME: Use exclude list or some other format when rand_instruction is properly coded
-    *rand_inst = Inst::rand_instruction();
+    auto pass_size = this->text_in->get_max_words_count();
+    if((*rand_pass)->type == IR::PassType::LINES_PASS) {
+        pass_size = this->text_in->get_lines_count();
+    }
+    *rand_inst = Inst::rand_instruction((*rand_pass)->type, pass_size);
 }
 
 void GPEngine::crossover_insert(GP::Phenotype *pheno) {

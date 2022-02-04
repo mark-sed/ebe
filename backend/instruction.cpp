@@ -80,16 +80,39 @@ inline void SWAP::format_args(std::ostream &out){
     out << this->arg1;
 }
 
-
-Instruction *Inst::rand_instruction(){
+Instruction *Inst::rand_instruction(IR::PassType pass, int pass_length){
     // TODO: Make arguments be generated better and with passed in values
     // FIXME: return instructions only for specified pass
-    switch(RNG::rand_int(0, 3)){
-        case 0: return new SWAP(RNG::rand_int(1, 5));
-        case 1: return new DEL();
-        case 2: return new LOOP();
-        case 3: return new NOP();
-        //case 4: return new CONCAT(RNG::rand_int(1, 5));
+
+    // CONCAT, DEL, LOOP, NOP, SWAP
+
+    if(pass == IR::PassType::WORDS_PASS) {
+        switch(RNG::rand_int(0, 7)){
+            // 3/8 chance
+            case 0: case 1: case 3: return new NOP();
+            // 2/8 chance
+            case 4: case 5: return new DEL();
+            // 1/8 chance
+            case 6: return new SWAP(RNG::rand_int(1, pass_length-1));
+            // 1/8 chance
+            case 7: return new LOOP();
+        }
+    }
+    else if(pass == IR::PassType::LINES_PASS) {
+        switch(RNG::rand_int(0, 8)){
+            // 3/9 chance
+            case 0: case 1: case 3: return new NOP();
+            // 2/9 chance
+            case 4: case 5: return new DEL();
+            // 1/9 chance
+            case 6: return new SWAP(RNG::rand_int(1, pass_length-1));
+            // 1/9 chance
+            case 7: 
+                // Make it a bigger chance to concat with following line
+                return new CONCAT(RNG::roll() ? 1 : RNG::rand_int(1, pass_length-1));
+            // 1/9 chance
+            case 8: return new LOOP();
+        }
     }
     return new NOP();
 }

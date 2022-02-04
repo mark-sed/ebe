@@ -60,8 +60,9 @@ namespace GP {
         /**
          * Constructor, creates new population
          * @param params GP engine parameters
+         * @param text_in Input text to get correct instruction arguments
          */ 
-        Population(GPEngineParams *params);
+        Population(GPEngineParams *params, IR::Node *text_in);
         /** Destructor */
         ~Population();
     };

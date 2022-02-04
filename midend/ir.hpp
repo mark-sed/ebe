@@ -129,6 +129,7 @@ namespace IR {
         friend std::ostream& operator<< (std::ostream &out, const IR::Node& node);
     public:
         std::list<std::list<Word *> *> *nodes;  ///< All IR nodes
+        std::list<Word *> *longest_line;        ///< Longest line in the IR
 
         /** Constructor */
         Node();
@@ -144,13 +145,13 @@ namespace IR {
         bool operator==(const Node &other) const;
         bool operator!=(const Node &other) const;
 
-        /**
-         * Pushes new word into specific line
-         * @param line Number of the line
-         * @param value Word to be pushed into the line
-         * @note push_back(line) method is prefered to this one because of the better time complexity
-         */
-        void push_back(unsigned long line, Word *value);
+        ///**
+        // * Pushes new word into specific line
+        // * @param line Number of the line
+        // * @param value Word to be pushed into the line
+        // * @note push_back(line) method is prefered to this one because of the better time complexity
+        // */
+        //void push_back(unsigned long line, Word *value);
 
         /**
          * Pushes new line into the nodes
@@ -163,6 +164,22 @@ namespace IR {
          * Converts IR to the output format for user
          */
         std::string output();
+
+        /** 
+         * Getter for lines count 
+         * @note size() is used because since C++11 complexity of size on std::list is
+         *       constant and not linear (https://en.cppreference.com/w/cpp/container/list/size)
+         * @return Amount of lines in the IR
+        */
+        size_t get_lines_count() { return this->nodes->size(); }
+
+        /** 
+         * Getter for size of the longest line 
+         * @note size() is used because since C++11 complexity of size on std::list is
+         *       constant and not linear (https://en.cppreference.com/w/cpp/container/list/size)
+         * @return Size of the longest line
+         */
+        size_t get_max_words_count() { return this->longest_line->size(); }
     };
 
     /**
@@ -331,8 +348,9 @@ namespace IR {
         /**
          * Constructor for generating random node
          * @param params Genetic engine parameters to know how many instructions to create
+         * @param text_in Input text to get correct instruction arguments
          */ 
-        EbelNode(GPEngineParams *params);
+        EbelNode(GPEngineParams *params, IR::Node *text_in);
 
         /** Destructor */
         ~EbelNode();

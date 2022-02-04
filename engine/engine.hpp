@@ -113,15 +113,16 @@ public:
  * Struct used for configuring GP engine's evolution parameters
  */
 struct GPEngineParams {
-    // TODO: Maybe have this struct nested with more structs and then read it from a json if needed? or perhaps save it to ebel
     size_t population_size;          ///< How many phenotypes should be in a population
-    size_t pheno_min_pass_size;      ///< Minimal amount of instructions in one phenotype's pass
-    size_t pheno_max_pass_size;      ///< Maximal amount of instructions in one phenotype's pass
+    size_t min_words_pass_size;      ///< Minimal amount of instructions in one phenotype's words pass
+    size_t max_words_pass_size;      ///< Maximal amount of instructions in one phenotype's words pass
+    size_t min_lines_pass_size;      ///< Minimal amount of instructions in one phenotype's lines pass
+    size_t max_lines_pass_size;      ///< Maximal amount of instructions in one phenotype's lines pass
     size_t pheno_min_passes;         ///< Minimal amount of passes in one phenotype
     size_t pheno_max_passes;         ///< Maximal amount of passes in one phenotype
     float init_pass_words_chance;    ///< Chance of generating words pass on init
     float init_pass_lines_chance;    ///< Chance of generating lines pass on init
-    float init_pass_pages_chance;    ///< Chance of generating pages pass on init
+    //float init_pass_document_chance;    ///< Chance of generating document pass on init
     float mutation_chance;           ///< Chance of mutation to happen
     float crossover_chance;          ///< Chance of crossover to happen
     float crossover_insert_chance;   ///< Chance for crossover to be insert type

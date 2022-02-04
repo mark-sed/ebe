@@ -43,11 +43,11 @@ EngineMiRANDa::~EngineMiRANDa() {
 
 }
 
-static void fill_pass(IR::Pass *pass, int size) {
+static void fill_pass(IR::Pass *pass, int size, size_t arg_max) {
     // Get random amount of instructions to generate
     for(int i = 0; i < size; ++i) {
         // Add random instructions
-        pass->push_back(Inst::rand_instruction());
+        pass->push_back(Inst::rand_instruction(pass->type, arg_max));
     }
 } 
 
@@ -58,13 +58,13 @@ IR::EbelNode *EngineMiRANDa::random_program() {
         // Generate words pass?
         if(RNG::roll()){
             auto pass = new IR::PassWords();
-            fill_pass(pass, RNG::rand_int(min_program_size, max_program_size));
+            fill_pass(pass, RNG::rand_int(min_program_size, max_program_size), this->text_in->get_max_words_count());
             rnd_prog->push_back(pass);
         }
         else {
             // Generate lines pass
             auto pass = new IR::PassLines();
-            fill_pass(pass, RNG::rand_int(min_program_size, max_program_size));
+            fill_pass(pass, RNG::rand_int(min_program_size, max_program_size), this->text_in->get_lines_count());
             rnd_prog->push_back(pass);
         }
     }
