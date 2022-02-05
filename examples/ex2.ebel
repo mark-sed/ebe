@@ -1,19 +1,18 @@
 PASS Words
-  LOOP 
+  NOP 
+  DEL 
+  NOP 
   DEL 
   DEL 
+  NOP 
   DEL 
-  LOOP 
-  DEL 
-  LOOP 
+PASS Words
   DEL 
   DEL 
-  LOOP 
+PASS Words
   DEL 
-  LOOP 
+  NOP 
+PASS Words
   DEL 
-  LOOP 
   NOP 
   NOP 
-  LOOP 
-  SWAP 1

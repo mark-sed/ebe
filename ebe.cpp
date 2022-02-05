@@ -14,6 +14,7 @@
 #include <fstream> 
 #include <vector>
 #include <iomanip>
+#include <filesystem>
 #include "ebe.hpp"
 #include "preprocessor.hpp"
 #include "scanner_text.hpp"
@@ -120,20 +121,25 @@ void compile(const char *f_in, const char *f_out) {
 
     if(best_program){
         // Print the best program
-        std::chrono::duration<float> diff = std::chrono::steady_clock::now()-Args::start_time;
+        std::chrono::duration<float> diff = std::chrono::steady_clock::now()-Args::arg_opts.start_time;
         std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
                   << std::fixed << std::setprecision(1) << diff.count() 
                   << " s)." << std::endl;
 
         // TODO: Create custom output method to have better control
-        if(Args::arg_opts.ebel_file) {
+        if(Args::arg_opts.ebel_out) {
             // Folder existence is checked in arg_parser
-            std::ofstream o_file(Args::arg_opts.ebel_file);
+            std::ofstream o_file(Args::arg_opts.ebel_out);
             o_file << *best_program;
             o_file.close(); 
         }
         else {
-            std::cout << *best_program;
+            // Use input file name with .ebel as the output
+            auto in_f = std::string(Args::arg_opts.file_in);
+            auto ebel_out = (in_f.substr(0, in_f.rfind("."))+".ebel");
+            std::ofstream o_file(ebel_out);
+            o_file << *best_program;
+            o_file.close(); 
         }
         LOG1("Best compiled program with " << (best_precision*100) << "% precision:\n" << *best_program);
         //delete best_program;
@@ -174,11 +180,17 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     // Interpret initialization
     auto interpreter = new Interpreter(ebel_ir);
 
+    bool use_stdin = false;
+    // If no input files are specified, use stdin
+    if(input_files.empty()) {
+        input_files.push_back("stdin");
+        use_stdin = true;
+    }
     for(auto input_f: input_files){
         // Preprocessing input file
         auto text_preproc = new Preprocessor();
         LOGMAX("Text preprocessor for " << input_f << " started");
-        auto text_stream = text_preproc->process(input_f);
+        auto text_stream = text_preproc->process(use_stdin ? nullptr : input_f);
         LOGMAX("Text preprocessor finished");
 
         // Syntactical check/parse of input file
@@ -193,16 +205,34 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
         LOGMAX("Interpreter finished");
         LOG1("Interpreted text IR:\n" << *text_ir);
 
-        // FIXME: Save to file/folder when specified
-        if(input_files.size() > 1) {
-            std::cout << "# Interpreted " << input_f << ": " << std::endl;
+        if(Args::arg_opts.interpret_out == nullptr) { 
+            if(input_files.size() > 1) {
+                std::cout << "# Interpreted " << input_f << ": " << std::endl;
+            }
+            std::cout << text_ir->output();
         }
-        std::cout << text_ir->output();
+        else {
+            // Folder existence is checked in arg_parser
+            auto f_out_name = std::string(Args::arg_opts.interpret_out);
+            if(input_files.size() > 1) {
+                auto file_name = std::filesystem::path(input_f);
+                // Create file name if multiple files are interpreted
+                f_out_name = std::string(Args::arg_opts.interpret_out) + "/edited-" + std::string(file_name.filename());
+            }
+            std::ofstream o_file(f_out_name);
+            o_file << text_ir->output();
+            o_file.close();
+        }
 
         delete text_ir;
         delete text_scanner;
-        delete text_stream;
+        if(!use_stdin) {
+            delete text_stream;
+        }
         delete text_preproc;
+    }
+    if(use_stdin) {
+        input_files.pop_back();
     }
 
     // Cleanup
@@ -216,18 +246,19 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
 // Main
 int main(int argc, char *argv[]){
     // Parse arguments (no need to make sure there are args because help is printed if argc is low)
-    Args::parse_args(argc-1, &argv[1]);
+    Args::arg_opts.parse(argc-1, &argv[1]);
+    Args::arg_opts.start_timer();
     // Inits
     // Set logging level
     Logger::get().set_logging_level(Args::arg_opts.logging_level);
     Logger::get().set_flags(std::ios_base::boolalpha);
     LOG1("Argument params: \n" << Args::arg_opts);
     Analytics::get().set_flags(std::ios_base::boolalpha);
-    RNG::init();
+    RNG::init(Args::arg_opts.seed);
 
     // Start compilation of example input files
     if(Args::arg_opts.interpret_mode){
-        interpret(Args::arg_opts.ebel_file, Args::arg_opts.int_files);
+        interpret(Args::arg_opts.ebel_in, Args::arg_opts.int_files);
     }
     else{
         compile(Args::arg_opts.file_in, Args::arg_opts.file_out);

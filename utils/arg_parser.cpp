@@ -7,8 +7,8 @@
  * @brief Parser for program arguments
  * 
  * For arguments which the program takes, check out HELP_TEXT variable content.
- * @note In this file there is no difference when using word "option" or "switch", both mean an option/switch passed to the
- *       program by the user.
+ * @note In this file there is no difference when using word "option" or "switch", 
+ *       both mean an an argument with '-' or '--' passed to the program by the user.
  */
 
 #include <cstdlib>
@@ -31,53 +31,33 @@ const char *HELP_TEXT =
 "Compile:   ebe -in <input_example> -out <output_exmaple> -o <output_ebel>\n"
 "Interpret: ebe -i <ebel_file> <file1> <file2> ... <fileN>\n"
 "Options:\n"
-"  -in <file> --input <file>   File from which will be read input example text.\n"
-"  -out <file> --output <file> File from which will be read output example text.\n"
-"  -o <file>                   File to which will be output program saved.\n"
-"  -i <file>                   Ebel code to be interpreted over all other argument files.\n"
-"  -expr --expressions         Expressions between \"{!\" and \"!}\" will be generated\n"
-"                              into ebel code.\n"
-"  -it --iterations <amount>   Number of iterations to be done in one evolution.\n"
-"  -e --evolutions <amount>    Number of evolution to be done.\n"
-"  -E --engine <name>          Engine to be used for compilation.\n"
-"  -f --fitness <name>         Fitness function to be used for compilation\n"
-"  -p --precision <1-100>      Minimal compilation precision, if omitted then 100.\n"
-"  -t --timeout <s>            Compilation timeout (in seconds).\n"
+"  -in --example-input <file>   File from which will be read input example text.\n"
+"  -out --example-output <file> File from which will be read output example text.\n"
+"  -eo --ebel-output <file>     File to which will be output program saved.\n"
+"  -i --interpret <file>        Ebel code to be interpreted over all other argument files.\n"
+"  -o --interpret-output <file> File or folder where will be transfomed file(s) saved.\n"
+"  -expr --expressions          Expressions between \"{!\" and \"!}\" will be generated\n"
+"                               into ebel code.\n"
+"  -it --iterations <amount>    Number of iterations to be done in one evolution.\n"
+"  -e --evolutions <amount>     Number of evolution to be done.\n"
+"  -E --engine <name>           Engine to be used for compilation.\n"
+"  -f --fitness <name>          Fitness function to be used for compilation\n"
+"  -p --precision <1-100>       Minimal compilation precision, if omitted then 100.\n"
+"  -t --timeout <s>             Compilation timeout (in seconds).\n"
 //"  -alpha-num                  Group text with numbers if they're not separated.\n"
 //"  -alpha-sym                  Group text with symbols if they're not separated.\n"
 //"  -group-delim                Multiple delimiters after each other will be parsed as one.\n"
 //"  -group-sym                  Multiple symbols after each other will be parsed as one.\n"
 //"  --float-delim <character>   Character used in your locale as a floating point dot (by default this is `.`).\n"
-"  --version                   Prints compiler's version information.\n"
-"  --help -h                   Prints this text.\n"
+"  --version                    Prints compiler's version.\n"
+"  --help -h                    Prints this text.\n"
 ;
 // TODO: Add delimiter definition option
 
 using namespace Args;
 
 /** A global variable that can be used anywhere to read user compilation options */
-ArgOpts Args::arg_opts {
-    .logging_level = 0,
-    .timeout = 0,
-    .precision = 0,
-    .interpret_mode = false,
-    .file_in = nullptr,
-    .file_out = nullptr,
-    .ebel_file = nullptr,
-    .int_files{},
-    .expr = false,
-    .alpha_num = false,
-    .alpha_sym = false,
-    .group_delim = false,
-    .group_sym = false,
-    .float_delim = '.',
-    .leading_plus = false,
-    .line_delim = '\n',
-    .engine = nullptr,
-    .evolutions = 0,
-    .iterations = 0,
-    .fit_fun = &Fitness::jaro,
-};
+ArgOpts Args::arg_opts{};
 
 namespace Args {
     std::chrono::time_point<std::chrono::steady_clock> start_time;
@@ -87,9 +67,12 @@ namespace Args {
         out << "ArgOpts:" << std::endl
             << TAB1"logging_level = " << param.logging_level << std::endl
             << TAB1"interpret_mode = " << param.interpret_mode << std::endl
+            << TAB1"execute_mode = " << param.execute_mode << std::endl
             << TAB1"file_in = " << (param.file_in ? param.file_in : "") << std::endl
             << TAB1"file_out = " << (param.file_out ? param.file_out : "") << std::endl
-            << TAB1"ebel_file = " << (param.ebel_file ? param.ebel_file : "") << std::endl;
+            << TAB1"ebel_in = " << (param.ebel_in ? param.ebel_in : "") << std::endl
+            << TAB1"interpret_out = " << (param.interpret_out ? param.interpret_out : "") << std::endl
+            << TAB1"ebel_out = " << (param.ebel_out ? param.ebel_out : "") << std::endl;
         out << TAB1"int_files = [" << std::endl;
         for(auto f: param.int_files) {
             out << TAB2 << f << ";" << std::endl;
@@ -106,7 +89,13 @@ namespace Args {
             << TAB1"iterations = " << param.iterations << std::endl
             << TAB1"timeout = " << param.timeout << std::endl
             << TAB1"precision = " << param.precision << std::endl
-            << TAB1"fitness = " << Fitness::get_name(param.fit_fun) << std::endl;
+            << TAB1"fitness = " << Fitness::get_name(param.fit_fun) << std::endl
+            << TAB1"seed = " << param.seed << std::endl
+            << TAB1"no_warn_print = " << param.no_warn_print << std::endl
+            << TAB1"no_error_print = " << param.no_error_print << std::endl
+            << TAB1"no_fatal_print = " << param.no_fatal_print << std::endl
+            << TAB1"no_info_print = " << param.no_info_print << std::endl
+            ;
         return out;
     }
 }
@@ -127,348 +116,526 @@ namespace Args {
     std::exit(0);
 }
 
-/**
- * Returns value of an option
- * Inspired by https://stackoverflow.com/a/868894
- * @param begin Start of the args array
- * @param end End of the args array
- * @param opt Option name
- * @param opt_long Longer version of the option or alternative version, if it is empty then it is ignored
- * @return the option value
- */
-static char *get_option_value(char **begin, char **end, const std::string &opt, const std::string &opt_long){
-    char **it = std::find(begin, end, opt);
-    if(it != end && ++it != end){
-        return *it;
-    }
-    if(!opt_long.empty()){
-        it = std::find(begin, end, opt_long);
-        if(it != end && ++it != end){
-            return *it;
-        }
-    }
-    return nullptr;
-}
+void Args::ArgOpts::parse(int argc, char *argv[]) {
+    bool changed_analytics = false;
+    bool changed_aout = false;
+    bool changed_v = false;
 
-/**
- * Checks if an option exists
- * @param begin Start of the args array
- * @param end End of the args array
- * @param opt Option name
- * @param opt_long Longer version of the option or alternative version, if it is empty then it is ignored
- * @return if the option is present
- */
-static bool exists_option(char **begin, char **end, const std::string &opt, const std::string &opt_long){
-    return std::find(begin, end, opt) != end || std::find(begin, end, opt_long) != end;
-}
-
-static void parse_v(char **argv, int argc, const char *opt, const char *opt2) {
-    const char *file_funcs;
-    if(!(file_funcs = get_option_value(argv, argv+argc, opt, opt2))){
-        Error::error(Error::ErrorCode::ARGUMENTS, "Missing functions for debug prints");
-    }
-    if(std::string(file_funcs) == std::string("all")){
-        Logger::get().set_log_everything(true);
-    } else {
-        // Parse file functions to add to the logger
-        Logger::get().set_enabled(Utils::split_csv(std::string(file_funcs)));
-    }
-}
-
-void Args::parse_args(int argc, char *argv[]){
-    static const std::set<std::string> NO_VAL_OPTS{"-alpha-num", "-alpha-sym", "-group-delim", "-group-sym"};
-    // TODO: Check for unknown switches and notify
-    // TODO: If -in is not specified but -out is, then read -out from stdin
     if(argc == 0){
         print_help();
     }
-    // Help
-    if(exists_option(argv, argv+argc, "-h", "--help")){
-        print_help();
-    }
-    // Version
-    if(exists_option(argv, argv+argc, "--version", "")){
-        print_version();
-    }
 
-    // Set start time
-    start_time = std::chrono::steady_clock::now();
-
-    // Check if interpreting
-    if(exists_option(argv, argv+argc, "-i", "")){
-        arg_opts.interpret_mode = true;
-        if(!(arg_opts.ebel_file = get_option_value(argv, argv+argc, "-i", ""))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for ebel program file");
-        }
-    }
-
-    // Iterations
-    if(exists_option(argv, argv+argc, "--iterations", "-it")){
-        char *in_value;
-        if(!(in_value = get_option_value(argv, argv+argc, "--iterations", "-it"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --iterations");
-        }
-        // FIXME: Value is taken as UInt not Size_t
-        try{
-            arg_opts.iterations = Cast::to<unsigned int>(in_value);
-        } catch (Exception::EbeException e){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --iterations", &e);
-        }
-    }
-
-    // Timeout
-    if(exists_option(argv, argv+argc, "--timeout", "-t")){
-        char *in_value;
-        if(!(in_value = get_option_value(argv, argv+argc, "--timeout", "-t"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --timeout");
-        }
-        try{
-            arg_opts.timeout = Cast::to<unsigned int>(in_value);
-        } catch (Exception::EbeException e){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --timeout", &e);
-        }
-    }
-
-    // Precission
-    if(exists_option(argv, argv+argc, "--precision", "-p")){
-        char *in_value;
-        if(!(in_value = get_option_value(argv, argv+argc, "--precision", "-p"))){
-            arg_opts.precision = 100;
-        }
-        else {
-            if(in_value[0] == '-') {
-                arg_opts.precision = 100;
+    for(int i = 0; i < argc; ++i) {
+        auto arg = std::string(argv[i]);
+        if(arg[0] == '-') {
+            // Dash option
+            if(arg == "-x" || arg == "--execute") {
+                this->execute_mode = true;
+            }
+            else if(arg == "-in" || arg == "--example-input") {
+                if(this->file_in != nullptr) {
+                    Error::error(Error::ErrorCode::UNIMPLEMENTED,
+                                 "Support for multiple example input files is not yet implemented");
+                }
+                if(argc > i+1) {
+                    this->file_in = argv[++i];
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --example-input (-in) option");
+                }
+            }
+            else if(arg == "-out" || arg == "--example-output") {
+                if(this->file_out != nullptr) {
+                    Error::error(Error::ErrorCode::UNIMPLEMENTED,
+                                 "Support for multiple example output files is not yet implemented");
+                }
+                if(argc > i+1) {
+                    this->file_out = argv[++i];
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --example-output (-out) option");
+                }
+            }
+            else if(arg == "-i" || arg == "--interpret") {
+                if(this->ebel_in != nullptr) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Only one --interpret (-i) file can be specified");
+                }
+                if(argc > i+1) {
+                    this->interpret_mode = true;
+                    this->ebel_in = argv[++i];
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --interpret (-i) option");
+                }
+            }
+            else if(arg == "-eo" || arg == "--ebel-output") {
+                if(this->ebel_out != nullptr) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Only one -eo (--ebel-output) file can be specified");
+                }
+                if(argc > i+1) {
+                    this->ebel_out = argv[++i];
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for -eo (--ebel-output) option");
+                }
+            }
+            else if(arg == "-o" || arg == "--interpret-output") {
+                if(this->ebel_out != nullptr) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Only one -o (--interpret-output) file can be specified");
+                }
+                if(argc > i+1) {
+                    this->interpret_out = argv[++i];
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for -o (--interpret-output) option");
+                }
+            }
+            else if(arg == "-expr" || arg == "--expressions") {
+                this->expr = true;
+            }
+            else if(arg == "-it" || arg == "--iterations") {
+                if(this->iterations > 0) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --iteraions (-it) values were specified");
+                }
+                if(argc > i+1) {
+                    try{
+                        this->iterations = Cast::to<unsigned int>(argv[++i]);
+                        if(this->iterations == 0) {
+                            Error::error(Error::ErrorCode::ARGUMENTS, 
+                               "Incorrect value for --iterations (-it). Value has to be bigger than 0");
+                        }
+                    } catch (Exception::EbeException e){
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --iterations (-it)", &e);
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --iterations (-it) option");
+                }
+            }
+            else if(arg == "-e" || arg == "--evolutions") {
+                if(this->evolutions > 0) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --evolutions (-e) values were specified");
+                }
+                if(argc > i+1) {
+                    try{
+                        this->evolutions = Cast::to<unsigned int>(argv[++i]);
+                        if(this->evolutions == 0) {
+                            Error::error(Error::ErrorCode::ARGUMENTS, 
+                               "Incorrect value for --evolutions (-e). Value has to be bigger than 0");
+                        }
+                    } catch (Exception::EbeException e){
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --evolutions (-e)", &e);
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --evolutions (-e) option");
+                }
+            }
+            else if(arg == "-E" || arg == "--engine") {
+                if(this->engine != nullptr) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --engine (-E) values were specified");
+                }
+                if(argc > i+1) {
+                    this->engine = argv[++i];
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --engine (-E) option");
+                }
+                // Check if engine name is correct in advance so that user does not wait till parsing is done
+                if(EngineUtils::get_engine_id(this->engine) == EngineUtils::EngineID::UNKNOWN){
+                    Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect engine name");
+                }
+            }
+            else if(arg == "-f" || arg == "--fitness") {
+                if(this->fit_fun != nullptr) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --fitness (-f) values were specified");
+                }
+                if(argc > i+1) {
+                    // Check if engine name is correct in advance so that user does not wait until parsing is done
+                    try{
+                        auto f_name = Utils::to_lower(std::string(argv[++i]));
+                        this->fit_fun = Fitness::get_function(f_name);
+                    } catch(Exception::EbeUnknownFunction e) {
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect fitness function name", &e);
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --fitness (-f) option");
+                }
+            }
+            else if(arg == "-p" || arg == "--precision") {
+                if(this->evolutions > 0) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --precision (-p) values were specified");
+                }
+                if(argc > i+1) {
+                    try{
+                        this->precision = Cast::to<unsigned int>(argv[++i]);
+                        if(this->precision < 1 || this->precision > 100) {
+                            Error::error(Error::ErrorCode::ARGUMENTS, 
+                               "Incorrect value for --precision (-p). Value has to be from 1 to 100");
+                        }
+                    } catch (Exception::EbeException e){
+                        this->precision = 100;
+                        --i;
+                    }
+                }
+                else {
+                    this->precision = 100;
+                }
+            }
+            else if(arg == "-t" || arg == "--timeout") {
+                if(this->timeout > 0) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --timeout (-t) values were specified");
+                }
+                if(argc > i+1) {
+                    try{
+                        this->timeout = Cast::to<unsigned int>(argv[++i]);
+                        if(this->timeout == 0) {
+                            Error::error(Error::ErrorCode::ARGUMENTS, 
+                               "Incorrect value for --timeout (-t). Value has to be bigger than 0");
+                        }
+                    } catch (Exception::EbeException e){
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --timeout (-t)", &e);
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --timeout (-t) option");
+                }
+            }
+            else if(arg == "-a" || arg == "--analytics") {
+                if(changed_analytics) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --analytics (-a) values were specified");
+                }
+                if(argc > i+1) {
+                    const char *unit_names = argv[++i];
+                    if(std::string(unit_names) == std::string("all")){
+                        Analytics::get().set_log_everything(true);
+                    } else {
+                        // Parse file functions to add to the logger
+                        Analytics::get().set_enabled(Utils::split_csv(std::string(unit_names)));
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --analytics (-a) option");
+                }
+                changed_analytics = true;
+            }
+            else if(arg == "-aout" || arg == "--analytics-output") {
+                if(changed_aout) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --analytics-output (-aout) values were specified");
+                }
+                if(argc > i+1) {
+                    const char *path = argv[++i];
+                    // Check existence of the folder
+                    auto o_path = std::filesystem::path(path);
+                    if(!o_path.empty() && !std::filesystem::exists(o_path)){
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Folder for analytics output does not exist");
+                    }
+                    // Remove possible trailing slash
+                    // TODO: Remove \, but only on Windows (?)
+                    if(o_path.string().back() == '/') {
+                        o_path.string().pop_back();
+                    }
+                    Analytics::get().set_folder_path(path);
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --analytics-output (-aout) option");
+                }
+                changed_aout = true;
+            }
+            else if(arg == "-v" || arg == "-v1" 
+                   || arg == "-vv" || arg == "-v2"
+                   || arg == "-vvv" || arg == "-v3"
+                   || arg == "-vvvv" || arg == "-v4"
+                   || arg == "-vvvvv" || arg == "-v5") {
+                if(changed_v) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple -v values were specified");
+                }
+                if(arg.size() == 2) {
+                    // -v
+                    this->logging_level = 1;
+                }
+                else if(arg.size() == 3) {
+                    // -vN or -vv
+                    if(arg[2] == 'v') {
+                        this->logging_level = 2;
+                    }
+                    else {
+                        // No need to check for correct value, since it was pattern matched
+                        this->logging_level = static_cast<unsigned int>(arg[2] - '0');
+                    }
+                } else {
+                    this->logging_level = arg.size()-1;
+                }
+                if(argc > i+1) {
+                    const char *file_funcs = argv[++i];
+                    if(std::string(file_funcs) == std::string("all")){
+                        Logger::get().set_log_everything(true);
+                    } else {
+                        // Parse file functions to add to the logger
+                        Logger::get().set_enabled(Utils::split_csv(std::string(file_funcs)));
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for -v option");
+                }
+                changed_v = true;
+            }
+            else if(arg == "--seed") {
+                if(this->evolutions > 0) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --seed values were specified");
+                }
+                if(argc > i+1) {
+                    try{
+                        this->seed = Cast::to<unsigned int>(argv[++i]);
+                        if(this->seed == 0) {
+                            Error::error(Error::ErrorCode::ARGUMENTS, 
+                               "Incorrect value for --seed. Value has to be bigger than 0");
+                        }
+                    } catch (Exception::EbeException e){
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --seed", &e);
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --seed option");
+                }
+            }
+            else if(arg == "--sym-table-size") {
+                if(this->sym_table_size > 0) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --sym-table-size values were specified");
+                }
+                if(argc > i+1) {
+                    try{
+                        this->sym_table_size = Cast::to<unsigned int>(argv[++i]);
+                        if(this->sym_table_size == 0) {
+                            Error::error(Error::ErrorCode::ARGUMENTS, 
+                               "Incorrect value for --sym-table-size. Value has to be bigger than 0");
+                        }
+                    } catch (Exception::EbeException e){
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --sym-table-size", &e);
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --sym-table-size option");
+                }
+            }
+            else if(arg == "--no-warn-print") {
+                this->no_warn_print = true;
+            }
+            else if(arg == "--no-error-print") {
+                this->no_error_print = true;
+            }
+            else if(arg == "--no-info-print") {
+                this->no_info_print = true;
+            }
+            else if(arg == "--no-fatal-print") {
+                this->no_fatal_print = true;
+            }
+            else if(arg == "--version") {
+                if(argc > 1) {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Option --version cannot be used with other arguments");
+                } 
+                else {
+                    print_version();
+                }
+            }
+            else if(arg == "-h" || arg == "--help") {
+                if(argc > 1) {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Option --help (-h) cannot be used with other arguments");
+                } 
+                else {
+                    print_help();
+                }
             }
             else {
-                try{
-                    arg_opts.precision = Cast::to<unsigned int>(in_value);
-                } catch (Exception::EbeException e){
-                    Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --precision", &e);
-                }
+                Error::error(Error::ErrorCode::ARGUMENTS, ("Unkwnown option "+arg).c_str());
             }
         }
-        if(arg_opts.precision > 100) {
-            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --precision");
+        else {
+            // Interpret input files
+            this->int_files.push_back(argv[i]);
+            // Check if file exists, to not get error after interpretation
+            auto path = std::filesystem::path(arg);
+            if(!std::filesystem::exists(path)){
+                Error::error(Error::ErrorCode::FILE_ACCESS, ("Input file "+arg+" does not exit").c_str());
+            }
         }
     }
 
-    // Evolutions
-    if(exists_option(argv, argv+argc, "--evolutions", "-e")){
-        char *in_value;
-        if(!(in_value = get_option_value(argv, argv+argc, "--evolutions", "-e"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --evolutions");
+    // Open analytics streams
+    if(changed_analytics) {
+        Analytics::get().open_streams();
+    }
+
+    // Check constraints
+    if(this->interpret_mode) {
+        // Only interpret mode
+        if(this->execute_mode) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --execute (-x) and --interpret (-i) are not compatible");
         }
-        // FIXME: Value is taken as UInt not Size_t
-        try{
-            arg_opts.evolutions = Cast::to<unsigned int>(in_value);
-        } catch (Exception::EbeException e){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --evolutions", &e);
+        if(this->file_in != nullptr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --example-input (-in) and --interpret (-i) are not compatible. Perhaps you meant to add -x");
+        }
+        if(this->file_out != nullptr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --example-output (-out) and --interpret (-i) are not compatible. Perhaps you meant to add -x");
+        }
+        if(this->expr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --expressions (-expr) is for compilation");
+        }
+        if(this->iterations > 0) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --iterations (-it) is for compilation");
+        }
+        if(this->evolutions > 0) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --evolutions (-e) is for compilation");
+        }
+        if(this->engine > 0) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --engine (-E) is for compilation");
+        }
+        if(this->fit_fun != nullptr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --fitness (-f) is for compilation");
+        }
+        if(this->precision > 0) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --precision (-p) is for compilation");
+        }
+        if(this->timeout > 0) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --timeout (-t) is for compilation");
+        }
+        if(this->seed > 0) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --seed is for compilation");
+        }
+    } 
+    else if(!this->interpret_mode && !this->execute_mode) {
+        // Only compile mode
+        if(this->ebel_out != nullptr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --ebel-output (-o) cannot be used in compilation");
+        }
+        if(!this->int_files.empty()) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Input files can be passed in for interpretation only (-i or -x)");
+        }
+        if(this->sym_table_size > 0) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Option --sym-table-size is for interpretation");
         }
     }
 
-    // Engine
-    if(exists_option(argv, argv+argc, "--engine", "-E")){
-        if(!(arg_opts.engine = get_option_value(argv, argv+argc, "--engine", "-E"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --engine");
-        }
-        // Check if engine name is correct in advance so that user does not wait till parsing is done
-        if(EngineUtils::get_engine_id(Args::arg_opts.engine) == EngineUtils::EngineID::UNKNOWN){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect engine name");
-        }
+    if(this->evolutions > 0 && this->precision > 0) {
+        Error::error(Error::ErrorCode::ARGUMENTS, 
+                     "Option --precision (-p) and --evolutions (-e) are not compatible");
     }
 
-    // Fitness function
-    if(exists_option(argv, argv+argc, "--fitness", "-f")){
-        const char *value;
-        if(!(value = get_option_value(argv, argv+argc, "--fitness", "-f"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --fitness");
+    // Check for missing values, fill implicit ones
+    if(!this->interpret_mode || this->execute_mode) {
+        // Compilation mode
+        if(this->file_in == nullptr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                     "Missing input example file (-in)");
         }
-        // Check if engine name is correct in advance so that user does not wait till parsing is done
-        try{
-            // TODO: convert to lowercase
-            arg_opts.fit_fun = Fitness::get_function(std::string(value));
-        } catch(Exception::EbeUnknownFunction e) {
-            Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect fitness function name", &e);
+        if(this->file_out == nullptr) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                     "Missing output example file (-out)");
         }
-    }
-
-    // Input file
-    if(exists_option(argv, argv+argc, "-in", "--input")){
-        if(arg_opts.interpret_mode){
-            Error::error(Error::ErrorCode::ARGUMENTS, "-in/--input option is not supported in interpret mode");
-        }
-        if(!(arg_opts.file_in = get_option_value(argv, argv+argc, "-in", "--input"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for example input file");
+        if(this->ebel_out != nullptr) {
+            auto parent_path = std::filesystem::path(this->ebel_out).parent_path();
+            if(!parent_path.empty() && !std::filesystem::exists(parent_path)){
+                Error::error(Error::ErrorCode::FILE_ACCESS, "Ebel output parent folder does not exit");
+            }
         }
     }
-    // Output file
-    if(exists_option(argv, argv+argc, "-out", "--output")){
-        if(arg_opts.interpret_mode){
-            Error::error(Error::ErrorCode::ARGUMENTS, "-out/--output option is not supported in interpret mode");
-        }
-        if(!(arg_opts.file_out = get_option_value(argv, argv+argc, "-out", "--output"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for example output file");
-        }
-    }
-    // Output ebel file
-    if(exists_option(argv, argv+argc, "-o", "")){
-        // TODO: Fill default file (out.ebel?) when not specified
-        // TODO: Have option to use stdout
-        if(!(arg_opts.ebel_file = get_option_value(argv, argv+argc, "-o", ""))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for output program file");
-        }
-        // Because opening of the file will happen after many iterations and evolution
-        // existence of its path is checked here
-        auto o_path = std::filesystem::path(arg_opts.ebel_file);
-        if(!o_path.remove_filename().empty() && !std::filesystem::exists(o_path.remove_filename())){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Path to passed in output file (-o) does not exist");
-        }
-    }
-    // Parsing options
-    if(exists_option(argv, argv+argc, "-expr", "--expressions")){
-        arg_opts.expr = true;
-    }
-    if(exists_option(argv, argv+argc, "-alpha-num", "")){
-        arg_opts.alpha_num = true;
-    }
-    if(exists_option(argv, argv+argc, "-alpha-sym", "")){
-        arg_opts.alpha_sym = true;
-    }
-    if(exists_option(argv, argv+argc, "-group-delim", "")){
-        arg_opts.group_delim = true;
-    }
-    if(exists_option(argv, argv+argc, "-group-sym", "")){
-        arg_opts.group_sym = true;
-    }
-    if(exists_option(argv, argv+argc, "--float-delim", "")){
-        if(!(arg_opts.float_delim = get_option_value(argv, argv+argc, "--float-delim", "")[0])){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --float-delim");
-        }
-        Error::warning("--float-delim is not supported in this version");
-    }
-    if(exists_option(argv, argv+argc, "--line-delim", "")){
-        if(!(arg_opts.line_delim = get_option_value(argv, argv+argc, "--line-delim", "")[0])){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for --line-delim");
-        }
-        Error::warning("--line-delim is not supported in this version");
-    }
-
-    // Verbosity logging level
-    if(exists_option(argv, argv+argc, "-v", "-v1")){
-        arg_opts.logging_level = 1;
-        parse_v(argv, argc, "-v", "-v1");
-    }
-    else if(exists_option(argv, argv+argc, "-vv", "-v2")){
-        arg_opts.logging_level = 2;
-        parse_v(argv, argc, "-vv", "-v2");
-    }
-    else if(exists_option(argv, argv+argc, "-vvv", "-v3")){
-        arg_opts.logging_level = 3;
-        parse_v(argv, argc, "-vvv", "-v3");
-    }
-    else if(exists_option(argv, argv+argc, "-vvvv", "-v4")){
-        arg_opts.logging_level = 4;
-        parse_v(argv, argc, "-vvvv", "-v4");
-    }
-    else if(exists_option(argv, argv+argc, "-vvvvv", "-v5")){
-        arg_opts.logging_level = 5;
-        parse_v(argv, argc, "-vvvvv", "-v5");
-    }
-
-    // Analytics outout folder
-    // Note: This has to be done before logs file (to set their correct output path)
-    if(exists_option(argv, argv+argc, "-aout", "--analytics-out")) {
-        const char *path;
-        if(!(path = get_option_value(argv, argv+argc, "-aout", "--analytics-out"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing analytics folder path");
-        }
-        // Check existence of the folder
-        auto o_path = std::filesystem::path(path);
-        if(!o_path.empty() && !std::filesystem::exists(o_path)){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Folder for analytics output does not exist");
-        }
-        // Remove possible trailing slash
-        // TODO: Remove \, but only on Windows
-        if(o_path.string().back() == '/') {
-            o_path.string().pop_back();
-        }
-        Analytics::get().set_folder_path(path);
-    }
-
-    // Analytics logs
-    if(exists_option(argv, argv+argc, "-a", "--analytics")) {
-        const char *unit_names;
-        if(!(unit_names = get_option_value(argv, argv+argc, "-a", "--analytics"))){
-            Error::error(Error::ErrorCode::ARGUMENTS, "Missing unit names for analytics prints");
-        }
-        if(std::string(unit_names) == std::string("all")){
-            Analytics::get().set_log_everything(true);
-        } else {
-            // Parse file functions to add to the logger
-            Analytics::get().set_enabled(Utils::split_csv(std::string(unit_names)));
-        }
-    }
-
-    // Check if needed switches are set
-    if(!arg_opts.interpret_mode){
-        if(!arg_opts.file_in){
-            bool was_switch = false;
-            for(int i = 0; i < argc; i++){
-                if(argv[i][0] == '-'){
-                    if(NO_VAL_OPTS.find(std::string(argv[i])) == NO_VAL_OPTS.end()){
-                        // Check for options without values
-                        was_switch = true;
-                    }
-                    else{
-                        was_switch = false;
+    if(this->interpret_mode || this->execute_mode){
+        // Interpretation mode
+        if(this->interpret_out != nullptr) {
+            if(this->int_files.size() > 1) {
+                // Folder expected, create the folder
+                auto o_path = std::filesystem::path(interpret_out);
+                if(!std::filesystem::exists(o_path)){
+                    try {
+                        std::filesystem::create_directory(o_path);
+                    } catch(std::exception e) {
+                        Error::error(Error::ErrorCode::FILE_ACCESS, 
+                                     "Cannot create folder (nested folder creation is not supported or insufficient permissions)");
                     }
                 }
-                else if(!was_switch){
-                    arg_opts.file_in = argv[i];
-                }
-                else{
-                    was_switch = false;
+                // Remove possible trailing slash
+                // TODO: Remove \, but only on Windows (?)
+                if(o_path.string().back() == '/') {
+                    o_path.string().pop_back();
                 }
             }
-            if(!arg_opts.file_in && !arg_opts.file_out){
-                // If none of the files was passed in, print error
-                Error::error(Error::ErrorCode::ARGUMENTS, "Missing value for example input file");
+            else {
+                // File expected, check if base path exists
+                auto path = std::filesystem::path(interpret_out);
+                if(std::filesystem::exists(path)) {
+                    // If exists check if file
+                    if(std::filesystem::is_directory(path)) {
+                        Error::error(Error::ErrorCode::FILE_ACCESS, "Output is a directory not a file");
+                    }
+                }
+                auto parent_path = path.parent_path();
+                if(!parent_path.empty() && !std::filesystem::exists(parent_path)){
+                    Error::error(Error::ErrorCode::FILE_ACCESS, "Output parent folder does not exit");
+                }
             }
         }
     }
-    else{
-        // In interpret mode every non option argument is taken as an input file for interpreting
-        bool was_switch = false;
-        for(int i = 0; i < argc; i++){
-            if(argv[i][0] == '-'){
-                if(NO_VAL_OPTS.find(std::string(argv[i])) == NO_VAL_OPTS.end()){
-                    // Check for options without values
-                    was_switch = true;
-                }
-                else{
-                    was_switch = false;
-                }
-            }
-            else if(!was_switch){
-                arg_opts.int_files.push_back(argv[i]);
-            }
-            else{
-                was_switch = false;
-            }
-        }
-        // If there is no file, read stdin
-        if(arg_opts.int_files.empty()){
-            Error::error(Error::ErrorCode::UNIMPLEMENTED, "Reading input from stdin is not yet implemented, please use a file");
+    if(this->execute_mode) {
+        if(this->precision == 0) {
+            this->precision = 100;
         }
     }
 
-    // Check for non-compatible options
-    if(arg_opts.interpret_mode) {
-        if(arg_opts.expr) {
-            Error::error(Error::ErrorCode::ARGUMENTS, "Expressions (-expr) cannot be used in iterpretation mode");
-        }
-        if(arg_opts.timeout > 0) { 
-            Error::error(Error::ErrorCode::ARGUMENTS, "Timeout (-t) cannot be used in iterpretation mode");
-        }
+    // Set implicit values
+    if(this->fit_fun == nullptr) {
+        this->fit_fun = &Fitness::jaro;
     }
+    if(this->sym_table_size == 0) {
+        this->sym_table_size = 64;
+    }
+}
+
+void Args::ArgOpts::start_timer() {
+    this->start_time = std::chrono::steady_clock::now();
 }

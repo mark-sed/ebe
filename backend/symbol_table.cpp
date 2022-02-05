@@ -12,6 +12,7 @@
 #include "symbol_table.hpp"
 #include "exceptions.hpp"
 #include "ir.hpp"
+#include "arg_parser.hpp"
 
 using namespace Vars;
 
@@ -31,12 +32,12 @@ std::string Variable::get_text() {
 }
 
 
-SymbolTable::SymbolTable() : Compiler("Symbol table") {
-    this->table = new Variable *[SIZE]();
+SymbolTable::SymbolTable() : Compiler("Symbol table"), size{Args::arg_opts.sym_table_size} {
+    this->table = new Variable *[size]();
 }
 
-SymbolTable::SymbolTable(IR::Word *var0) : Compiler("Symbol table") {
-    this->table = new Variable *[SIZE]();
+SymbolTable::SymbolTable(IR::Word *var0) : Compiler("Symbol table"), size{Args::arg_opts.sym_table_size} {
+    this->table = new Variable *[size]();
     if(var0->type == IR::Type::NUMBER) {
         table[0] = new NumberVar(var0->to_int<IR::Type::NUMBER>());
     }
@@ -54,8 +55,9 @@ SymbolTable::~SymbolTable() {
 }
 
 bool SymbolTable::assert_set(int index){
-    if(index >= SIZE){
-        throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)+"is out of range. Maximum allowed variable is $"+std::to_string(SIZE));
+    if(index >= size){
+        throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)
+                +"is out of range. Maximum allowed variable is $"+std::to_string(size));
         return false;
     }
     // Remove previous possible value
@@ -66,8 +68,9 @@ bool SymbolTable::assert_set(int index){
 }
 
 bool SymbolTable::assert_get(int index){
-    if(index >= SIZE){
-        throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)+"is out of range. Maximum allowed variable is $"+std::to_string(SIZE));
+    if(index >= size){
+        throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)
+                +"is out of range. Maximum allowed variable is $"+std::to_string(size));
         return false;
     }
     if(table[index] == nullptr){
@@ -162,8 +165,9 @@ void SymbolTable::copy(int dst, int src) {
 }
 
 std::string SymbolTable::to_string(int index) {
-    if(index >= SIZE) { 
-        throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)+"is out of range. Maximum allowed variable is $"+std::to_string(SIZE));
+    if(index >= size) { 
+        throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)
+            +"is out of range. Maximum allowed variable is $"+std::to_string(size));
     }
     auto var = table[index];
     if(var->type == IR::Type::NUMBER) {

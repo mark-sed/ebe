@@ -66,7 +66,7 @@ namespace Utils {
      */
     inline bool is_timeout() {
         return Args::arg_opts.timeout > 0 
-               && (std::chrono::steady_clock::now() - Args::start_time >= std::chrono::seconds(Args::arg_opts.timeout));
+               && (std::chrono::steady_clock::now() - Args::arg_opts.start_time >= std::chrono::seconds(Args::arg_opts.timeout));
     }
 
     /**

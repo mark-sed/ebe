@@ -75,6 +75,9 @@ public:
      * Getter for flags
      */ 
     std::ios_base::fmtflags get_flags() { return flags; }
+
+    /** Getter for log_everything */
+    bool is_log_everything() { return this->log_everything; }
 };
 
 
@@ -116,7 +119,7 @@ public:
 class Analytics : public BaseLogger {
 private:
     std::set<std::string> enabled;  ///< Set of enabled units
-    const char *folder_path = "";   ///< Output folder path
+    const char *folder_path = ".";   ///< Output folder path
     std::map<std::string, std::ostream *> stream_map;  ///< Map holding output streams based on their unit name
 public:
     /**
@@ -149,6 +152,7 @@ public:
     /**
      * Sets set of analytics units to be logged to output file
      * @param enabled Set of analytics units names
+     * @note open_streams have to be called to generate output files
      */
     void set_enabled(std::set<std::string> enabled);
 
@@ -157,6 +161,16 @@ public:
      * @param folder_path Path to the output folder
      */
     void set_folder_path(const char *folder_path) { this->folder_path = folder_path; }
+
+    /** Getter for enabled list */
+    std::set<std::string> get_enabled() { return this->enabled; }
+
+    /**
+     * @brief Opens output
+     * Opens output streams at correct locations
+     * @note This should be called after setting enabled list
+     */
+    void open_streams();
 };
 
 /// Tabs for logging

@@ -93,6 +93,9 @@ Analytics &Analytics::get() {
 
 void Analytics::set_enabled(std::set<std::string> enabled) { 
     this->enabled = enabled; 
+}
+
+void Analytics::open_streams() {
     auto t = std::time(nullptr);
     auto tm = *std::localtime(&t);
     std::stringstream timess;

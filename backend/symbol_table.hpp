@@ -127,7 +127,7 @@ namespace Vars {
      */ 
     class SymbolTable : public Compiler {
     private:
-        static constexpr int SIZE = 64;  ///< Size of symbol table
+        int size;                        ///< Size of symbol table
         Variable **table;                ///< Symbol table itself
     
         /**
