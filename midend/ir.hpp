@@ -145,13 +145,13 @@ namespace IR {
         bool operator==(const Node &other) const;
         bool operator!=(const Node &other) const;
 
-        ///**
-        // * Pushes new word into specific line
-        // * @param line Number of the line
-        // * @param value Word to be pushed into the line
-        // * @note push_back(line) method is prefered to this one because of the better time complexity
-        // */
-        //void push_back(unsigned long line, Word *value);
+        /**
+         * Pushes new word into specific line
+         * @param line Number of the line
+         * @param value Word to be pushed into the line
+         * @note push_back(line) method is prefered to this one because of the better time complexity
+         */
+        void push_back(unsigned long line, Word *value);
 
         /**
          * Pushes new line into the nodes

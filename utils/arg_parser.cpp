@@ -407,7 +407,7 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
                 changed_v = true;
             }
             else if(arg == "--seed") {
-                if(this->evolutions > 0) {
+                if(this->seed > 0) {
                     Error::error(Error::ErrorCode::ARGUMENTS,
                                  "Multiple --seed values were specified");
                 }
@@ -548,9 +548,9 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
     } 
     else if(!this->interpret_mode && !this->execute_mode) {
         // Only compile mode
-        if(this->ebel_out != nullptr) {
+        if(this->interpret_out != nullptr) {
             Error::error(Error::ErrorCode::ARGUMENTS, 
-                         "Option --ebel-output (-o) cannot be used in compilation");
+                         "Option --interpret-output (-o) cannot be used in compilation");
         }
         if(!this->int_files.empty()) {
             Error::error(Error::ErrorCode::ARGUMENTS, 

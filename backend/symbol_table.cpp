@@ -57,7 +57,7 @@ SymbolTable::~SymbolTable() {
 bool SymbolTable::assert_set(int index){
     if(index >= size){
         throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)
-                +"is out of range. Maximum allowed variable is $"+std::to_string(size));
+                +" is out of range. Maximum allowed variable is $"+std::to_string(size-1));
         return false;
     }
     // Remove previous possible value
@@ -70,7 +70,7 @@ bool SymbolTable::assert_set(int index){
 bool SymbolTable::assert_get(int index){
     if(index >= size){
         throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)
-                +"is out of range. Maximum allowed variable is $"+std::to_string(size));
+                +" is out of range. Maximum allowed variable is $"+std::to_string(size-1));
         return false;
     }
     if(table[index] == nullptr){
@@ -167,7 +167,7 @@ void SymbolTable::copy(int dst, int src) {
 std::string SymbolTable::to_string(int index) {
     if(index >= size) { 
         throw Exception::EbeSymTableOutOfRangeException("Variable $"+std::to_string(index)
-            +"is out of range. Maximum allowed variable is $"+std::to_string(size));
+            +" is out of range. Maximum allowed variable is $"+std::to_string(size-1));
     }
     auto var = table[index];
     if(var->type == IR::Type::NUMBER) {

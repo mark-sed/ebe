@@ -172,7 +172,7 @@ bool Node::operator!=(const Node &other) const {
     return !(*this == other);
 }
 
-/*void Node::push_back(unsigned long line, Word *value){
+void Node::push_back(unsigned long line, Word *value){
     while(line >= this->nodes->size()){
         // Create new nodes until requested line is created
         this->nodes->push_back(new std::list<Word *>());
@@ -180,7 +180,10 @@ bool Node::operator!=(const Node &other) const {
     auto index_line = this->nodes->begin();
     std::advance(index_line, line);
     (*index_line)->push_back(value);
-}*/
+    if(this->longest_line == nullptr || (*index_line)->size() > this->longest_line->size()) {
+        this->longest_line = (*index_line);
+    }
+}
 
 void Node::push_back(std::list<Word *> *line){
     size_t length = line->size();

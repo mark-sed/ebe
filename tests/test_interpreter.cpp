@@ -27,7 +27,7 @@ TEST(Interpreter, SimpleWordPassCode) {
     // Line 2
     text->push_back(1, new IR::Word("baz", IR::Type::TEXT));
     text->push_back(1, new IR::Word(",", IR::Type::DELIMITER));
-    text->push_back(0, new IR::Word("3.14159", IR::Type::FLOAT));
+    text->push_back(1, new IR::Word("3.14159", IR::Type::FLOAT));
 
     // Copy the text
     auto text_copy = new IR::Node(*text);

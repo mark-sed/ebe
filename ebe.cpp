@@ -91,21 +91,21 @@ void compile(const char *f_in, const char *f_out) {
         auto program = engine->generate(&precision);
         if(precision >= 1.0f){
             // Found perfect program, end now
-            std::cout << "Perfectly fitting program found." << std::endl;
+            std::cout << "Perfectly fitting program found. ";
             best_program = program;
             best_precision = precision;
             LOG3("Perfectly fitting program found, compilation ended");
             break;
         }
         else if(Utils::is_precise(precision)) {
-            std::cout << "Minimum precision program found." << std::endl;
+            std::cout << "Minimum precision program found. ";
             best_program = program;
             best_precision = precision;
             LOG3("Minimum precision program found, compilation ended");
             break;
         }
         else if(Utils::is_timeout()) {
-            std::cout << "Timeout." << std::endl;
+            std::cout << "Timeout. ";
             best_program = program;
             best_precision = precision;
             LOG3("Timeout, compilation ended");
@@ -122,25 +122,27 @@ void compile(const char *f_in, const char *f_out) {
     if(best_program){
         // Print the best program
         std::chrono::duration<float> diff = std::chrono::steady_clock::now()-Args::arg_opts.start_time;
-        std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
-                  << std::fixed << std::setprecision(1) << diff.count() 
-                  << " s)." << std::endl;
 
-        // TODO: Create custom output method to have better control
+        std::string ebel_out;
         if(Args::arg_opts.ebel_out) {
-            // Folder existence is checked in arg_parser
-            std::ofstream o_file(Args::arg_opts.ebel_out);
-            o_file << *best_program;
-            o_file.close(); 
+            ebel_out = std::string(Args::arg_opts.ebel_out);
         }
         else {
             // Use input file name with .ebel as the output
             auto in_f = std::string(Args::arg_opts.file_in);
-            auto ebel_out = (in_f.substr(0, in_f.rfind("."))+".ebel");
-            std::ofstream o_file(ebel_out);
-            o_file << *best_program;
-            o_file.close(); 
+            ebel_out = (in_f.substr(0, in_f.rfind("."))+".ebel");
         }
+        
+        // Folder existence is checked in arg_parser
+        std::ofstream o_file(ebel_out);
+        o_file << *best_program;
+        o_file.close(); 
+
+        std::cout << "Ebel saved to '" << ebel_out << "'." << std::endl;
+
+        std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
+                  << std::fixed << std::setprecision(1) << diff.count() 
+                  << " s)." << std::endl;
         LOG1("Best compiled program with " << (best_precision*100) << "% precision:\n" << *best_program);
         //delete best_program;
     }

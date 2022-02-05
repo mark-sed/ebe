@@ -1,0 +1,15 @@
+PASS Words
+  NOP 
+  NOP 
+  NOP 
+  NOP 
+  NOP 
+  NOP 
+  PASS number Expression
+    MUL $1, $0, $0
+    ADD $2, 64, $1
+    ADD $0, $2, 8
+    RETURN  NOP 
+PASS Lines
+  NOP 
+  SWAP 1
