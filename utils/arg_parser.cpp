@@ -485,11 +485,6 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
         else {
             // Interpret input files
             this->int_files.push_back(argv[i]);
-            // Check if file exists, to not get error after interpretation
-            auto path = std::filesystem::path(arg);
-            if(!std::filesystem::exists(path)){
-                Error::error(Error::ErrorCode::FILE_ACCESS, ("Input file "+arg+" does not exit").c_str());
-            }
         }
     }
 
@@ -627,9 +622,17 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
         }
     }
 
+    // Check if interpret input file exist, to not get error after interpretation
+    for(auto f: this->int_files) {
+        auto path = std::filesystem::path(f);
+        if(!std::filesystem::exists(path)){
+            Error::error(Error::ErrorCode::FILE_ACCESS, ("Input file "+std::string(f)+" does not exit").c_str());
+        }
+    }
+
     // Set implicit values
     if(this->fit_fun == nullptr) {
-        this->fit_fun = &Fitness::jaro;
+        this->fit_fun = &Fitness::one2one;
     }
     if(this->sym_table_size == 0) {
         this->sym_table_size = 64;

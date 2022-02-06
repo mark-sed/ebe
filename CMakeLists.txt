@@ -56,6 +56,7 @@ set(TEST_SRCS
     tests/test_utils.cpp
     tests/test_interpreter.cpp
     tests/test_scanner.cpp
+    tests/test_argparse.cpp
 )
 
 # Enable gtest
