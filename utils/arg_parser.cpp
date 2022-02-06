@@ -525,7 +525,7 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
             Error::error(Error::ErrorCode::ARGUMENTS, 
                          "Option --evolutions (-e) is for compilation");
         }
-        if(this->engine > 0) {
+        if(this->engine != nullptr) {
             Error::error(Error::ErrorCode::ARGUMENTS, 
                          "Option --engine (-E) is for compilation");
         }
