@@ -54,7 +54,6 @@ namespace Args {
         int sym_table_size;    ///< Symbol table size
         bool no_warn_print;    ///< If warning should be surpressed
         bool no_error_print;   ///< If non critical errors should be surpressed
-        bool no_fatal_print;   ///< If all errors should be surpressed
         bool no_info_print;    ///< If info messages should be surpressed
 
         /** Time when Ebe was started */
@@ -91,7 +90,6 @@ namespace Args {
                     sym_table_size{0},
                     no_warn_print{false},
                     no_error_print{false},
-                    no_fatal_print{false},
                     no_info_print{false} {
         }
 

@@ -85,6 +85,10 @@ Instruction *Inst::rand_instruction(IR::PassType pass, int pass_length){
     // FIXME: return instructions only for specified pass
 
     // CONCAT, DEL, LOOP, NOP, SWAP
+    if(pass_length < 2) {
+        // It is used in rand_int so it has to be at least 2 to get 1
+        pass_length = 2;
+    }
 
     if(pass == IR::PassType::WORDS_PASS) {
         switch(RNG::rand_int(0, 7)){

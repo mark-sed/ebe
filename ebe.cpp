@@ -91,21 +91,27 @@ void compile(const char *f_in, const char *f_out) {
         auto program = engine->generate(&precision);
         if(precision >= 1.0f){
             // Found perfect program, end now
-            std::cout << "Perfectly fitting program found. ";
+            if(!Args::arg_opts.no_info_print) {
+                std::cout << "Perfectly fitting program found. ";
+            }
             best_program = program;
             best_precision = precision;
             LOG3("Perfectly fitting program found, compilation ended");
             break;
         }
         else if(Utils::is_precise(precision)) {
-            std::cout << "Minimum precision program found. ";
+            if(!Args::arg_opts.no_info_print) {
+                std::cout << "Minimum precision program found. ";
+            }
             best_program = program;
             best_precision = precision;
             LOG3("Minimum precision program found, compilation ended");
             break;
         }
         else if(Utils::is_timeout()) {
-            std::cout << "Timeout. ";
+            if(!Args::arg_opts.no_info_print) {
+                std::cout << "Timeout. ";
+            }
             best_program = program;
             best_precision = precision;
             LOG3("Timeout, compilation ended");
@@ -138,11 +144,13 @@ void compile(const char *f_in, const char *f_out) {
         o_file << *best_program;
         o_file.close(); 
 
-        std::cout << "Ebel saved to '" << ebel_out << "'." << std::endl;
+        if(!Args::arg_opts.no_info_print) {
+            std::cout << "Ebel saved to '" << ebel_out << "'." << std::endl;
 
-        std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
-                  << std::fixed << std::setprecision(1) << diff.count() 
-                  << " s)." << std::endl;
+            std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
+                    << std::fixed << std::setprecision(1) << diff.count() 
+                    << " s)." << std::endl;
+        }
         LOG1("Best compiled program with " << (best_precision*100) << "% precision:\n" << *best_program);
         //delete best_program;
     }

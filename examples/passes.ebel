@@ -1,3 +1,4 @@
+pass words
 PASS NUMBER expression
 RETURN
 PASS EMPTY expression
@@ -8,3 +9,5 @@ PASS TEXT expression
 RETURN DEL
 PASS expression
 RETURN NOP
+
+pass document

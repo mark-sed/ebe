@@ -93,7 +93,6 @@ namespace Args {
             << TAB1"seed = " << param.seed << std::endl
             << TAB1"no_warn_print = " << param.no_warn_print << std::endl
             << TAB1"no_error_print = " << param.no_error_print << std::endl
-            << TAB1"no_fatal_print = " << param.no_fatal_print << std::endl
             << TAB1"no_info_print = " << param.no_info_print << std::endl
             ;
         return out;
@@ -456,9 +455,6 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
             }
             else if(arg == "--no-info-print") {
                 this->no_info_print = true;
-            }
-            else if(arg == "--no-fatal-print") {
-                this->no_fatal_print = true;
             }
             else if(arg == "--version") {
                 if(argc > 1) {

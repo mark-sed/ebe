@@ -24,7 +24,6 @@ TEST(ArgumentParsing, Correct){
                                (char *)"--no-warn-print",
                                (char *)"--no-info-print",
                                (char *)"--no-error-print",
-                               (char *)"--no-fatal-print",
                                (char *)"-expr"};
 
     Args::ArgOpts parser1;
@@ -42,7 +41,6 @@ TEST(ArgumentParsing, Correct){
     EXPECT_EQ(parser1.seed, 77U);
     EXPECT_EQ(parser1.no_warn_print, true);
     EXPECT_EQ(parser1.no_error_print, true);
-    EXPECT_EQ(parser1.no_fatal_print, true);
     EXPECT_EQ(parser1.no_info_print, true);
 
     // Interpretation all options
@@ -52,7 +50,6 @@ TEST(ArgumentParsing, Correct){
                                (char *)"--no-warn-print",
                                (char *)"--no-info-print",
                                (char *)"--no-error-print",
-                               (char *)"--no-fatal-print",
                                (char *)"/dev/null", // Input file
                                (char *)"--sym-table-size", (char *)"42", 
                                (char *)"-o", (char *)"/dev/null"};
@@ -68,7 +65,6 @@ TEST(ArgumentParsing, Correct){
     EXPECT_EQ(parser2.interpret_out, "/dev/null");
     EXPECT_EQ(parser2.no_warn_print, true);
     EXPECT_EQ(parser2.no_error_print, true);
-    EXPECT_EQ(parser2.no_fatal_print, true);
     EXPECT_EQ(parser2.no_info_print, true);
 }
 

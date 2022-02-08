@@ -15,6 +15,7 @@
 #include "compiler.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
+#include "arg_parser.hpp"
 
 namespace Error {
     namespace Colors {
@@ -59,16 +60,24 @@ const char *Error::get_code_name(Error::ErrorCode code){
 }
 
 void Error::error(Error::ErrorCode code, const char *msg, Exception::EbeException *exc, bool exit){
-    std::cerr << Error::Colors::colorize(Error::Colors::RED) << "ERROR" << Error::Colors::reset() 
-              << " (" << Error::get_code_name(code); 
-    if(exc == nullptr) {
-        std::cerr << "): " << msg << "." << std::endl;
-    }
-    else {
-        std::cerr << ", " << exc->get_type() << "): " << msg << ". " << exc->what() << "." << std::endl;
+    if(!Args::arg_opts.no_error_print) {
+        std::cerr << Error::Colors::colorize(Error::Colors::RED) << "ERROR" << Error::Colors::reset() 
+                << " (" << Error::get_code_name(code); 
+        if(exc == nullptr) {
+            std::cerr << "): " << msg << "." << std::endl;
+        }
+        else {
+            std::cerr << ", " << exc->get_type() << "): " << msg << ". " << exc->what() << "." << std::endl;
+        }
     }
     if(exit){
         Error::exit(code);
+    }
+}
+
+void Error::warning(const char *msg) {
+    if(!Args::arg_opts.no_warn_print) {
+        std::cerr << Colors::colorize(Colors::PURPLE) << "WARNING: " << Colors::reset() << msg << "." << std::endl;
     }
 }
 
@@ -76,23 +85,25 @@ void Error::error(Error::ErrorCode code, const char *msg, Exception::EbeExceptio
 void Compiler::error(Error::ErrorCode code, const char *file, 
                                   long line, long column, const char *msg,
                                   Exception::EbeException *exc, bool exit){
-    if(file)
-        // Dont print name if it is nullptr
-        std::cerr << file;
-    if(line >= 0){
-        std::cerr << ":" << line;
-        if(column >= 0) {
-            std::cerr << ":" << column;
+    if(!Args::arg_opts.no_error_print) {
+        if(file)
+            // Dont print name if it is nullptr
+            std::cerr << file;
+        if(line >= 0){
+            std::cerr << ":" << line;
+            if(column >= 0) {
+                std::cerr << ":" << column;
+            }
         }
-    }
-    // FIXME: unit_name probably should not be printed to users
-    std::cerr << ":[" << unit_name << "]: " << Error::Colors::colorize(Error::Colors::RED) << "ERROR " 
-              << Error::Colors::reset() << "(" << Error::get_code_name(code);
-    if(exc == nullptr) {
-        std::cerr << "): " << msg << "." << std::endl;
-    }
-    else {
-        std::cerr << ", " << exc->get_type() << "): " << msg << ". " << exc->what() << "." << std::endl;
+        // FIXME: unit_name probably should not be printed to users
+        std::cerr << ":[" << unit_name << "]: " << Error::Colors::colorize(Error::Colors::RED) << "ERROR " 
+                << Error::Colors::reset() << "(" << Error::get_code_name(code);
+        if(exc == nullptr) {
+            std::cerr << "): " << msg << "." << std::endl;
+        }
+        else {
+            std::cerr << ", " << exc->get_type() << "): " << msg << ". " << exc->what() << "." << std::endl;
+        }
     }
     if(exit){
         Error::exit(code);

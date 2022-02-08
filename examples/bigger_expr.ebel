@@ -1,0 +1,12 @@
+PASS Words
+  PASS number Expression
+    ADD $1, 2, $0
+    MUL $2, 42, $1
+    ADD $3, $0, $2
+    SUB $4, $3, 3
+    DIV $5, $0, 2
+    POW $6, $0, $5
+    ADD $0, $4, $6
+    RETURN  NOP 
+PASS Words
+  NOP 

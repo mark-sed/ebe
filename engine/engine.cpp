@@ -185,10 +185,7 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
         return;
     }
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
-    /*if((*rand_pos)->get_name() == std::string("CALL") || (*rand_pass)->type == IR::PassType::EXPRESSION_PASS){
-        std::cout << "AAAAA\n";
-        return;
-    }*/
+
     // Get how many instructions to insert
     auto min_len = std::min(std::distance(rand_pos, (*rand_pass)->pipeline->end()), std::distance(rand_pos_og, (*rand_pass_og)->pipeline->end()));
     auto amount = RNG::rand_int(1, min_len);
