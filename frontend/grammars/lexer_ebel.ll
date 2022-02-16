@@ -96,6 +96,11 @@ SPACE   [ \t]
                                     return token::STRING;     
                                 }
 
+"@pragma"{SPACE}+[^\n]+         {   
+                                    yylval->build<std::string>(&yytext[8]);
+                                    return token::PRAGMA;     
+                                }
+
 \n                              {
                                     loc->lines();
                                     return token::NEWLINE;
