@@ -70,7 +70,11 @@ public:
     void add_del();
     void add_loop();
     void add_nop();
-    void add_pass_expression(IR::Type type);
+    /**
+     * @param type Expression type 
+     * @param match Used for MATCH type expression
+     */
+    void add_pass_expression(IR::Type type, std::string match);
     void add_pass_words();
     void add_pass_lines();
     void add_pass_documents();

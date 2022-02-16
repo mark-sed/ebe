@@ -91,6 +91,11 @@ SPACE   [ \t]
 "EMPTY"{SPACE}+                 {   return token::EMPTY;      }
 "DERIVED"{SPACE}+               {   return token::DERIVED;    }
 
+\".*\"                          {   
+                                    yylval->build<std::string>(yytext); 
+                                    return token::STRING;     
+                                }
+
 \n                              {
                                     loc->lines();
                                     return token::NEWLINE;

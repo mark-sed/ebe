@@ -55,6 +55,7 @@ namespace IR {
         SYMBOL,     ///< Symbol such as '#' for example
         EXPRESSION, ///< Expression
         EMPTY,      ///< Empty symbol for empty line
+        MATCH,      ///< For expression pass to match specific string
         DERIVED     ///< Type used for automatically deriving the type (for expressions)
     };
 
@@ -281,9 +282,11 @@ namespace IR {
     class PassExpression : public Pass {
     public:
         Type expr_type;
+        std::string match;
 
         /** Constructor */
         PassExpression(Type expr_type);
+        PassExpression(Type expr_type, std::string match);
         /** Copy constructor */
         PassExpression(const PassExpression &other);
 

@@ -75,8 +75,17 @@ namespace RNG {
      */ 
     //template<typename T>
     //auto rand_list_elem(std::list<T*> *l, std::unordered_set<T*> *exclude);
-    std::list<IR::Pass *>::iterator rand_list_elem(std::list<IR::Pass *> *l, const std::unordered_set<IR::Pass *> *exclude);
-    std::list<GP::Phenotype *>::iterator rand_list_elem(std::list<GP::Phenotype *> *l, const std::unordered_set<GP::Phenotype *> *exclude);
+    std::list<IR::Pass *>::iterator rand_list_elem(std::list<IR::Pass *> *l, 
+                                                   const std::unordered_set<IR::Pass *> *exclude);
+    /** 
+     * @param request_type PassType which the pass has to be
+     * @warning exclude will be modified 
+     */
+    std::list<IR::Pass *>::iterator rand_list_elem(std::list<IR::Pass *> *l, 
+                                                   IR::PassType request_type,
+                                                   std::unordered_set<IR::Pass *> *exclude);
+    std::list<GP::Phenotype *>::iterator rand_list_elem(std::list<GP::Phenotype *> *l, 
+                                                        const std::unordered_set<GP::Phenotype *> *exclude);
 
     /**
      * Template function for vectors that picks random element in it and returns it
@@ -86,7 +95,8 @@ namespace RNG {
      */ 
     //template<typename T>
     //T *rand_vect_elem(std::vector<T*> *v, std::unordered_set<T*> *exclude);
-    std::vector<Inst::Instruction *>::iterator rand_vect_elem(std::vector<Inst::Instruction *> *v, const std::unordered_set<Inst::Instruction *> *exclude);
+    std::vector<Inst::Instruction *>::iterator rand_vect_elem(std::vector<Inst::Instruction *> *v, 
+                                                              const std::unordered_set<Inst::Instruction *> *exclude);
 }
 
 #endif//_RNG_HPP_

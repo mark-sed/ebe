@@ -146,14 +146,13 @@ void GPEngine::crossover_insert(GP::Phenotype *pheno) {
         return;
     }
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
-    auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
-    if((*rand_pass_og)->pipeline->empty()) {
+
+    std::unordered_set<IR::Pass *> excl_pass{};
+    auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, (*rand_pass)->type, &excl_pass);
+    if(rand_pass_og == pheno->program->nodes->end() || (*rand_pass_og)->pipeline->empty()) {
         return;
     }
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);
-    /*if((*rand_pos)->get_name() == std::string("CALL")){
-        return;
-    }*/
     ++rand_pos_og; // Increment iterator because insert inserts before the instruction
     // Get how many instructions to insert
     auto amount = RNG::rand_int(1, std::distance(rand_pos, (*rand_pass)->pipeline->end()));
@@ -180,8 +179,10 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
         return;
     }
     auto rand_pos = RNG::rand_vect_elem((*rand_pass)->pipeline, nullptr);
-    auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, nullptr);
-    if((*rand_pass_og)->pipeline->empty()) {
+    
+    std::unordered_set<IR::Pass *> excl_pass{};
+    auto rand_pass_og = RNG::rand_list_elem(pheno->program->nodes, (*rand_pass)->type, &excl_pass);
+    if(rand_pass_og == pheno->program->nodes->end() || (*rand_pass_og)->pipeline->empty()) {
         return;
     }
     auto rand_pos_og = RNG::rand_vect_elem((*rand_pass_og)->pipeline, nullptr);

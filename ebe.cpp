@@ -30,24 +30,7 @@
 /**
  * Initializer and handler for compilation
  */
-void compile(const char *f_in, const char *f_out) {
-    LOGMAX("Compilation started");
-    // Preprocessing
-    auto preproc = new Preprocessor(Args::arg_opts.line_delim);
-    LOGMAX("Text preprocessor started");
-    auto in_text = preproc->process(f_in);
-    auto out_text = preproc->process(f_out);
-    LOGMAX("Text preprocessor finished");
-
-    // Syntactical check
-    auto scanner = new TextFile::ScannerText();
-    LOGMAX("Text scanner started");
-    auto ir_in = scanner->process(in_text, f_in);
-    LOG1("Text IN IR:\n" << *ir_in);
-    auto ir_out = scanner->process(out_text, f_out);
-    LOG1("Text OUT IR:\n" << *ir_out);
-    LOGMAX("Text scanner finished");
-
+std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out, std::ostream &out) {
     // Evolution
     float precision = -0.01f;
     float best_precision = -0.01f;
@@ -92,7 +75,7 @@ void compile(const char *f_in, const char *f_out) {
         if(precision >= 1.0f){
             // Found perfect program, end now
             if(!Args::arg_opts.no_info_print) {
-                std::cout << "Perfectly fitting program found. ";
+                out << "Perfectly fitting program found. ";
             }
             best_program = program;
             best_precision = precision;
@@ -101,7 +84,7 @@ void compile(const char *f_in, const char *f_out) {
         }
         else if(Utils::is_precise(precision)) {
             if(!Args::arg_opts.no_info_print) {
-                std::cout << "Minimum precision program found. ";
+                out << "Minimum precision program found. ";
             }
             best_program = program;
             best_precision = precision;
@@ -110,7 +93,7 @@ void compile(const char *f_in, const char *f_out) {
         }
         else if(Utils::is_timeout()) {
             if(!Args::arg_opts.no_info_print) {
-                std::cout << "Timeout. ";
+                out << "Timeout. ";
             }
             best_program = program;
             best_precision = precision;
@@ -125,7 +108,42 @@ void compile(const char *f_in, const char *f_out) {
         }
     }
 
-    if(best_program){
+    // Copy best program otherwise it would be deleted
+    IR::EbelNode *ebel = nullptr;
+    if(best_program) {
+        ebel = new IR::EbelNode(*best_program);
+    }
+
+    if(engine != nullptr) {
+        delete engine; // Deletes all phenotypes
+    }
+
+    return std::make_pair(ebel, best_precision);
+}
+
+void compile(const char *f_in, const char *f_out) {
+    LOGMAX("Compilation started");
+    // Preprocessing
+    auto preproc = new Preprocessor(Args::arg_opts.line_delim);
+    LOGMAX("Text preprocessor started");
+    auto in_text = preproc->process(f_in);
+    auto out_text = preproc->process(f_out);
+    LOGMAX("Text preprocessor finished");
+
+    // Syntactical check
+    auto scanner = new TextFile::ScannerText();
+    LOGMAX("Text scanner started");
+    auto ir_in = scanner->process(in_text, f_in);
+    LOG1("Text IN IR:\n" << *ir_in);
+    auto ir_out = scanner->process(out_text, f_out);
+    LOG1("Text OUT IR:\n" << *ir_out);
+    LOGMAX("Text scanner finished");
+
+    auto compiled = compile_core(ir_in, ir_out, std::cout);
+    IR::EbelNode *ebel = compiled.first;
+    float precision = compiled.second;
+
+    if(ebel) {
         // Print the best program
         std::chrono::duration<float> diff = std::chrono::steady_clock::now()-Args::arg_opts.start_time;
 
@@ -138,26 +156,23 @@ void compile(const char *f_in, const char *f_out) {
             auto in_f = std::string(Args::arg_opts.file_in);
             ebel_out = (in_f.substr(0, in_f.rfind("."))+".ebel");
         }
-        
+
         // Folder existence is checked in arg_parser
         std::ofstream o_file(ebel_out);
-        o_file << *best_program;
+        o_file << *ebel;
         o_file.close(); 
 
         if(!Args::arg_opts.no_info_print) {
             std::cout << "Ebel saved to '" << ebel_out << "'." << std::endl;
 
-            std::cout << std::endl << "Best compiled program has " << (best_precision*100) << "% precision ("
+            std::cout << std::endl << "Best compiled program has " << (precision*100) << "% precision ("
                     << std::fixed << std::setprecision(1) << diff.count() 
                     << " s)." << std::endl;
         }
-        LOG1("Best compiled program with " << (best_precision*100) << "% precision:\n" << *best_program);
-        //delete best_program;
+        LOG1("Best compiled program with " << (precision*100) << "% precision:\n" << *ebel);
+        delete ebel;
     }
 
-    if(engine != nullptr) {
-        delete engine;
-    }
     // Cleanup
     delete ir_in;
     delete ir_out;
@@ -172,23 +187,9 @@ void compile(const char *f_in, const char *f_out) {
     LOGMAX("Compilation done");
 }
 
-void interpret(const char *ebel_f, std::vector<const char *> input_files){
-    LOGMAX("Interpetation started");    
-    // Preprocessing
-    auto ebel_preproc = new Preprocessor();
-    LOGMAX("Ebel preprocessor started");
-    auto ebel_text = ebel_preproc->process(ebel_f);
-    LOGMAX("Ebel preprocessor finished");
-
-    // Syntactical check
-    auto ebel_scanner = new EbelFile::ScannerEbel();
-    LOGMAX("Ebel scanner started");
-    auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
-    LOG1("Ebel IR:\n" << *ebel_ir);
-    LOGMAX("Ebel scanner finished");
-
+void interpret_core(IR::EbelNode *ebel, std::vector<const char *> input_files) {
     // Interpret initialization
-    auto interpreter = new Interpreter(ebel_ir);
+    auto interpreter = new Interpreter(ebel);
 
     bool use_stdin = false;
     // If no input files are specified, use stdin
@@ -244,6 +245,24 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     if(use_stdin) {
         input_files.pop_back();
     }
+}
+
+void interpret(const char *ebel_f, std::vector<const char *> input_files){
+    LOGMAX("Interpetation started");    
+    // Preprocessing
+    auto ebel_preproc = new Preprocessor();
+    LOGMAX("Ebel preprocessor started");
+    auto ebel_text = ebel_preproc->process(ebel_f);
+    LOGMAX("Ebel preprocessor finished");
+
+    // Syntactical check
+    auto ebel_scanner = new EbelFile::ScannerEbel();
+    LOGMAX("Ebel scanner started");
+    auto ebel_ir = ebel_scanner->process(ebel_text, ebel_f);
+    LOG1("Ebel IR:\n" << *ebel_ir);
+    LOGMAX("Ebel scanner finished");
+
+    interpret_core(ebel_ir, input_files);
 
     // Cleanup
     delete ebel_ir;
@@ -251,6 +270,88 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
     delete ebel_text;
     delete ebel_preproc;
     LOGMAX("Interpretation done");
+}
+
+void compile_and_interpret(const char *f_in, const char *f_out, std::vector<const char *> input_files) {
+    LOGMAX("Compilation and interpretation started");
+    // Preprocessing
+    auto preproc = new Preprocessor(Args::arg_opts.line_delim);
+    LOGMAX("Text preprocessor started");
+    auto in_text = preproc->process(f_in);
+    auto out_text = preproc->process(f_out);
+    LOGMAX("Text preprocessor finished");
+
+    // Syntactical check
+    auto scanner = new TextFile::ScannerText();
+    LOGMAX("Text scanner started");
+    auto ir_in = scanner->process(in_text, f_in);
+    LOG1("Text IN IR:\n" << *ir_in);
+    auto ir_out = scanner->process(out_text, f_out);
+    LOG1("Text OUT IR:\n" << *ir_out);
+    LOGMAX("Text scanner finished");
+
+    std::stringstream ss;
+    auto compiled = compile_core(ir_in, ir_out, ss);
+    if(!Args::arg_opts.no_info_print) {
+        std::cerr << ss.str();
+    }
+    IR::EbelNode *ebel = compiled.first;
+    float precision = compiled.second;
+    
+    if(!ebel) {
+        return;
+    }
+    // Saving the ebel if requested
+    std::chrono::duration<float> diff = std::chrono::steady_clock::now()-Args::arg_opts.start_time;
+
+    if(Args::arg_opts.ebel_out) {
+        std::string ebel_out = std::string(Args::arg_opts.ebel_out);
+
+        // Folder existence is checked in arg_parser
+        std::ofstream o_file(ebel_out);
+        o_file << *ebel;
+        o_file.close(); 
+
+        // Don't print if output will go to stdcout
+        if(!Args::arg_opts.no_info_print) {
+            std::cerr << "Ebel saved to '" << ebel_out << "'." << std::endl;
+        }    
+    }
+    else {
+        if(!Args::arg_opts.no_info_print) {
+            std::cerr << std::endl;
+        }
+    }
+
+    if(!Args::arg_opts.no_info_print) {
+        std::cerr << std::endl << "Best compiled program has " << (precision*100) << "% precision ("
+                << std::fixed << std::setprecision(1) << diff.count() 
+                << " s)." << std::endl;
+        if(Args::arg_opts.interpret_out == nullptr) {
+            std::cerr << "#--- INTERPRETER OUTPUT: ---#" << std::endl;
+        }
+    }
+    LOG1("Best compiled program with " << (precision*100) << "% precision:\n" << *ebel);
+    
+    // Interpreting
+    LOGMAX("Interpetation started");    
+    // Preprocessing
+    interpret_core(ebel, input_files);
+    LOGMAX("Interpretation done");
+
+    // Cleanup
+    delete ebel;
+    delete ir_in;
+    delete ir_out;
+    if(in_text != &std::cin) {
+        delete in_text;
+    }
+    if(out_text != &std::cin) {
+        delete out_text;
+    }
+    delete scanner;
+    delete preproc;
+    LOGMAX("Compilation and interpretation done");
 }
 
 // Main
@@ -267,7 +368,10 @@ int main(int argc, char *argv[]){
     RNG::init(Args::arg_opts.seed);
 
     // Start compilation of example input files
-    if(Args::arg_opts.interpret_mode){
+    if(Args::arg_opts.execute_mode) {
+        compile_and_interpret(Args::arg_opts.file_in, Args::arg_opts.file_out, Args::arg_opts.int_files);
+    }
+    else if(Args::arg_opts.interpret_mode){
         interpret(Args::arg_opts.ebel_in, Args::arg_opts.int_files);
     }
     else{

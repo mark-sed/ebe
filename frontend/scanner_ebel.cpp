@@ -117,7 +117,7 @@ void ScannerEbel::add_nop() {
     this->current_pass->push_back(new Inst::NOP());
 }
 
-void ScannerEbel::add_pass_expression(IR::Type type) {
+void ScannerEbel::add_pass_expression(IR::Type type, std::string match) {
     this->touch_pass();
     if(this->current_pass == nullptr 
       || this->current_pass->type != IR::PassType::WORDS_PASS) {
@@ -138,7 +138,15 @@ void ScannerEbel::add_pass_expression(IR::Type type) {
         // Store parent pass to be popped in return instruction
         this->parent_pass = this->current_pass;
     }
-    this->current_pass = new IR::PassExpression(type);
+    if(type != IR::Type::MATCH) {
+        this->current_pass = new IR::PassExpression(type);
+    }
+    else{
+        // Remove quote marks at the start and end
+        match.erase(0, 1);
+        match.pop_back();
+        this->current_pass = new IR::PassExpression(type, match);
+    }
 }
 
 void ScannerEbel::add_pass_words() {

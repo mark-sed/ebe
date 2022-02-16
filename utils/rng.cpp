@@ -19,7 +19,7 @@
 
 using namespace RNG;
 
-//FIXME: Template should be generic!!
+//FIXME: Template should be generic!
 
 /*template<typename T>
 auto RNG::rand_list_elem(std::list<T*> *l, std::unordered_set<T*> *exclude) {
@@ -41,6 +41,20 @@ std::list<IR::Pass *>::iterator RNG::rand_list_elem(std::list<IR::Pass *> *l, co
         std::advance(it, r);
     }while(exclude != nullptr && exclude->find(*it) != exclude->end());
     return it;
+}
+
+std::list<IR::Pass *>::iterator RNG::rand_list_elem(std::list<IR::Pass *> *l, 
+                                                    IR::PassType request_type, 
+                                                    std::unordered_set<IR::Pass *> *exclude) {
+    
+    for(auto *pass: *l) {
+        if(pass->type != request_type) {
+            exclude->insert(pass);
+        }
+    }
+    if(exclude->size() == l->size())
+        return l->end();
+    return rand_list_elem(l, exclude);
 }
 
 std::list<GP::Phenotype *>::iterator RNG::rand_list_elem(std::list<GP::Phenotype *> *l, const std::unordered_set<GP::Phenotype *> *exclude) {
@@ -68,7 +82,8 @@ T *RNG::rand_vect_elem(std::vector<T*> *v, std::unordered_set<T*> *exclude) {
 }*/
 
 //template<>
-std::vector<Inst::Instruction *>::iterator RNG::rand_vect_elem(std::vector<Inst::Instruction *> *v, const std::unordered_set<Inst::Instruction *> *exclude) {
+std::vector<Inst::Instruction *>::iterator RNG::rand_vect_elem(std::vector<Inst::Instruction *> *v, 
+                                                               const std::unordered_set<Inst::Instruction *> *exclude) {
     if(v->size() == 0){
         return v->begin();
     }

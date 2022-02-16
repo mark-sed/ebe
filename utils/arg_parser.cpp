@@ -28,7 +28,7 @@
 
 /** Text to be displayed to user when --help option is used */
 const char *HELP_TEXT = 
-"Compile:   ebe -in <input_example> -out <output_exmaple> -o <output_ebel>\n"
+"Compile:   ebe -in <input_example> -out <output_exmaple> -eo <output_ebel>\n"
 "Interpret: ebe -i <ebel_file> <file1> <file2> ... <fileN>\n"
 "Options:\n"
 "  -in --example-input <file>   File from which will be read input example text.\n"
@@ -550,6 +550,12 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
         if(this->sym_table_size > 0) {
             Error::error(Error::ErrorCode::ARGUMENTS, 
                          "Option --sym-table-size is for interpretation");
+        }
+    }
+    if(this->execute_mode) {
+        if(this->int_files.empty()) {
+            Error::error(Error::ErrorCode::ARGUMENTS, 
+                         "Missing input files for interpretation");
         }
     }
 

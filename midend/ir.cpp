@@ -35,6 +35,7 @@ const char *IR::get_type_name(Type type) {
         "symbol",
         "expression",
         "empty",
+        "match",
         "derived"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
@@ -277,11 +278,21 @@ void Pass::set_pipeline(std::vector<Inst::Instruction *> *pipeline) {
     this->pipeline = pipeline;
 }
 
-PassExpression::PassExpression(IR::Type expr_type) : Pass(PassType::EXPRESSION_PASS), expr_type{expr_type} {
+PassExpression::PassExpression(IR::Type expr_type) : Pass(PassType::EXPRESSION_PASS),
+                                                     expr_type{expr_type},
+                                                     match{} {
 
 }
 
-PassExpression::PassExpression(const PassExpression &other) : Pass(other), expr_type{other.expr_type} {
+PassExpression::PassExpression(IR::Type expr_type, std::string match) : Pass(PassType::EXPRESSION_PASS),
+                                                                        expr_type{expr_type},
+                                                                        match{match} {
+
+}
+
+PassExpression::PassExpression(const PassExpression &other) : Pass(other),
+                                                              expr_type{other.expr_type},
+                                                              match{other.match} {
     
 }
 
@@ -334,6 +345,9 @@ void PassWords::process(IR::Node *text) {
     LOG5("Processing over: " << *this);
     // Reset optimization variables
     this->last_executed_index = -1;
+    // Reset environment
+    env.reprocess_obj = false;
+    env.loop_inst = nullptr;
     // Iterate through lines of text
     size_t line_number = 0;
     for(auto line = (*text->nodes).begin(); line != (*text->nodes).end(); ++line){
@@ -363,9 +377,10 @@ void PassWords::process(IR::Node *text) {
                 // If it was not yet checked, make sure there are actual non-controll instructions in the loop
                 if(!checked_executable_loop){
                     bool found = false;
-                    // Loop through previous instruction and check if any of them is non-controll
+                    // Loop through previous instruction and check if any of them is non-controll and non-call
                     for(auto i = pipeline->begin(); *i != this->env.loop_inst; ++i){
                         if(!(*i)->control){
+                            // Found non-controll
                             found = true;
                             checked_executable_loop = true;
                         }
@@ -383,20 +398,36 @@ void PassWords::process(IR::Node *text) {
                 auto index = dynamic_cast<Inst::CALL *>(inst)->get_arg1();
                 auto subpass = dynamic_cast<PassExpression *>((*this->subpass_table)[index]);
                 // Check if type matches pass type
-                if(subpass->expr_type == (*word)->type || subpass->expr_type == IR::Type::DERIVED) {
+                if(subpass->expr_type == (*word)->type 
+                    || subpass->expr_type == IR::Type::DERIVED
+                    || (subpass->expr_type == IR::Type::MATCH && (*word)->text == subpass->match)) {
                     // FIXME: Column isn't letter column, but word number
                     subpass->process(*word, line_number, column);
-                    // Reprocess so that return instruction can be executed
+                    // Execute return instruction (column was incemented before this)
+                    inst = (*this->pipeline)[column];
+                    inst->exec(word, *line, this->env);
+                    // Skip all following expressions since this one was executed
+                    ++column;
+                    while(column < this->pipeline->size() && (*this->pipeline)[column]->get_name() == std::string("CALL")) {
+                        column += 2; // Add 2 since its always a call + return
+                    }
                 }
                 else {
-                    // Skip return instruction
+                    // Skip return
                     ++column;
+                    // Reprocess only if pass is following
+                    if(column < this->pipeline->size() && (*this->pipeline)[column]->get_name() == std::string("CALL")){
+                        env.reprocess_obj = true;
+                    }
+                    else {
+                        LOG1("Implicit NOP DERIVED pass added");
+                    }
                 }
-                env.reprocess_obj = true;
             }
             else {
                 // Instruction execution
                 inst->exec(word, *line, this->env);
+                
             }
             if(!env.reprocess_obj){
                 ++word;

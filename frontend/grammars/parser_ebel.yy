@@ -65,6 +65,7 @@
 %token <int> INT "number"
 %token COMMA ","
 %token <int> VAR "variable"
+%token <std::string> STRING "string"
 
 /* Instructions */
 %token CONCAT
@@ -165,11 +166,12 @@ expr_inst   : ADD VAR COMMA VAR COMMA VAR       { scanner->add_add($2, $4, $6); 
             | MOVE VAR COMMA INT                { scanner->add_move($2, new Vars::NumberVar($4));    }
             ;
 
-pass        : PASS type EXPRESSION { scanner->add_pass_expression($2);                }
-            | PASS EXPRESSION      { scanner->add_pass_expression(IR::Type::DERIVED); }
-            | PASS WORDS           { scanner->add_pass_words();                       }
-            | PASS LINES           { scanner->add_pass_lines();                       }
-            | PASS DOCUMENTS       { scanner->add_pass_documents();                   }
+pass        : PASS type EXPRESSION   { scanner->add_pass_expression($2, std::string(""));                }
+            | PASS STRING EXPRESSION { scanner->add_pass_expression(IR::Type::MATCH, $2);                }
+            | PASS EXPRESSION        { scanner->add_pass_expression(IR::Type::DERIVED, std::string("")); }
+            | PASS WORDS             { scanner->add_pass_words();                                        }
+            | PASS LINES             { scanner->add_pass_lines();                                        }
+            | PASS DOCUMENTS         { scanner->add_pass_documents();                                    }
             ;
 
 type        : TEXT      { $$ = IR::Type::TEXT;      }
