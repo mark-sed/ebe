@@ -810,12 +810,13 @@ namespace  EbelFile  {
         S_34_n_ = 34,                            // '\n'
         S_YYACCEPT = 35,                         // $accept
         S_program = 36,                          // program
-        S_pragma = 37,                           // pragma
-        S_code = 38,                             // code
-        S_instruction = 39,                      // instruction
-        S_expr_inst = 40,                        // expr_inst
-        S_pass = 41,                             // pass
-        S_type = 42                              // type
+        S_empty = 37,                            // empty
+        S_pragma = 38,                           // pragma
+        S_code = 39,                             // code
+        S_instruction = 40,                      // instruction
+        S_expr_inst = 41,                        // expr_inst
+        S_pass = 42,                             // pass
+        S_type = 43                              // type
       };
     };
 
@@ -1726,7 +1727,7 @@ switch (yykind)
     // Tables.
     // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
     // STATE-NUM.
-    static const signed char yypact_[];
+    static const short yypact_[];
 
     // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
     // Performed when YYTABLE does not specify something else to do.  Zero
@@ -1986,9 +1987,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 141,     ///< Last index in yytable_.
-      yynnts_ = 8,  ///< Number of nonterminal symbols.
-      yyfinal_ = 36 ///< Termination state number.
+      yylast_ = 142,     ///< Last index in yytable_.
+      yynnts_ = 9,  ///< Number of nonterminal symbols.
+      yyfinal_ = 37 ///< Termination state number.
     };
 
 
@@ -2000,7 +2001,7 @@ switch (yykind)
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 2004 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 2005 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 
 

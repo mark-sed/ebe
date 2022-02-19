@@ -109,12 +109,18 @@
 
 %%
 
-program     : END
-            | NEWLINE
+program     : empty
+            | empty code
+            | empty pragma NEWLINE code
             | pragma NEWLINE code
             | code END
             | code error '\n'
             | error '\n'
+            ;
+
+empty       : END
+            | NEWLINE
+            | empty NEWLINE
             ;
 
 pragma      : PRAGMA                { scanner->add_pragma($1);          }

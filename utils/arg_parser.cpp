@@ -331,7 +331,7 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
                         Analytics::get().set_log_everything(true);
                     } else {
                         // Parse file functions to add to the logger
-                        Analytics::get().set_enabled(Utils::split_csv(std::string(unit_names)));
+                        Analytics::get().set_enabled(Utils::split_csv_set(std::string(unit_names)));
                     }
                 }
                 else {
@@ -396,7 +396,7 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
                         Logger::get().set_log_everything(true);
                     } else {
                         // Parse file functions to add to the logger
-                        Logger::get().set_enabled(Utils::split_csv(std::string(file_funcs)));
+                        Logger::get().set_enabled(Utils::split_csv_set(std::string(file_funcs)));
                     }
                 }
                 else {

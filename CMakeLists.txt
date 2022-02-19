@@ -38,6 +38,7 @@ set(SOURCES
     frontend/lexer_ebel.cpp
     frontend/parser_ebel.cpp
     frontend/scanner_ebel.cpp
+    frontend/pragmas.cpp
     frontend/preprocessor.cpp
     frontend/scanner.cpp
     gp/gp.cpp

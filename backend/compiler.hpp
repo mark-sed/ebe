@@ -100,7 +100,8 @@ namespace Error {
         SYNTACTIC,     ///< Syntactical error
         SEMANTIC,      ///< Semantical error
         UNIMPLEMENTED, ///< Problems with instruction
-        RUNTIME        ///< Runtime errors
+        RUNTIME,       ///< Runtime errors
+        VERSION        ///< For when the version is not sufficient
     };
 
     /**

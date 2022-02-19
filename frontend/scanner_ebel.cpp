@@ -87,7 +87,7 @@ void ScannerEbel::touch_pass() {
 }
 
 void ScannerEbel::add_pragma(std::string value) {
-    std::cout << "\"" << value << "\"\n";
+    this->current_parse->pragmas->parse(value);
 }
 
 void ScannerEbel::add_concat(int offset) {

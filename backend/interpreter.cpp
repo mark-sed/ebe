@@ -15,12 +15,15 @@
 #include "logging.hpp"
 #include "ir.hpp"
 #include "instruction.hpp"
+#include "pragmas.hpp"
 
 Interpreter::Interpreter(IR::EbelNode *ebel) : Compiler("Interpreter"), ebel{ebel} {
 
 }
 
 void Interpreter::parse(IR::Node *text) {
+    // Apply pragmas
+    this->ebel->pragmas->apply();
     // Iterate through passes
     for(auto pass: (*this->ebel->nodes)) {
         pass->process(text);
