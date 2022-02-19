@@ -20,6 +20,7 @@
 #include "gp.hpp"
 #include "tree.hpp"
 #include "expression.hpp"
+#include "pragmas.hpp"
 
 #include <iostream>
 
@@ -31,6 +32,10 @@ namespace Inst {
 
 namespace GP {
     class Population;
+}
+
+namespace Pragma {
+    class Pragmas;
 }
 
 struct GPEngineParams;
@@ -342,6 +347,7 @@ namespace IR {
         friend std::ostream& operator<< (std::ostream &out, const IR::EbelNode& node);
     public:
         std::list<Pass *> *nodes;  ///< Passes holding instructions
+        Pragma::Pragmas *pragmas;
 
         /** Constructor */
         EbelNode();

@@ -1,0 +1,9 @@
+# This tests out pragmas
+@pragma requires 0
+@pragma requires 0.    # Valid
+@pragma requires "0.2" # Valid as well, quotes should be removed
+@pragma requires 0.2.5
+@pragma sym_table_size 12000
+@pragma sym_table_size "42"
+DEL
+

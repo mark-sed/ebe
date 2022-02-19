@@ -50,9 +50,10 @@ namespace Utils {
      * Parses csv values
      * @param csv String of csv values
      * @param delim CSV delimiter. Comma by default.
-     * @return Set of these value
+     * @return Vector of these value
      */
-    std::set<std::string> split_csv(std::string csv, char delim=','); 
+    std::vector<std::string> split_csv(std::string csv, char delim=','); 
+    std::set<std::string> split_csv_set(std::string csv, char delim=',');
 
     /**
      * Sanitizes text by removing escape characters with their written out form

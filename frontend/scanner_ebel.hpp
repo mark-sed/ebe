@@ -75,6 +75,10 @@ public:
      * @param match Used for MATCH type expression
      */
     void add_pass_expression(IR::Type type, std::string match);
+    /**
+     * @param value Value after "@pragma\s", needs to be parsed 
+     */
+    void add_pragma(std::string value);
     void add_pass_words();
     void add_pass_lines();
     void add_pass_documents();

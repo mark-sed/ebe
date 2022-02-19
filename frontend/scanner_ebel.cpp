@@ -86,6 +86,10 @@ void ScannerEbel::touch_pass() {
     }
 }
 
+void ScannerEbel::add_pragma(std::string value) {
+    this->current_parse->pragmas->parse(value);
+}
+
 void ScannerEbel::add_concat(int offset) {
     this->touch_pass();
     // Check if pass is lines

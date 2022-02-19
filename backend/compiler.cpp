@@ -50,7 +50,8 @@ const char *Error::get_code_name(Error::ErrorCode code){
         "Syntactic",
         "Semantic",
         "Unimplemented",
-        "Runtime"
+        "Runtime",
+        "Version"
     };
     constexpr int names_size = sizeof(NAMES)/sizeof(char *);
     if(static_cast<int>(code) < names_size){

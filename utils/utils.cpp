@@ -42,12 +42,22 @@ std::string Utils::capitalize(std::string text) {
     return std::string(1, std::toupper(text[0]))+std::string(&text[1]);
 }
 
-std::set<std::string> Utils::split_csv(std::string csv, char delim) {
+std::set<std::string> Utils::split_csv_set(std::string csv, char delim) {
     std::set<std::string> splitted;
     std::string value;
     std::stringstream csv_stream(csv);
     while(std::getline(csv_stream, value, delim)){
         splitted.insert(value);
+    }
+    return splitted;
+}
+
+std::vector<std::string> Utils::split_csv(std::string csv, char delim) {
+    std::vector<std::string> splitted;
+    std::string value;
+    std::stringstream csv_stream(csv);
+    while(std::getline(csv_stream, value, delim)){
+        splitted.push_back(value);
     }
     return splitted;
 }

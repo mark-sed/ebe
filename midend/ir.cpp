@@ -516,9 +516,11 @@ void PassDocuments::process(IR::Node *text) {
 
 EbelNode::EbelNode() {
     this->nodes = new std::list<Pass *>();
+    this->pragmas = new Pragma::Pragmas(this);
 }
 
-EbelNode::EbelNode(GPEngineParams *params, IR::Node *text_in){
+EbelNode::EbelNode(GPEngineParams *params, IR::Node *text_in) {
+    this->pragmas = new Pragma::Pragmas(this);
     // Generating randomly filled ebel node for GP engine
     this->nodes = new std::list<Pass *>();
 
@@ -559,6 +561,7 @@ EbelNode::EbelNode(GPEngineParams *params, IR::Node *text_in){
 }
 
 EbelNode::EbelNode(const EbelNode &other) {
+    this->pragmas = new Pragma::Pragmas(*other.pragmas, this);
     this->nodes = new std::list<Pass *>();
     for(auto pass: *other.nodes) {
         // Copy pass
@@ -588,6 +591,7 @@ EbelNode::~EbelNode(){
         delete pass;
     }
     delete nodes;
+    delete pragmas;
 }
 
 void EbelNode::push_back(Pass *pass){
