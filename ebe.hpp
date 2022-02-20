@@ -13,8 +13,15 @@
 #ifndef _EBE_HPP_
 #define _EBE_HPP_
 
+#define MACRO_TO_STR_HELPER(x) #x
+/** Macro to convert INT macro value into string value */
+#define MACRO_TO_STR(x) MACRO_TO_STR_HELPER(x)
+
 #define EBE_VERSION_MAJOR 0  ///< Compiler's major version
 #define EBE_VERSION_MINOR 2  ///< Compiler's minor version
 #define EBE_VERSION_PATCH 5  ///< Compiler's patch
+
+/** Ebe version as a string */
+#define EBE_VERSION MACRO_TO_STR(EBE_VERSION_MAJOR) "." MACRO_TO_STR(EBE_VERSION_MINOR) "." MACRO_TO_STR(EBE_VERSION_PATCH)
 
 #endif//_EBE_HPP_ 

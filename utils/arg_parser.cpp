@@ -53,6 +53,10 @@ const char *HELP_TEXT =
 //"  --float-delim <character>   Character used in your locale as a floating point dot (by default this is `.`).\n"
 "  --version                    Prints compiler's version.\n"
 "  --help -h                    Prints this text.\n"
+"\n"
+"Ebe " EBE_VERSION ", Copyright (c) 2022, Marek Sedlacek\n"
+"For more information visit official GitHub repository: https://github.com/mark-sed/ebe.\n"
+"To report any bugs please use https://github.com/mark-sed/ebe/issues."
 ;
 // TODO: Add delimiter definition option
 
@@ -113,7 +117,7 @@ namespace Args {
  * Prints version text and exits with success
  */
 [[noreturn]] static void print_version(){
-    std::cout << "Ebe " << EBE_VERSION_MAJOR << "." << EBE_VERSION_MINOR << "." << EBE_VERSION_PATCH << std::endl;
+    std::cout << "Ebe " << EBE_VERSION << std::endl;
     std::exit(0);
 }
 

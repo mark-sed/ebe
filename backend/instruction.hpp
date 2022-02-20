@@ -225,7 +225,7 @@ namespace Inst {
         size_t get_arg1() { return arg1; }
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        void format_args(std::ostream &out) override;
+        inline void format_args(std::ostream &out) override;
         CALL(size_t arg1) : arg1{arg1} { control = true; }
         CALL *copy() const override {
             return new CALL(arg1);
@@ -241,7 +241,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        void format_args(std::ostream &out) override;
+        inline void format_args(std::ostream &out) override;
         CONCAT(int arg1) : arg1{arg1} { control = false; }
         CONCAT *copy() const override {
             return new CONCAT(arg1);
@@ -256,7 +256,6 @@ namespace Inst {
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
         DEL(){ control = false; }
-        virtual ~DEL() {}
         DEL *copy() const override {
             return new DEL();
         }
@@ -312,7 +311,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override {return NAME;}
-        void format_args(std::ostream &out) override;
+        inline void format_args(std::ostream &out) override;
         SWAP(int arg1) : arg1{arg1} { control = false; }
         SWAP *copy() const override {
             return new SWAP(arg1);
@@ -331,7 +330,7 @@ namespace Inst {
     public:
         static const char * const NAME;
         const char * const get_name() override { return NAME; }
-        void format_args(std::ostream &out) override;
+        inline void format_args(std::ostream &out) override;
         // For custom settings
         MOVE(int dst, int isrc1, Vars::Variable *src1) 
             : dst{dst}, isrc1{isrc1}, src1{src1} { control = true; }
