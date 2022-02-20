@@ -56,7 +56,7 @@ public:
     EbelFile::ParserEbel::location_type *loc = nullptr;     ///< Current parsing location
 
     ScannerEbel();
-    virtual ~ScannerEbel() {}
+    virtual ~ScannerEbel();
 
     virtual int eelex(EbelFile::ParserEbel::semantic_type *const lval,
                       EbelFile::ParserEbel::location_type *location);

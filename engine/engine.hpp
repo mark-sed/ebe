@@ -130,11 +130,16 @@ struct GPEngineParams {
     bool no_crossover_when_mutated;  ///< If mutation happens then crossover cannot happen
     bool elitism;                    ///< Elitism in evolution (makes sure that best phenotype does not change)
 
+    /**
+     * @brief Construct a new GPEngineParams object
+     * Parameters are set based on f_in and f_out arguments
+     * @param f_in Input file for eben that works with this
+     * @param f_out Output file for eben that works with this
+     */
+    GPEngineParams(IR::Node *f_in, IR::Node *f_out);
+
     friend std::ostream& operator<< (std::ostream &out, const GPEngineParams& param);
 };
-
-/** Default GP engine params used in case params are not set by an engine */
-extern GPEngineParams default_gpparams;
 
 /**
  * Abstract class for all genetic programming engines

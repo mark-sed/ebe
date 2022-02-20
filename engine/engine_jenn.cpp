@@ -31,7 +31,7 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
         iterations = 400;
     }
 
-    auto params = new GPEngineParams(default_gpparams);
+    auto params = new GPEngineParams(text_in, text_out);
     set_params(params);
     LOG1("Engine Jenn params:\n" << *params << TAB1 << "iterations = " << iterations);
     // Creates and initializes a new population
@@ -65,6 +65,10 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
         for(auto p: *this->population->candidates) {
             for(auto pass: *p->program->nodes) {
                 if(pass->pipeline->size() > 2*this->text_in->nodes->front()->size()) {
+                    // Free instructions
+                    for(size_t i = pass->pipeline->size()/2; i < pass->pipeline->size(); ++i){
+                        delete (*pass->pipeline)[i];
+                    }
                     pass->pipeline->resize(pass->pipeline->size()/2);
                 }
             }
@@ -88,6 +92,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
             auto text_in_copy = *text_in;
             interpreter->parse(&text_in_copy);
             interpreter->optimize();
+            delete interpreter;
             return perfect_pheno->program;
         }
         // Sort population based on fitness
@@ -118,6 +123,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                 auto text_in_copy = *text_in;
                 interpreter->parse(&text_in_copy);
                 interpreter->optimize();
+                delete interpreter;
                 return pheno->program;
             }
             // Try mutate the phenotype

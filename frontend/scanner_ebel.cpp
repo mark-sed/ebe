@@ -28,6 +28,10 @@ ScannerEbel::ScannerEbel() : Compiler("Ebel scanner"), yyFlexLexer() {
     loc = new EbelFile::ParserEbel::location_type();
 }
 
+ScannerEbel::~ScannerEbel() {
+    delete loc;
+}
+
 void ScannerEbel::error_found(Error::ErrorCode code) {
     if(this->error_code == Error::ErrorCode::NO_ERROR){
         this->error_code = code;
@@ -74,6 +78,7 @@ IR::EbelNode *ScannerEbel::process(std::istream *text, const char *file_name) {
     this->current_parse = nullptr;
     this->current_file_name = nullptr;
     this->parent_pass = nullptr;
+    delete parser;
     return parsed;
 }
 
@@ -149,7 +154,13 @@ void ScannerEbel::add_pass_expression(IR::Type type, std::string match) {
         // Remove quote marks at the start and end
         match.erase(0, 1);
         match.pop_back();
-        this->current_pass = new IR::PassExpression(type, match);
+        if(match.empty()) {
+            LOG1("Empty match pass string exchanged for Pass EMPTY Expression");
+            this->current_pass = new IR::PassExpression(IR::Type::EMPTY);
+        }
+        else {
+            this->current_pass = new IR::PassExpression(type, match);
+        }
     }
 }
 

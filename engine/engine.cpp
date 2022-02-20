@@ -28,24 +28,6 @@
 
 using namespace EngineUtils;
 
-GPEngineParams default_gpparams {
-    .population_size = 100,
-    .min_words_pass_size = 1,
-    .max_words_pass_size = 5,
-    .min_lines_pass_size = 1,
-    .max_lines_pass_size = 3,
-    .pheno_min_passes = 1,
-    .pheno_max_passes = 4,
-    .init_pass_words_chance = 0.8f,
-    .init_pass_lines_chance = 0.2f,
-    .mutation_chance = 0.15f,
-    .crossover_chance = 1.0f,    
-    .crossover_insert_chance = 0.05f,
-    .crossover_switch_chance = 0.6f,      
-    .no_crossover_when_mutated = true,
-    .elitism = true
-};
-
 std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
     out << "GPEngineParams:" << std::endl
         << TAB1"population_size = " << param.population_size << std::endl
@@ -64,6 +46,68 @@ std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
         << TAB1"no_crossover_when_mutated = " << param.no_crossover_when_mutated << std::endl
         << TAB1"elitism = " << param.elitism << std::endl;
     return out;
+}
+
+GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : population_size{50},
+                                                                  min_words_pass_size{1},
+                                                                  max_words_pass_size{5},
+                                                                  min_lines_pass_size{1},
+                                                                  max_lines_pass_size{3},
+                                                                  pheno_min_passes{1},
+                                                                  pheno_max_passes{4},
+                                                                  init_pass_words_chance{0.8f},
+                                                                  init_pass_lines_chance{0.2f},
+                                                                  mutation_chance{0.15f},
+                                                                  crossover_chance{1.0f},    
+                                                                  crossover_insert_chance{0.05f},
+                                                                  crossover_switch_chance{0.6f},      
+                                                                  no_crossover_when_mutated{true},
+                                                                  elitism{true} {
+    // Change other values if needed be
+    // For one line examples, there is no need for Lines pass
+    if(f_in->nodes->size() == 1 && f_out->nodes->size() == 1) {
+        this->init_pass_lines_chance = 0.0f;
+        this->init_pass_words_chance = 1.0f;
+    }
+    // Set correct lines pass arguments based on lines values
+    else {
+        // If there is a lot of lines, then set bigger chance for lines pass
+        if(f_in->nodes->size() > 10) {
+            this->init_pass_lines_chance = 0.5f;
+            this->init_pass_words_chance = 0.5f;
+        }
+    }
+    // Compare input and output to guess how many changes will be needed
+    float similarity = Fitness::one2one(f_in, f_out);
+    if(similarity > 0.90f) {
+        pheno_max_passes = 2;
+        max_words_pass_size = 3;
+        max_lines_pass_size = 2;
+    }
+    else if(similarity > 0.75f) {
+        pheno_max_passes = 3;
+        max_words_pass_size = 5;
+        max_lines_pass_size = 3;
+    }
+    else if(similarity > 0.50f) {
+        pheno_max_passes = 4;
+        min_words_pass_size = 4;
+        max_words_pass_size = 10;
+        max_lines_pass_size = 4;
+    }
+    else {
+        pheno_max_passes = 5;
+        min_words_pass_size = 5;
+        max_words_pass_size = 15;
+        max_lines_pass_size = 6;
+    }
+    // Adjust max pass size to the input (no need for more instructions than input objects)
+    if(max_lines_pass_size > f_in->nodes->size()) {
+        max_lines_pass_size = f_in->nodes->size();
+    }
+    if(max_words_pass_size > f_in->longest_line->size()) {
+        max_words_pass_size = f_in->longest_line->size();
+    }
 }
 
 namespace EngineUtils {
@@ -106,6 +150,9 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
 GPEngine::~GPEngine() {
     delete params;
     delete population;
+    if(expr_pass) {
+        delete expr_pass;
+    }
 }
 
 void GPEngine::sort_population() {
@@ -213,8 +260,6 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
 
 GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, EngineUtils::EngineID engine_id) : 
                    Engine(text_in, text_out, iterations, engine_id), expr_pass{nullptr} {
-    params = &default_gpparams;
-
     // Checking input text if it contains expression to do those first
     if(Args::arg_opts.expr){
         bool contains_expr = false;
@@ -253,13 +298,13 @@ GP::Phenotype *GPEngine::evaluate(bool run_time_optimize) {
     for(auto &pheno: *this->population->candidates){
         // If expression is set then insert it at the begining
         auto interpreter = new Interpreter(pheno->program);
-        IR::Node text_copy = *this->text_in;
-        interpreter->parse(&text_copy);
+        IR::Node *text_copy = new IR::Node(*this->text_in);
+        interpreter->parse(text_copy);
         if(run_time_optimize) {
             // Run optimizations
             interpreter->optimize();
         }
-        float fit = compare(text_out, &text_copy);
+        float fit = compare(text_out, text_copy);
         // Set the fitness
         pheno->fitness = fit;
         if(fit >= 1.0f){
@@ -267,6 +312,8 @@ GP::Phenotype *GPEngine::evaluate(bool run_time_optimize) {
             perfect_program = pheno;
             break;
         }
+        delete text_copy;
+        delete interpreter;
     }
     return perfect_program;
 }

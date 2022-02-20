@@ -57,6 +57,8 @@ IR::Node *ScannerText::process(std::istream *text, const char *file_name) {
     this->current_line = nullptr;
     auto *parsed = this->current_parse;
     this->current_parse = nullptr;
+    delete loc;
+    delete parser;
     return parsed;
 }
 

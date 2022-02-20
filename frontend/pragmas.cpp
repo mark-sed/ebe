@@ -35,7 +35,7 @@ Pragmas::Pragmas(const Pragmas &other, IR::EbelNode *ebel) {
 std::vector<std::string> Pragmas::split_pragma(std::string value) {
     std::vector<std::string> values;
     int start = -1;
-    /** Enum for split_pragma scanner */
+    // Enum for split_pragma scanner
     enum class SPLIT_FSM {
         START,
         STRING,

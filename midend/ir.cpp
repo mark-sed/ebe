@@ -64,6 +64,8 @@ Word::~Word() {
     if(this->expr != nullptr) {
         delete this->expr;
     }
+    delete code;
+    delete return_inst;
 }
 
 Word& Word::operator=(const Word &other){
@@ -261,7 +263,13 @@ Pass::Pass(const Pass &other) {
 
 Pass::~Pass(){
     for(auto const &inst: *this->pipeline){
-        //delete inst;
+        delete inst;
+    }
+    if(subpass_table) {
+        for(auto const &pass: *this->subpass_table) {
+            delete pass;
+        }
+        delete subpass_table;
     }
     delete pipeline;
 }

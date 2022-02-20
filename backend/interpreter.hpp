@@ -38,6 +38,7 @@ public:
      * @param ebel Parsed ebel code in IR form
      */
     Interpreter(IR::EbelNode *ebel);
+    ~Interpreter() {};
 
     /**
      * Parses scanned text into new text using ebel code from initialization

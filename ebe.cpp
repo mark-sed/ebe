@@ -53,11 +53,13 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
     Engine *engine = nullptr;
     for(size_t e = 1; e <= evolutions || Args::arg_opts.precision != 0 || Args::arg_opts.timeout != 0; ++e){
-        if(engine != nullptr && best_program != nullptr) { 
+        if(best_program != nullptr) { 
             // Before deletion, best program has to be copied to not be lost
             auto best_program_copy = new IR::EbelNode(*best_program);
             best_program = best_program_copy;
-            delete engine;
+            if(engine != nullptr) {
+                delete engine;
+            }
             engine = nullptr;
         }
         switch(engine_id){
@@ -245,6 +247,7 @@ void interpret_core(IR::EbelNode *ebel, std::vector<const char *> input_files) {
     if(use_stdin) {
         input_files.pop_back();
     }
+    delete interpreter;
 }
 
 void interpret(const char *ebel_f, std::vector<const char *> input_files){

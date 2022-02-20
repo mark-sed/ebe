@@ -102,6 +102,7 @@ IR::EbelNode *EngineMiRANDa::generate(float *precision) {
         IR::Node text_copy = *this->text_in;
         // Interpret
         interpreter->parse(&text_copy);
+        delete interpreter;
         float fitness = compare(text_out, &text_copy);
         STAT_LOG(Analytics::UnitNames::MIRANDA_FITNESS, std::to_string(iter), std::to_string(fitness));
         // Check if current program is better than currently the best one

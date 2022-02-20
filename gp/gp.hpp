@@ -29,7 +29,6 @@ namespace IR {
 
 /** All genetic programming related resourced */
 namespace GP {
-
     /**
      * Candidate game representation holding its program and additional attributes
      */ 
