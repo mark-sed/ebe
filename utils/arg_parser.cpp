@@ -28,8 +28,10 @@
 
 /** Text to be displayed to user when --help option is used */
 const char *HELP_TEXT = 
+"Edit:      ebe -x -in <input_example> -out <output_example> <file1> ... <fileN>\n"
 "Compile:   ebe -in <input_example> -out <output_exmaple> -eo <output_ebel>\n"
 "Interpret: ebe -i <ebel_file> <file1> <file2> ... <fileN>\n"
+"\n"
 "Options:\n"
 "  -in --example-input <file>   File from which will be read input example text.\n"
 "  -out --example-output <file> File from which will be read output example text.\n"
