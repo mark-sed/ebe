@@ -1,25 +1,26 @@
 PASS Words
   NOP 
+  SWAP 10
+  NOP 
+  NOP 
   NOP 
   DEL 
-  LOOP 
-  SWAP 6
+  DEL 
+  NOP 
+  NOP 
+PASS Words
+  DEL 
+  DEL 
+  DEL 
+  DEL 
+  DEL 
+  DEL 
+  NOP 
 PASS Words
   NOP 
-  SWAP 3
   NOP 
-  DEL 
-  NOP 
-  NOP 
-  SWAP 6
+  SWAP 8
 PASS Words
   NOP 
   NOP 
-  DEL 
   NOP 
-  NOP 
-  LOOP 
-  NOP 
-  NOP 
-  NOP 
-  SWAP 7
