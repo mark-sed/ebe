@@ -30,7 +30,6 @@ set(SOURCES
     engine/engine.cpp
     engine/engine_jenn.cpp
     engine/engine_miRANDa.cpp
-    engine/fitness.cpp
     frontend/lexer_text.cpp
     frontend/parser_text.cpp
     frontend/scanner_text.cpp
@@ -41,6 +40,7 @@ set(SOURCES
     frontend/preprocessor.cpp
     frontend/scanner.cpp
     gp/gp.cpp
+    gp/fitness.cpp
     midend/ir.cpp
     midend/tree.cpp
     midend/expression.cpp

@@ -220,8 +220,8 @@ float Fitness::jaro(IR::Node *ir1, IR::Node *ir2) {
     long max_dist = std::floor(std::max(ir1_size, ir2_size) / 2) - 1;
     long matches = 0;
 
-    bool ir1_hash[ir1_size] = {false, };
-    bool ir2_hash[ir2_size] = {false, };
+    std::vector<bool> ir1_hash(ir1_size);
+    std::vector<bool> ir2_hash(ir2_size);
 
     for(long i = 0; i < ir1_size; ++i) {
         for(long j = std::max(0L, i - max_dist); j < std::min(ir2_size, i + max_dist + 1); ++j) {
@@ -314,8 +314,8 @@ float Fitness::jaro_winkler(IR::Node *ir1, IR::Node *ir2) {
     long max_dist = std::floor(std::max(ir1_size, ir2_size) / 2) - 1;
     long matches = 0;
 
-    bool ir1_hash[ir1_size] = {false, };
-    bool ir2_hash[ir2_size] = {false, };
+    std::vector<bool> ir1_hash(ir1_size);
+    std::vector<bool> ir2_hash(ir2_size);
 
     for(long i = 0; i < ir1_size; ++i) {
         for(long j = std::max(0L, i - max_dist); j < std::min(ir2_size, i + max_dist + 1); ++j) {

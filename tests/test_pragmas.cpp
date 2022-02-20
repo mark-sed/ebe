@@ -22,6 +22,7 @@ TEST(Pragmas, CorrectPragmas) {
     pragmas.parse("requires  \"0.2.1\""); // Quotes can be used
     pragmas.apply();
 
+    // TODO: Check in symbol table
     EXPECT_EQ(Args::arg_opts.sym_table_size, 42);
 
     delete ebel;
