@@ -317,7 +317,7 @@ void compile_and_interpret(const char *f_in, const char *f_out, std::vector<cons
 
         // Don't print if output will go to stdcout
         if(!Args::arg_opts.no_info_print) {
-            std::cerr << "Ebel saved to '" << ebel_out << "'." << std::endl;
+            std::cerr << "Ebel saved to '" << ebel_out << "'.";
         }    
     }
     else {

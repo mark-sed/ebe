@@ -51,19 +51,6 @@ set(SOURCES
     utils/utils.cpp
 )
 
-# Test source files
-set(TEST_SRCS
-    tests/test_utils.cpp
-    tests/test_interpreter.cpp
-    tests/test_scanner.cpp
-    tests/test_argparse.cpp
-    tests/test_pragmas.cpp
-)
-
-# Enable gtest
-enable_testing()
-add_subdirectory(tests/googletest)
-
 # Targets
 # ebe target
 add_executable(
@@ -74,24 +61,38 @@ add_executable(
 target_link_libraries(${PROJECT_NAME} m)
 
 # ebetests target
-add_executable(
-    ebetests
-    ${TEST_SRCS}
-    ${SOURCES}
-)
-
-target_link_libraries(
-    ebetests
-    gtest_main
-)
-
-# GTest include
-include(GoogleTest)
-gtest_discover_tests(ebetests)
-
-# Docs build
-# docs target
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+    # Test source files
+    set(TEST_SRCS
+        tests/test_utils.cpp
+        tests/test_interpreter.cpp
+        tests/test_scanner.cpp
+        tests/test_argparse.cpp
+        tests/test_pragmas.cpp
+    )
+
+    # Enable gtest
+    enable_testing()
+    add_subdirectory(tests/googletest)
+
+    add_executable(
+        ebetests
+        ${TEST_SRCS}
+        ${SOURCES}
+    )
+
+    target_link_libraries(
+        ebetests
+        gtest_main
+    )
+
+    # GTest include
+    include(GoogleTest)
+    gtest_discover_tests(ebetests)
+
+    # Docs build
+    # docs target
     find_package(Doxygen REQUIRED dot)
     if(DOXYGEN_FOUND)
         set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
@@ -107,10 +108,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     else (DOXYGEN_FOUND)
         message("Doxygen need to be installed to generate the doxygen documentation")
     endif (DOXYGEN_FOUND)
-endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-# Rebuilding lexer and parser when files don't exist and flex and bison are present
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # Rebuilding lexer and parser when files don't exist and flex and bison are present
     find_package(BISON REQUIRED)
     find_package(FLEX REQUIRED)
     if(BISON_FOUND)
@@ -123,4 +122,5 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
                 ADD_FLEX_BISON_DEPENDENCY(lexer_ebel parser_ebel)
             endif(FLEX_FOUND)
     endif (BISON_FOUND)
+
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
