@@ -14,8 +14,8 @@ This program does not require any knowledge of any programming language to edit 
   * [Installation](#installation)
   * [Simple edit example](#simple-edit-example)
   * [User expression example](#user-expression-example)
-  * [Advanced usage examples](#advanced-usage-examples)
   * [Understanding Ebe](#understanding-ebe)
+  * [Some tips for compilation](#some-tips-for-compilation)
   * [Other resources](#other-resources)
 - [Ebe Tools](#ebe-tools)
 - [Contributing](#contributing)
@@ -224,7 +224,7 @@ How ebe compiles and interprets (`-x` option or compilation followed by interpre
 3. Once 100 % fitting (or sufficient for `-p` or is timeout `-t`) program is found, then this program is returned and evolution stopped.
 4. The generated program is then loaded into interpreter (Ebei) and input files are interpreted over it.
 
-![workflow_diagram](https://raw.githubusercontent.com/mark-sed/ebe/main/docs/ebe_workflow.png)
+![workflow_diagram](https://github.com/mark-sed/ebe/blob/main/docs/ebe_workflow.png?raw=true)
 
 ### How is text parsed
 
