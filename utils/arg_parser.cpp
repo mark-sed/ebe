@@ -462,6 +462,27 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
             else if(arg == "--no-info-print") {
                 this->no_info_print = true;
             }
+            else if(arg == "--population-size") {
+                if(this->population_size > 0) {
+                    Error::error(Error::ErrorCode::ARGUMENTS,
+                                 "Multiple --population-size values were specified");
+                }
+                if(argc > i+1) {
+                    try{
+                        this->population_size = Cast::to<unsigned int>(argv[++i]);
+                        if(this->population_size == 0) {
+                            Error::error(Error::ErrorCode::ARGUMENTS, 
+                               "Incorrect value for --population-size. Value has to be bigger than 0");
+                        }
+                    } catch (Exception::EbeException e){
+                        Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect value for --population-size", &e);
+                    }
+                }
+                else {
+                    Error::error(Error::ErrorCode::ARGUMENTS, 
+                                "Missing value for --population-size option");
+                }
+            }
             else if(arg == "--version") {
                 if(argc > 1) {
                     Error::error(Error::ErrorCode::ARGUMENTS, 

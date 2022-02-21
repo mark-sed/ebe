@@ -108,6 +108,10 @@ GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : population_siz
     if(max_words_pass_size > f_in->longest_line->size()) {
         max_words_pass_size = f_in->longest_line->size();
     }
+    // Set population size
+    if(Args::arg_opts.population_size > 0) {
+        this->population_size = Args::arg_opts.population_size;
+    }
 }
 
 namespace EngineUtils {
@@ -150,9 +154,7 @@ float Engine::compare(IR::Node *ir1, IR::Node *ir2){
 GPEngine::~GPEngine() {
     delete params;
     delete population;
-    if(expr_pass) {
-        delete expr_pass;
-    }
+    // Don't delete expression pass
 }
 
 void GPEngine::sort_population() {

@@ -55,6 +55,7 @@ namespace Args {
         bool no_warn_print;    ///< If warning should be surpressed
         bool no_error_print;   ///< If non critical errors should be surpressed
         bool no_info_print;    ///< If info messages should be surpressed
+        size_t population_size;///< Population size for engine params
 
         /** Time when Ebe was started */
         std::chrono::time_point<std::chrono::steady_clock> start_time;
@@ -90,7 +91,8 @@ namespace Args {
                     sym_table_size{0},
                     no_warn_print{false},
                     no_error_print{false},
-                    no_info_print{false} {
+                    no_info_print{false},
+                    population_size{0} {
         }
 
         /**
