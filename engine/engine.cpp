@@ -44,7 +44,8 @@ std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
         << TAB1"crossover_insert_chance = " << param.crossover_insert_chance << std::endl
         << TAB1"crossover_switch_chance = " << param.crossover_switch_chance << std::endl
         << TAB1"no_crossover_when_mutated = " << param.no_crossover_when_mutated << std::endl
-        << TAB1"elitism = " << param.elitism << std::endl;
+        << TAB1"elitism = " << param.elitism << std::endl
+        << TAB1"iterations= " << Args::arg_opts.iterations << std::endl;
     return out;
 }
 
@@ -107,6 +108,21 @@ GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : population_siz
     }
     if(max_words_pass_size > f_in->longest_line->size()) {
         max_words_pass_size = f_in->longest_line->size();
+    }
+    // Iterations
+    if(Args::arg_opts.iterations == 0){
+        if(similarity > 0.8) {
+            Args::arg_opts.iterations = 300;
+        }
+        else if(similarity > 0.7) {
+            Args::arg_opts.iterations = 400;
+        }
+        else if(similarity > 0.5) {
+            Args::arg_opts.iterations = 600;
+        }
+        else {
+            Args::arg_opts.iterations = 1000;
+        }
     }
     // Set population size
     if(Args::arg_opts.population_size > 0) {

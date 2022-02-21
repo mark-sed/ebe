@@ -24,13 +24,6 @@ EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in
                                                                 Args::arg_opts.iterations, 
                                                                 EngineUtils::EngineID::JENN) {
     // Create params
-    // TODO: Set the params for the best possible but also following ones specified by the user
-    if(Args::arg_opts.iterations == 0){
-        // TODO: Call initialized when implemented and set iterations in case its not set 
-        // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
-        iterations = 400;
-    }
-
     auto params = new GPEngineParams(text_in, text_out);
     set_params(params);
     LOG1("Engine Jenn params:\n" << *params << TAB1 << "iterations = " << iterations);

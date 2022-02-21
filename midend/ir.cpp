@@ -69,13 +69,13 @@ Word::~Word() {
 }
 
 Word& Word::operator=(const Word &other){
-    // FIXME: This might not work when expr is set (differently written expr, but same value)
     this->text = other.text;
     this->type = other.type;
     return *this;
 }
 
 bool Word::operator==(const Word &other) const {
+    // FIXME: This might not work when expr is set (differently written expr, but same value)
     return this->type == other.type && this->text == other.text;
 }
 
@@ -372,10 +372,6 @@ void PassWords::process(IR::Node *text) {
             Inst::Instruction *inst = (*this->pipeline)[column];
             // To make sure loops are not executed on the first pass the loop control is before instruction execution
             ++column;
-            // Save column if its bigger than biggest column number so far (for optimization)
-            if(static_cast<ssize_t>(column) > this->last_executed_index) {
-                this->last_executed_index = column;
-            }
             if(this->env.loop_inst == inst || (this->env.loop_inst && column >= this->pipeline->size())){
                 // If it was not yet checked, make sure there are actual non-controll instructions in the loop
                 if(!checked_executable_loop){
@@ -430,12 +426,15 @@ void PassWords::process(IR::Node *text) {
             else {
                 // Instruction execution
                 inst->exec(word, *line, this->env);
-                
             }
             if(!env.reprocess_obj){
                 ++word;
             }
             env.reprocess_obj = false;
+            // Save column if its bigger than biggest column number so far (for optimization)
+            if(static_cast<ssize_t>(column) > this->last_executed_index) {
+                this->last_executed_index = column;
+            }
         }
         ++line_number;
     }
