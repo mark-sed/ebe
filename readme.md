@@ -2,10 +2,12 @@
 
 # Ebe (Edit By Example)
 
-**Ebe** [_i:bi:_ or _ebe_] is a program (compiler and interpreter) for editting files just from given examples.
-This program does not require any knowledge of any programming language to edit files and promises editting options similar to ones provided by editting programming languages (like awk).
+**Ebe** [_i:bi:_ or _ebe_] is a program (compiler and interpreter) for editing files just from given examples.
+This program does not require any knowledge of any programming language to edit files and promises editing options similar to ones provided by editing programming languages (like awk).
 
-[Ebe wiki](https://github.com/mark-sed/ebe/wiki)
+* [Patch notes](https://github.com/mark-sed/ebe/wiki/Patch-notes)  
+* [Ebe wiki](https://github.com/mark-sed/ebe/wiki)
+
 
 #### Table of contents
 - [Ebe (Edit By Example)](#ebe--edit-by-example-)
@@ -23,13 +25,13 @@ This program does not require any knowledge of any programming language to edit 
 
 ## What can Ebe do
 
-Ebe works the best with structured data and allows for batch editing (multiple files can be editted during one interpretation), but can be used even for smaller files to save your time with writing a script to do these edits.
+Ebe works the best with structured data and allows for batch editing (multiple files can be edited during one interpretation), but can be used even for smaller files to save your time with writing a script to do these edits.
 
 Ebe also support user defined expressions and thus it is easy to modify numeric values.
 
 Example use cases can be:
 * removing columns from CSV file,
-* converting units (°F to °C) in dataset,
+* converting values (°F to °C) in dataset,
 * reordering columns and lines in log file,
 * changing `null` value for `0`...
 
@@ -38,6 +40,8 @@ Example use cases can be:
 ## Installation
 
 Current release of Ebe was tested and compiled only on Linux and the following installation talks only about this case. But source code is available as well as CMake file, so building Ebe on Windows should be possible (if anyone does this I would love to know more about it).
+
+There is also precompiled binary version for Linux, but this might not work on all systems and it is in almost all cases better to compile Ebe from source.
 
 ### Requirements
 
@@ -51,7 +55,7 @@ For __developers__ the following might be needed as well:
 
 ### Building Ebe
 
-1. Clone (or download using GitHub webpage) Ebe to your PC:
+1. Download latest release from [release tab](https://github.com/mark-sed/ebe/releases) in GitHub, alternatively you can clone main branch for the latest, but unstable version of Ebe:
 ```bash
 git clone https://github.com/mark-sed/ebe.git
 ```
@@ -125,7 +129,7 @@ Best compiled program has 100% precision (0.0 s).
 ```
 
 #### 4. Check output
-Output from editing will be in current directoru (`-o .`) under the same file names with prefix `edited-` (`edited-hellos.txt` and `edited-goodbyes.txt`). 
+Output from editing will be in current directory (`-o .`) under the same file names with prefix `edited-` (`edited-hellos.txt` and `edited-goodbyes.txt`). 
 
 `edited-hellos.txt`:
 ```
@@ -146,11 +150,9 @@ Eternium
 #### Options choice explanation
 What the used options mean:
 * `-x` - signifies that we want to compile and interpret in one run,
-* `-in example.in` - signifies that `example.in` will is the expected input pattern,
-* `-out example.out` - signifies that `example.out` will be the expected output after applying edits to `example.in`,
-* `-o .` - signifies that edited output will be saved in this directory. In this case, where there are multiple input files (`hellos.txt` and `goodbyes.txt`) `-o` needs to be a folder, if the input was only one file, then the `-o` should be output file name.
-
-If `-o` was not used, then the output will be printed to the terminal, which is more useful for single input file.
+* `-in example.in` - signifies that `example.in` is the expected input pattern,
+* `-out example.out` - signifies that `example.out` is be the expected output after applying edits to `example.in`,
+* `-o .` - signifies that edited output will be saved in this directory. In this case, where there are multiple input files (`hellos.txt` and `goodbyes.txt`) `-o` needs to be a folder, if the input was only one file, then the `-o` should be output file name. If `-o` was not used, then the output will be printed to the terminal, which is more useful for single input file.
 
 #### What it should look like 
 ![screenshot](https://i.imgur.com/dNaJSvg.png)

@@ -43,7 +43,6 @@ public:
      * @brief Parses pragma
      * 
      * @param value Pragma value. Should be only the string after "@pragma"
-     * @param scanner Parent ebel scanner.
      */
     void parse(std::string value);
 

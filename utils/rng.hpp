@@ -78,7 +78,9 @@ namespace RNG {
     std::list<IR::Pass *>::iterator rand_list_elem(std::list<IR::Pass *> *l, 
                                                    const std::unordered_set<IR::Pass *> *exclude);
     /** 
+     * @param l List to pick from
      * @param request_type PassType which the pass has to be
+     * @param exclude Set of elements to exclude from picking, if nullptr then none are excluded
      * @warning exclude will be modified 
      */
     std::list<IR::Pass *>::iterator rand_list_elem(std::list<IR::Pass *> *l, 
