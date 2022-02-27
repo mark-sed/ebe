@@ -36,6 +36,7 @@ class ScannerText : public Scanner, public yyFlexLexer {
 private:
     TextFile::ParserText::semantic_type *yylval = nullptr;
     bool inside_expression = false;
+    bool multiple_expr_types = false;
     const char *current_file_name;
 
     IR::Node *current_parse;              ///< Holds node that is currently being parsed during process method
@@ -75,6 +76,7 @@ private:
 public:
     TextFile::ParserText::location_type *loc = nullptr;
     ScannerText();
+    IR::Type expr_type; ///< Deducted expression type
 
     virtual int yylex(TextFile::ParserText::semantic_type *const lval,
                       TextFile::ParserText::location_type *location);
@@ -93,6 +95,12 @@ public:
     void add_newline();
     void add_expr(Expr::Expression *e, IR::Type type);
     /** @} */
+
+    /**
+     * @brief Used by the parser to set deducted expression type
+     * @param type Type found
+     */
+    void deducted_expr_type(IR::Type type);
 
     /**
      * Error handeling from parser and lexer

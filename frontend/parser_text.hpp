@@ -669,7 +669,13 @@ namespace  TextFile  {
       char dummy1[sizeof (Expr::Expression)];
 
       // expr
-      char dummy2[sizeof (int)];
+      char dummy2[sizeof (Node)];
+
+      // expr_float
+      char dummy3[sizeof (float)];
+
+      // expr_int
+      char dummy4[sizeof (int)];
 
       // TEXT
       // NUMBER
@@ -685,7 +691,7 @@ namespace  TextFile  {
       // "/"
       // "%"
       // "^"
-      char dummy3[sizeof (std::string)];
+      char dummy5[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -804,7 +810,9 @@ namespace  TextFile  {
         S_sentence = 25,                         // sentence
         S_word = 26,                             // word
         S_varexpr = 27,                          // varexpr
-        S_expr = 28                              // expr
+        S_expr = 28,                             // expr
+        S_expr_float = 29,                       // expr_float
+        S_expr_int = 30                          // expr_int
       };
     };
 
@@ -846,6 +854,14 @@ namespace  TextFile  {
         break;
 
       case symbol_kind::S_expr: // expr
+        value.move< Node > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_expr_float: // expr_float
+        value.move< float > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_expr_int: // expr_int
         value.move< int > (std::move (that.value));
         break;
 
@@ -897,6 +913,34 @@ namespace  TextFile  {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const Expr::Expression& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, Node&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const Node& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, float&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const float& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -960,6 +1004,14 @@ switch (yykind)
         break;
 
       case symbol_kind::S_expr: // expr
+        value.template destroy< Node > ();
+        break;
+
+      case symbol_kind::S_expr_float: // expr_float
+        value.template destroy< float > ();
+        break;
+
+      case symbol_kind::S_expr_int: // expr_int
         value.template destroy< int > ();
         break;
 
@@ -1565,7 +1617,7 @@ switch (yykind)
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const signed char yypgoto_[];
+    static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const signed char yydefgoto_[];
@@ -1817,9 +1869,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 159,     ///< Last index in yytable_.
-      yynnts_ = 6,  ///< Number of nonterminal symbols.
-      yyfinal_ = 31 ///< Termination state number.
+      yylast_ = 208,     ///< Last index in yytable_.
+      yynnts_ = 8,  ///< Number of nonterminal symbols.
+      yyfinal_ = 34 ///< Termination state number.
     };
 
 
@@ -1831,7 +1883,7 @@ switch (yykind)
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1835 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 1887 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
 

@@ -96,7 +96,9 @@
 %precedence NEG
 
 %type <Expr::Expression> varexpr
-%type <int> expr
+%type <int> expr_int
+%type <float> expr_float
+%type <Node> expr
 
 %locations
 
@@ -132,26 +134,28 @@ word      : TEXT         { scanner->add_text($1);      }
           | RPAR         { scanner->add_symbol(")");   }
           | FALSE_EXPR_BEGIN { scanner->add_symbol("{"); scanner->add_symbol("!"); }
           | FALSE_EXPR_END   { scanner->add_symbol("!"); scanner->add_symbol("}"); }
-          | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2}), IR::Type::NUMBER); }
-          | EXPR_BEGIN expr EXPR_END { auto e = Expression(Node(Type::NUMBER, std::to_string($2)), std::vector<Expression>{});
+          | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2}), scanner->expr_type); }
+          | EXPR_BEGIN expr_int EXPR_END { auto e = Expression(Node(Type::NUMBER, std::to_string($2)), std::vector<Expression>{});
                                        scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::NUMBER);}
+          | EXPR_BEGIN expr_float EXPR_END { auto e = Expression(Node(Type::FLOAT, std::to_string($2)), std::vector<Expression>{});
+                                       scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::FLOAT);}
           ;
 
 varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()); }
           | MINUS VAR %prec NEG { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::string("-1")), std::vector<Expression>{}), Expression(Node(Type::VAR, $2), std::vector<Expression>())}); }
           | LPAR varexpr RPAR { $$ = $2; }
-          | expr POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
-          | expr MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
-          | expr IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
-          | expr IDIV varexpr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
-          | expr MINUS varexpr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
-          | expr PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
-          | varexpr POW expr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
-          | varexpr MOD expr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
-          | varexpr IMUL expr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
-          | varexpr IDIV expr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
-          | varexpr MINUS expr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
-          | varexpr PLUS expr { $$ = Expression(Node(Type::ADD, "+"),  std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
+          | expr POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
+          | expr MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
+          | expr IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
+          | expr IDIV varexpr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
+          | expr MINUS varexpr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
+          | expr PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
+          | varexpr POW expr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
+          | varexpr MOD expr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
+          | varexpr IMUL expr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
+          | varexpr IDIV expr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
+          | varexpr MINUS expr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
+          | varexpr PLUS expr { $$ = Expression(Node(Type::ADD, "+"),  std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
           | varexpr POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{$1, $3}); }
           | varexpr MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, $3}); }
           | varexpr IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, $3}); }
@@ -160,15 +164,30 @@ varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()
           | varexpr PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{$1, $3}); }
           ;
 
-expr      : NUMBER { $$ = atoi($1.c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
-          | MINUS expr %prec NEG { $$ = -$2; /* Unary minus */}
-          | LPAR expr RPAR { $$ = $2; }
-          | expr POW expr { $$ = static_cast<int>(std::pow($1, $3));}
-          | expr MOD expr { $$ = $1 % $3;}
-          | expr IMUL expr { $$ = $1 * $3;}
-          | expr IDIV expr { $$ = $1 / $3;}
-          | expr MINUS expr { $$ = $1 - $3;}
-          | expr PLUS expr { $$ = $1 + $3;}
+expr      : expr_float { $$ = Node(Type::FLOAT, std::to_string($1)); scanner->deducted_expr_type(IR::Type::FLOAT); }
+          | expr_int   { $$ = Node(Type::NUMBER, std::to_string($1)); scanner->deducted_expr_type(IR::Type::NUMBER); }
+          ;
+
+expr_float: FLOAT { $$ = std::stof($1.c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
+          | MINUS expr_float %prec NEG { $$ = -$2; /* Unary minus */}
+          | LPAR expr_float RPAR { $$ = $2; }
+          | expr_float POW expr_float { $$ = std::pow($1, $3);}
+          | expr_float MOD expr_float { $$ = std::fmod($1, $3);}
+          | expr_float IMUL expr_float { $$ = $1 * $3;}
+          | expr_float IDIV expr_float { $$ = $1 / $3;}
+          | expr_float MINUS expr_float { $$ = $1 - $3;}
+          | expr_float PLUS expr_float { $$ = $1 + $3;}
+          ;
+
+expr_int  : NUMBER { $$ = atoi($1.c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
+          | MINUS expr_int %prec NEG { $$ = -$2; /* Unary minus */}
+          | LPAR expr_int RPAR { $$ = $2; }
+          | expr_int POW expr_int { $$ = static_cast<int>(std::pow($1, $3));}
+          | expr_int MOD expr_int { $$ = $1 % $3;}
+          | expr_int IMUL expr_int { $$ = $1 * $3;}
+          | expr_int IDIV expr_int { $$ = $1 / $3;}
+          | expr_int MINUS expr_int { $$ = $1 - $3;}
+          | expr_int PLUS expr_int { $$ = $1 + $3;}
           ;
 
 %%

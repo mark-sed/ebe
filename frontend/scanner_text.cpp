@@ -35,6 +35,8 @@ IR::Node *ScannerText::process(std::istream *text, const char *file_name) {
     this->switch_streams(text);
     this->current_file_name = file_name;
     loc = new TextFile::ParserText::location_type();
+    this->expr_type = IR::Type::DERIVED;
+    this->multiple_expr_types = false;
 
     // Create new parse node (don't delete last one)
     this->current_parse = new IR::Node();
@@ -60,6 +62,19 @@ IR::Node *ScannerText::process(std::istream *text, const char *file_name) {
     delete loc;
     delete parser;
     return parsed;
+}
+
+void ScannerText::deducted_expr_type(IR::Type type) {
+    if(multiple_expr_types) {
+        return;
+    }
+    if(this->expr_type != IR::Type::DERIVED) {
+        multiple_expr_types = true;
+        this->expr_type = IR::Type::DERIVED;
+    }
+    else {
+        this->expr_type = type;
+    }
 }
 
 void ScannerText::sub_error(Error::ErrorCode code, const std::string &err_message) {
@@ -144,6 +159,12 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
         if(expr->children[0].value.type == Expr::Type::NUMBER) {
             arg1 = new Vars::NumberVar(atoi(expr->children[0].value.text.c_str()));
         }
+        else if(expr->children[0].value.type == Expr::Type::FLOAT) {
+            arg1 = new Vars::FloatVar(std::stof(expr->children[0].value.text.c_str()));
+        }
+        else if(expr->children[0].value.type == Expr::Type::TEXT) {
+            arg1 = new Vars::TextVar(expr->children[0].value.text);
+        }
         else if(expr->children[0].value.type == Expr::Type::VAR) {
             iarg1 = atoi(expr->children[0].value.text.c_str());
         }
@@ -163,6 +184,12 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
         // Leaf - Arg1
         if(expr->children[1].value.type == Expr::Type::NUMBER) {
             arg2 = new Vars::NumberVar(atoi(expr->children[1].value.text.c_str()));
+        }
+        else if(expr->children[1].value.type == Expr::Type::FLOAT) {
+            arg2 = new Vars::FloatVar(std::stof(expr->children[1].value.text.c_str()));
+        }
+        else if(expr->children[1].value.type == Expr::Type::TEXT) {
+            arg2 = new Vars::TextVar(expr->children[1].value.text);
         }
         else if(expr->children[1].value.type == Expr::Type::VAR) {
             iarg2 = atoi(expr->children[1].value.text.c_str());
@@ -196,6 +223,12 @@ int ScannerText::walk_expr(Expr::Expression *expr, IR::PassExpression *pass, int
             pass->push_back(new Inst::MOVE(0, new Vars::NumberVar(atoi(expr->value.text.c_str()))));
             dont_inc_var = true;
         break;
+        case FLOAT:
+            pass->push_back(new Inst::MOVE(0, new Vars::FloatVar(std::stof(expr->value.text.c_str()))));
+            dont_inc_var = true;
+        case TEXT:
+            pass->push_back(new Inst::MOVE(0, new Vars::TextVar(expr->value.text)));
+            dont_inc_var = true;
         case ADD:
             pass->push_back(new Inst::ADD(*var_num, iarg1, iarg2, arg1, arg2));
         break;

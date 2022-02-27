@@ -25,6 +25,8 @@ namespace Expr {
     enum Type {
         VAR,
         NUMBER,
+        FLOAT,
+        TEXT,
         ADD,
         IMUL,
         SUB,

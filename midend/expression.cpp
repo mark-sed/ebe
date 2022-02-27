@@ -21,6 +21,8 @@ namespace Expr{
         const char *NAMES[] = {
             "VAR",
             "NUMBER",
+            "FLOAT",
+            "TEXT",
             "ADD",
             "IMUL",
             "SUB",
