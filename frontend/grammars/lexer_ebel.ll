@@ -54,6 +54,14 @@ SPACE   [ \t]
                                     yylval->emplace<int>(atoi(yytext));
                                     return token::INT;
                                 }
+[-]?{NUM}+\.{NUM}+[eE][+-]?{NUM}+ {   // Float in scientific notation
+                                    yylval->build<float>(std::stof(yytext)); 
+                                    return token::CONST_FLOAT;
+                                }
+[-]?{NUM}+\.{NUM}+              {   // Float
+                                    yylval->build<float>(std::stof(yytext)); 
+                                    return token::CONST_FLOAT;
+                                }
 "$"[0-9]+                       {   /* Variable */
                                     // atoi can be used since syntactical analysis was done here
                                     yylval->emplace<int>(atoi(&yytext[1]));

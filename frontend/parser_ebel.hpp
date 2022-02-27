@@ -52,6 +52,7 @@
     }
 
     #include "ir.hpp"
+    #include "symbol_table.hpp"
 
     #ifndef YY_NULLPTR
         #if defined __cplusplus && 201103L <= __cplusplus
@@ -61,7 +62,7 @@
         #endif
     #endif
 
-#line 65 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 66 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -202,7 +203,7 @@
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 namespace  EbelFile  {
-#line 206 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 207 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 
   /// A point in a source file.
@@ -665,13 +666,20 @@ namespace  EbelFile  {
       // type
       char dummy1[sizeof (IR::Type)];
 
-      // "number"
+      // const_nums
+      // const_any
+      char dummy2[sizeof (Vars::Variable *)];
+
+      // "float"
+      char dummy3[sizeof (float)];
+
+      // "integer"
       // "variable"
-      char dummy2[sizeof (int)];
+      char dummy4[sizeof (int)];
 
       // "string"
       // PRAGMA
-      char dummy3[sizeof (std::string)];
+      char dummy5[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -725,36 +733,37 @@ namespace  EbelFile  {
     YYerror = 256,                 // error
     YYUNDEF = 257,                 // "invalid token"
     NEWLINE = 258,                 // "new line"
-    INT = 259,                     // "number"
-    COMMA = 260,                   // ","
-    VAR = 261,                     // "variable"
+    COMMA = 259,                   // ","
+    INT = 260,                     // "integer"
+    CONST_FLOAT = 261,             // "float"
     STRING = 262,                  // "string"
-    PRAGMA = 263,                  // PRAGMA
-    CONCAT = 264,                  // CONCAT
-    DEL = 265,                     // DEL
-    LOOP = 266,                    // LOOP
-    NOP = 267,                     // NOP
-    PASS = 268,                    // PASS
-    SWAP = 269,                    // SWAP
-    RETURN = 270,                  // RETURN
-    ADD = 271,                     // ADD
-    SUB = 272,                     // SUB
-    MUL = 273,                     // MUL
-    DIV = 274,                     // DIV
-    MOD = 275,                     // MOD
-    POW = 276,                     // POW
-    MOVE = 277,                    // MOVE
-    WORDS = 278,                   // "words"
-    LINES = 279,                   // "lines"
-    DOCUMENTS = 280,               // "documents"
-    EXPRESSION = 281,              // "expression"
-    TEXT = 282,                    // TEXT
-    NUMBER = 283,                  // NUMBER
-    FLOAT = 284,                   // FLOAT
-    DELIMITER = 285,               // DELIMITER
-    SYMBOL = 286,                  // SYMBOL
-    EMPTY = 287,                   // EMPTY
-    DERIVED = 288                  // DERIVED
+    VAR = 263,                     // "variable"
+    PRAGMA = 264,                  // PRAGMA
+    CONCAT = 265,                  // CONCAT
+    DEL = 266,                     // DEL
+    LOOP = 267,                    // LOOP
+    NOP = 268,                     // NOP
+    PASS = 269,                    // PASS
+    SWAP = 270,                    // SWAP
+    RETURN = 271,                  // RETURN
+    ADD = 272,                     // ADD
+    SUB = 273,                     // SUB
+    MUL = 274,                     // MUL
+    DIV = 275,                     // DIV
+    MOD = 276,                     // MOD
+    POW = 277,                     // POW
+    MOVE = 278,                    // MOVE
+    WORDS = 279,                   // "words"
+    LINES = 280,                   // "lines"
+    DOCUMENTS = 281,               // "documents"
+    EXPRESSION = 282,              // "expression"
+    TEXT = 283,                    // TEXT
+    NUMBER = 284,                  // NUMBER
+    FLOAT = 285,                   // FLOAT
+    DELIMITER = 286,               // DELIMITER
+    SYMBOL = 287,                  // SYMBOL
+    EMPTY = 288,                   // EMPTY
+    DERIVED = 289                  // DERIVED
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -771,52 +780,55 @@ namespace  EbelFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 35, ///< Number of tokens.
+        YYNTOKENS = 36, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_NEWLINE = 3,                           // "new line"
-        S_INT = 4,                               // "number"
-        S_COMMA = 5,                             // ","
-        S_VAR = 6,                               // "variable"
+        S_COMMA = 4,                             // ","
+        S_INT = 5,                               // "integer"
+        S_CONST_FLOAT = 6,                       // "float"
         S_STRING = 7,                            // "string"
-        S_PRAGMA = 8,                            // PRAGMA
-        S_CONCAT = 9,                            // CONCAT
-        S_DEL = 10,                              // DEL
-        S_LOOP = 11,                             // LOOP
-        S_NOP = 12,                              // NOP
-        S_PASS = 13,                             // PASS
-        S_SWAP = 14,                             // SWAP
-        S_RETURN = 15,                           // RETURN
-        S_ADD = 16,                              // ADD
-        S_SUB = 17,                              // SUB
-        S_MUL = 18,                              // MUL
-        S_DIV = 19,                              // DIV
-        S_MOD = 20,                              // MOD
-        S_POW = 21,                              // POW
-        S_MOVE = 22,                             // MOVE
-        S_WORDS = 23,                            // "words"
-        S_LINES = 24,                            // "lines"
-        S_DOCUMENTS = 25,                        // "documents"
-        S_EXPRESSION = 26,                       // "expression"
-        S_TEXT = 27,                             // TEXT
-        S_NUMBER = 28,                           // NUMBER
-        S_FLOAT = 29,                            // FLOAT
-        S_DELIMITER = 30,                        // DELIMITER
-        S_SYMBOL = 31,                           // SYMBOL
-        S_EMPTY = 32,                            // EMPTY
-        S_DERIVED = 33,                          // DERIVED
-        S_34_n_ = 34,                            // '\n'
-        S_YYACCEPT = 35,                         // $accept
-        S_program = 36,                          // program
-        S_empty = 37,                            // empty
-        S_pragma = 38,                           // pragma
-        S_code = 39,                             // code
-        S_instruction = 40,                      // instruction
-        S_expr_inst = 41,                        // expr_inst
-        S_pass = 42,                             // pass
-        S_type = 43                              // type
+        S_VAR = 8,                               // "variable"
+        S_PRAGMA = 9,                            // PRAGMA
+        S_CONCAT = 10,                           // CONCAT
+        S_DEL = 11,                              // DEL
+        S_LOOP = 12,                             // LOOP
+        S_NOP = 13,                              // NOP
+        S_PASS = 14,                             // PASS
+        S_SWAP = 15,                             // SWAP
+        S_RETURN = 16,                           // RETURN
+        S_ADD = 17,                              // ADD
+        S_SUB = 18,                              // SUB
+        S_MUL = 19,                              // MUL
+        S_DIV = 20,                              // DIV
+        S_MOD = 21,                              // MOD
+        S_POW = 22,                              // POW
+        S_MOVE = 23,                             // MOVE
+        S_WORDS = 24,                            // "words"
+        S_LINES = 25,                            // "lines"
+        S_DOCUMENTS = 26,                        // "documents"
+        S_EXPRESSION = 27,                       // "expression"
+        S_TEXT = 28,                             // TEXT
+        S_NUMBER = 29,                           // NUMBER
+        S_FLOAT = 30,                            // FLOAT
+        S_DELIMITER = 31,                        // DELIMITER
+        S_SYMBOL = 32,                           // SYMBOL
+        S_EMPTY = 33,                            // EMPTY
+        S_DERIVED = 34,                          // DERIVED
+        S_35_n_ = 35,                            // '\n'
+        S_YYACCEPT = 36,                         // $accept
+        S_program = 37,                          // program
+        S_empty = 38,                            // empty
+        S_pragma = 39,                           // pragma
+        S_code = 40,                             // code
+        S_instruction = 41,                      // instruction
+        S_expr_inst = 42,                        // expr_inst
+        S_const_nums = 43,                       // const_nums
+        S_const_any = 44,                        // const_any
+        S_pass = 45,                             // pass
+        S_type = 46                              // type
       };
     };
 
@@ -857,7 +869,16 @@ namespace  EbelFile  {
         value.move< IR::Type > (std::move (that.value));
         break;
 
-      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_const_nums: // const_nums
+      case symbol_kind::S_const_any: // const_any
+        value.move< Vars::Variable * > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_CONST_FLOAT: // "float"
+        value.move< float > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_INT: // "integer"
       case symbol_kind::S_VAR: // "variable"
         value.move< int > (std::move (that.value));
         break;
@@ -898,6 +919,34 @@ namespace  EbelFile  {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const IR::Type& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, Vars::Variable *&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const Vars::Variable *& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, float&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const float& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -960,7 +1009,16 @@ switch (yykind)
         value.template destroy< IR::Type > ();
         break;
 
-      case symbol_kind::S_INT: // "number"
+      case symbol_kind::S_const_nums: // const_nums
+      case symbol_kind::S_const_any: // const_any
+        value.template destroy< Vars::Variable * > ();
+        break;
+
+      case symbol_kind::S_CONST_FLOAT: // "float"
+        value.template destroy< float > ();
+        break;
+
+      case symbol_kind::S_INT: // "integer"
       case symbol_kind::S_VAR: // "variable"
         value.template destroy< int > ();
         break;
@@ -1068,10 +1126,21 @@ switch (yykind)
       {
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::END
-                   || (token::YYerror <= tok && tok <= token::NEWLINE)
-                   || tok == token::COMMA
+                   || (token::YYerror <= tok && tok <= token::COMMA)
                    || (token::CONCAT <= tok && tok <= token::DERIVED)
                    || tok == 10);
+#endif
+      }
+#if 201103L <= YY_CPLUSPLUS
+      symbol_type (int tok, float v, location_type l)
+        : super_type (token_kind_type (tok), std::move (v), std::move (l))
+#else
+      symbol_type (int tok, const float& v, const location_type& l)
+        : super_type (token_kind_type (tok), v, l)
+#endif
+      {
+#if !defined _MSC_VER || defined __clang__
+        YY_ASSERT (tok == token::CONST_FLOAT);
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -1096,7 +1165,8 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::STRING <= tok && tok <= token::PRAGMA));
+        YY_ASSERT (tok == token::STRING
+                   || tok == token::PRAGMA);
 #endif
       }
     };
@@ -1210,21 +1280,6 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_INT (int v, location_type l)
-      {
-        return symbol_type (token::INT, std::move (v), std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_INT (const int& v, const location_type& l)
-      {
-        return symbol_type (token::INT, v, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
       make_COMMA (location_type l)
       {
         return symbol_type (token::COMMA, std::move (l));
@@ -1240,16 +1295,31 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_VAR (int v, location_type l)
+      make_INT (int v, location_type l)
       {
-        return symbol_type (token::VAR, std::move (v), std::move (l));
+        return symbol_type (token::INT, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_VAR (const int& v, const location_type& l)
+      make_INT (const int& v, const location_type& l)
       {
-        return symbol_type (token::VAR, v, l);
+        return symbol_type (token::INT, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_CONST_FLOAT (float v, location_type l)
+      {
+        return symbol_type (token::CONST_FLOAT, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_CONST_FLOAT (const float& v, const location_type& l)
+      {
+        return symbol_type (token::CONST_FLOAT, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1265,6 +1335,21 @@ switch (yykind)
       make_STRING (const std::string& v, const location_type& l)
       {
         return symbol_type (token::STRING, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_VAR (int v, location_type l)
+      {
+        return symbol_type (token::VAR, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_VAR (const int& v, const location_type& l)
+      {
+        return symbol_type (token::VAR, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1687,7 +1772,7 @@ switch (yykind)
 
 
     /// Stored state numbers (used for stacks).
-    typedef signed char state_type;
+    typedef unsigned char state_type;
 
     /// The arguments of the error message.
     int yy_syntax_error_arguments_ (const context& yyctx,
@@ -1735,7 +1820,7 @@ switch (yykind)
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const signed char yypgoto_[];
+    static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const signed char yydefgoto_[];
@@ -1743,7 +1828,7 @@ switch (yykind)
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
     // number is the opposite.  If YYTABLE_NINF, syntax error.
-    static const signed char yytable_[];
+    static const unsigned char yytable_[];
 
     static const signed char yycheck_[];
 
@@ -1987,8 +2072,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 142,     ///< Last index in yytable_.
-      yynnts_ = 9,  ///< Number of nonterminal symbols.
+      yylast_ = 178,     ///< Last index in yytable_.
+      yynnts_ = 11,  ///< Number of nonterminal symbols.
       yyfinal_ = 37 ///< Termination state number.
     };
 
@@ -2001,7 +2086,7 @@ switch (yykind)
 
 #line 17 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_ebel.yy"
 } //  EbelFile 
-#line 2005 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
+#line 2090 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_ebel.hpp"
 
 
 

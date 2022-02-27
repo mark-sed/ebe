@@ -26,6 +26,7 @@
     }
 
     #include "ir.hpp"
+    #include "symbol_table.hpp"
 
     #ifndef YY_NULLPTR
         #if defined __cplusplus && 201103L <= __cplusplus
@@ -62,10 +63,11 @@
 /* Tokens and types */
 %token END 0 "end of file"
 %token NEWLINE "new line"
-%token <int> INT "number"
 %token COMMA ","
-%token <int> VAR "variable"
+%token <int> INT "integer"
+%token <float> CONST_FLOAT "float"
 %token <std::string> STRING "string"
+%token <int> VAR "variable"
 
 /* Interpreter */
 %token <std::string> PRAGMA
@@ -104,6 +106,8 @@
 %token DERIVED
 
 %type <IR::Type> type
+%type <Vars::Variable *> const_nums
+%type <Vars::Variable *> const_any
 
 %locations
 
@@ -146,38 +150,47 @@ instruction : CONCAT INT           { scanner->add_concat($2);          }
             | RETURN               { scanner->add_return(); scanner->add_nop(); }
             ;
 
-expr_inst   : ADD VAR COMMA VAR COMMA VAR       { scanner->add_add($2, $4, $6);                      }
-            | ADD VAR COMMA VAR COMMA INT       { scanner->add_add($2, $4, new Vars::NumberVar($6)); }
-            | ADD VAR COMMA INT COMMA VAR       { scanner->add_add($2, new Vars::NumberVar($4), $6); }
-            | ADD VAR COMMA INT COMMA INT       { scanner->add_add($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+expr_inst   : ADD VAR COMMA VAR COMMA VAR               { scanner->add_add($2, $4, $6); }
+            | ADD VAR COMMA VAR COMMA const_nums        { scanner->add_add($2, $4, $6); }
+            | ADD VAR COMMA const_nums COMMA VAR        { scanner->add_add($2, $4, $6); }
+            | ADD VAR COMMA const_nums COMMA const_nums { scanner->add_add($2, $4, $6); }
 
-            | SUB VAR COMMA VAR COMMA VAR       { scanner->add_sub($2, $4, $6);                      }
-            | SUB VAR COMMA VAR COMMA INT       { scanner->add_sub($2, $4, new Vars::NumberVar($6)); }
-            | SUB VAR COMMA INT COMMA VAR       { scanner->add_sub($2, new Vars::NumberVar($4), $6); }
-            | SUB VAR COMMA INT COMMA INT       { scanner->add_sub($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+            | SUB VAR COMMA VAR COMMA VAR               { scanner->add_sub($2, $4, $6); }
+            | SUB VAR COMMA VAR COMMA const_nums        { scanner->add_sub($2, $4, $6); }
+            | SUB VAR COMMA const_nums COMMA VAR        { scanner->add_sub($2, $4, $6); }
+            | SUB VAR COMMA const_nums COMMA const_nums { scanner->add_sub($2, $4, $6); }
 
-            | MUL VAR COMMA VAR COMMA VAR       { scanner->add_mul($2, $4, $6);                      }
-            | MUL VAR COMMA VAR COMMA INT       { scanner->add_mul($2, $4, new Vars::NumberVar($6)); }
-            | MUL VAR COMMA INT COMMA VAR       { scanner->add_mul($2, new Vars::NumberVar($4), $6); }
-            | MUL VAR COMMA INT COMMA INT       { scanner->add_mul($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+            | MUL VAR COMMA VAR COMMA VAR               { scanner->add_mul($2, $4, $6); }
+            | MUL VAR COMMA VAR COMMA const_nums        { scanner->add_mul($2, $4, $6); }
+            | MUL VAR COMMA const_nums COMMA VAR        { scanner->add_mul($2, $4, $6); }
+            | MUL VAR COMMA const_nums COMMA const_nums { scanner->add_mul($2, $4, $6); }
             
-            | DIV VAR COMMA VAR COMMA VAR       { scanner->add_div($2, $4, $6);                      }
-            | DIV VAR COMMA VAR COMMA INT       { scanner->add_div($2, $4, new Vars::NumberVar($6)); }
-            | DIV VAR COMMA INT COMMA VAR       { scanner->add_div($2, new Vars::NumberVar($4), $6); }
-            | DIV VAR COMMA INT COMMA INT       { scanner->add_div($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+            | DIV VAR COMMA VAR COMMA VAR               { scanner->add_div($2, $4, $6); }
+            | DIV VAR COMMA VAR COMMA const_nums        { scanner->add_div($2, $4, $6); }
+            | DIV VAR COMMA const_nums COMMA VAR        { scanner->add_div($2, $4, $6); }
+            | DIV VAR COMMA const_nums COMMA const_nums { scanner->add_div($2, $4, $6); }
 
-            | MOD VAR COMMA VAR COMMA VAR       { scanner->add_mod($2, $4, $6);                      }
-            | MOD VAR COMMA VAR COMMA INT       { scanner->add_mod($2, $4, new Vars::NumberVar($6)); }
-            | MOD VAR COMMA INT COMMA VAR       { scanner->add_mod($2, new Vars::NumberVar($4), $6); }
-            | MOD VAR COMMA INT COMMA INT       { scanner->add_mod($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+            | MOD VAR COMMA VAR COMMA VAR               { scanner->add_mod($2, $4, $6); }
+            | MOD VAR COMMA VAR COMMA const_nums        { scanner->add_mod($2, $4, $6); }
+            | MOD VAR COMMA const_nums COMMA VAR        { scanner->add_mod($2, $4, $6); }
+            | MOD VAR COMMA const_nums COMMA const_nums { scanner->add_mod($2, $4, $6); }
 
-            | POW VAR COMMA VAR COMMA VAR       { scanner->add_pow($2, $4, $6);                      }
-            | POW VAR COMMA VAR COMMA INT       { scanner->add_pow($2, $4, new Vars::NumberVar($6)); }
-            | POW VAR COMMA INT COMMA VAR       { scanner->add_pow($2, new Vars::NumberVar($4), $6); }
-            | POW VAR COMMA INT COMMA INT       { scanner->add_pow($2, new Vars::NumberVar($4), new Vars::NumberVar($6)); }
+            | POW VAR COMMA VAR COMMA VAR               { scanner->add_pow($2, $4, $6); }
+            | POW VAR COMMA VAR COMMA const_nums        { scanner->add_pow($2, $4, $6); }
+            | POW VAR COMMA const_nums COMMA VAR        { scanner->add_pow($2, $4, $6); }
+            | POW VAR COMMA const_nums COMMA const_nums { scanner->add_pow($2, $4, $6); }
             
-            | MOVE VAR COMMA VAR                { scanner->add_move($2, $4);                         }
-            | MOVE VAR COMMA INT                { scanner->add_move($2, new Vars::NumberVar($4));    }
+            | MOVE VAR COMMA VAR                        { scanner->add_move($2, $4);    }
+            | MOVE VAR COMMA const_any                  { scanner->add_move($2, $4);    }
+            ;
+
+const_nums  : INT           { $$ = new Vars::NumberVar($1); }
+            | CONST_FLOAT   { $$ = new Vars::FloatVar($1);  }
+            ;
+
+const_any   : INT           { $$ = new Vars::NumberVar($1); }
+            | CONST_FLOAT   { $$ = new Vars::FloatVar($1);  }
+            | STRING        { $$ = new Vars::TextVar($1);   }
             ;
 
 pass        : PASS type EXPRESSION   { scanner->add_pass_expression($2, std::string(""));                }

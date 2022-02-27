@@ -1,6 +1,6 @@
-#line 1 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 2 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
-#line 3 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 4 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -468,10 +468,10 @@ using token = TextFile::ParserText::token;
 // Redefine termination token to not use NULL
 #define yyterminate() return (token::END)
 
-#line 471 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 472 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 /* Define what scanner class is used */
 /* Macros for symbol types */
-#line 474 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 475 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 #define INITIAL 0
 
@@ -610,7 +610,7 @@ YY_DECL
     yylval = lval;    
 
 
-#line 613 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 614 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -818,7 +818,7 @@ YY_RULE_SETUP
 #line 113 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_text.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 821 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
+#line 822 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_text.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
