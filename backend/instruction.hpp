@@ -39,7 +39,7 @@ namespace Inst {
         bool control;  ///< If true, then the instruction does not process and is used for the interpreter/compiler
 
         /** Destructor */ 
-        virtual ~Instruction(){};
+        virtual ~Instruction() {};
 
         virtual Instruction *copy() const = 0;
 
@@ -140,6 +140,8 @@ namespace Inst {
         std::string extract_string_var(int var, Vars::Variable *value, Vars::SymbolTable *sym_table);
 
     public:
+        virtual ~ExprInstruction() {}
+
         void exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, 
                   IR::PassEnvironment &env) override {
             Error::error(Error::ErrorCode::INTERNAL, 
@@ -169,6 +171,7 @@ namespace Inst {
         Vars::Variable *src1;   ///< 1st argument value
         Vars::Variable *src2;   ///< 2nd argument value
     public:
+
         void format_args(std::ostream &out) override;
 
         ArithmeticInstruction(int dst, int isrc1, int isrc2, Vars::Variable *src1, Vars::Variable *src2) 
@@ -198,7 +201,7 @@ namespace Inst {
         ArithmeticInstruction(int dst, Vars::Variable *src1, Vars::Variable *src2) 
             : dst{dst}, isrc1{-1}, isrc2{-1}, src1{src1}, src2{src2} { control = false; }
 
-        ~ArithmeticInstruction() {
+        virtual ~ArithmeticInstruction() {
             if(src1 != nullptr) {
                 delete src1;
             }

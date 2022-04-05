@@ -262,7 +262,7 @@ Pass::Pass(const Pass &other) {
 }
 
 Pass::~Pass(){
-    for(auto const &inst: *this->pipeline){
+    for(auto *inst: *this->pipeline){
         delete inst;
     }
     // Don't delete subpass table

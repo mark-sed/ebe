@@ -30,7 +30,7 @@
 /**
  * Initializer and handler for compilation
  */
-std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out, std::ostream &out) {
+std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out, std::ostream &out, Engine *engine) {
     // Evolution
     float precision = -0.01f;
     float best_precision = -0.01f;
@@ -51,7 +51,7 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
     IR::EbelNode *best_program = nullptr;
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
-    Engine *engine = nullptr;
+    //Engine *engine = nullptr;
     for(size_t e = 1; e <= evolutions || Args::arg_opts.precision != 0 || Args::arg_opts.timeout != 0; ++e){
         if(best_program != nullptr) { 
             // Before deletion, best program has to be copied to not be lost
@@ -110,15 +110,9 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
         }
     }
 
-    // Copy best program otherwise it would be deleted
-    IR::EbelNode *ebel = nullptr;
-    if(best_program) {
-        ebel = new IR::EbelNode(*best_program);
-    }
-
-    if(engine != nullptr) {
-        delete engine; // Deletes all phenotypes
-    }
+    // No need to make a deep copy, since engine is passed as well. One copy is avoided and engine can ba
+    // free after printing the program.
+    IR::EbelNode *ebel = best_program;
 
     return std::make_pair(ebel, best_precision);
 }
@@ -141,7 +135,8 @@ void compile(const char *f_in, const char *f_out) {
     LOG1("Text OUT IR:\n" << *ir_out);
     LOGMAX("Text scanner finished");
 
-    auto compiled = compile_core(ir_in, ir_out, std::cout);
+    Engine *engine = nullptr;
+    auto compiled = compile_core(ir_in, ir_out, std::cout, engine);
     IR::EbelNode *ebel = compiled.first;
     float precision = compiled.second;
 
@@ -172,7 +167,6 @@ void compile(const char *f_in, const char *f_out) {
                     << " s)." << std::endl;
         }
         LOG1("Best compiled program with " << (precision*100) << "% precision:\n" << *ebel);
-        delete ebel;
     }
 
     // Cleanup
@@ -184,6 +178,7 @@ void compile(const char *f_in, const char *f_out) {
     if(out_text != &std::cin) {
         delete out_text;
     }
+    delete engine;
     delete scanner;
     delete preproc;
     LOGMAX("Compilation done");
@@ -294,7 +289,8 @@ void compile_and_interpret(const char *f_in, const char *f_out, std::vector<cons
     LOGMAX("Text scanner finished");
 
     std::stringstream ss;
-    auto compiled = compile_core(ir_in, ir_out, ss);
+    Engine *engine = nullptr;
+    auto compiled = compile_core(ir_in, ir_out, ss, engine);
     if(!Args::arg_opts.no_info_print) {
         std::cerr << ss.str();
     }
@@ -343,7 +339,6 @@ void compile_and_interpret(const char *f_in, const char *f_out, std::vector<cons
     LOGMAX("Interpretation done");
 
     // Cleanup
-    delete ebel;
     delete ir_in;
     delete ir_out;
     if(in_text != &std::cin) {
@@ -352,6 +347,7 @@ void compile_and_interpret(const char *f_in, const char *f_out, std::vector<cons
     if(out_text != &std::cin) {
         delete out_text;
     }
+    delete engine;
     delete scanner;
     delete preproc;
     LOGMAX("Compilation and interpretation done");
