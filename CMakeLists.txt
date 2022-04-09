@@ -30,6 +30,7 @@ set(SOURCES
     engine/engine.cpp
     engine/engine_jenn.cpp
     engine/engine_miRANDa.cpp
+    engine/engine_taylor.cpp
     frontend/lexer_text.cpp
     frontend/parser_text.cpp
     frontend/scanner_text.cpp

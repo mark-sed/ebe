@@ -215,9 +215,10 @@ namespace Inst {
      * Generates a random instruction
      * @param pass Pass for which the instruction should be
      * @param pass_length How many objects are in the pass (to use for generating arguments)
+     * @param occs Occurences of instructions for given pass
      * @return A random instruction
      */ 
-    Instruction *rand_instruction(IR::PassType pass, int pass_length);
+    Instruction *rand_instruction(IR::PassType pass, int pass_length, const InstructionOccurrences &occs);
 
     // Sort instructions alphabetically
 

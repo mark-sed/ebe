@@ -35,6 +35,8 @@ Example use cases can be:
 * reordering columns and lines in log file,
 * changing `null` value for `0`...
 
+At the current state there are not word generating instructions, so it is impossible for Ebe to generate a longer output than the input, only exception is `CONCAT` (line concatenation) instruction.
+
 # Getting started
 
 ## Installation

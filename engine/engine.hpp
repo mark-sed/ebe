@@ -28,6 +28,7 @@ namespace IR {
     class Node;
     class EbelNode;
     class PassWords;
+    enum PassType: int;
 }
 
 /**
@@ -43,7 +44,8 @@ namespace EngineUtils {
     enum EngineID {
         UNKNOWN = -1,
         JENN = 0,
-        MIRANDA
+        MIRANDA,
+        TAYLOR
     };
 
     /// Type holding engine ID and its corresponding name
@@ -109,10 +111,29 @@ public:
     virtual IR::EbelNode *generate(float *precision) = 0;
 };
 
+struct InstructionOccurrences {
+    float CONCAT;
+    float DEL;
+    float LOOP;
+    float NOP;
+    float SWAP;
+
+    /**
+     * @brief Construct a new Instruction Occurrences object
+     * Uses default values for occurrences.
+     * @param pass Pass type for which to generate occurrences
+     */
+    InstructionOccurrences(IR::PassType pass);
+
+    friend std::ostream& operator<< (std::ostream &out, const InstructionOccurrences& occs);
+};
+
 /**
  * Struct used for configuring GP engine's evolution parameters
  */
 struct GPEngineParams {
+    InstructionOccurrences words_occs;///< How often should certain instructions occurre in the words pass
+    InstructionOccurrences lines_occs;///< How often should certain instructions occurre in the lines pass
     size_t population_size;          ///< How many phenotypes should be in a population
     size_t min_words_pass_size;      ///< Minimal amount of instructions in one phenotype's words pass
     size_t max_words_pass_size;      ///< Maximal amount of instructions in one phenotype's words pass

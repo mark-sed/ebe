@@ -129,6 +129,7 @@ public:
     public:
         const static std::string JENN_FITNESS;
         const static std::string MIRANDA_FITNESS;
+        const static std::string TAYLOR_FITNESS;
     };
 
     /** Constructor */

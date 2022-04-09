@@ -80,44 +80,31 @@ inline void SWAP::format_args(std::ostream &out){
     out << this->arg1;
 }
 
-Instruction *Inst::rand_instruction(IR::PassType pass, int pass_length){
-    // TODO: Make arguments be generated better and with passed in values
-    // FIXME: return instructions only for specified pass
-
+Instruction *Inst::rand_instruction(IR::PassType, int pass_length, const InstructionOccurrences &occs) {
     // CONCAT, DEL, LOOP, NOP, SWAP
     if(pass_length < 2) {
         // It is used in rand_int so it has to be at least 2 to get 1
         pass_length = 2;
     }
 
-    if(pass == IR::PassType::WORDS_PASS) {
-        switch(RNG::rand_int(0, 7)){
-            // 3/8 chance
-            case 0: case 1: case 3: return new NOP();
-            // 2/8 chance
-            case 4: case 5: return new DEL();
-            // 1/8 chance
-            case 6: return new SWAP(RNG::rand_int(1, pass_length-1));
-            // 1/8 chance
-            case 7: return new LOOP();
-        }
+    float chance = RNG::rand_float();
+    if(chance < occs.CONCAT) {
+        return new CONCAT(RNG::roll() ? 1 : RNG::rand_int(1, pass_length-1));
     }
-    else if(pass == IR::PassType::LINES_PASS) {
-        switch(RNG::rand_int(0, 8)){
-            // 3/9 chance
-            case 0: case 1: case 3: return new NOP();
-            // 2/9 chance
-            case 4: case 5: return new DEL();
-            // 1/9 chance
-            case 6: return new SWAP(RNG::rand_int(1, pass_length-1));
-            // 1/9 chance
-            case 7: 
-                // Make it a bigger chance to concat with following line
-                return new CONCAT(RNG::roll() ? 1 : RNG::rand_int(1, pass_length-1));
-            // 1/9 chance
-            case 8: return new LOOP();
-        }
+    else if(chance < occs.DEL) {
+        return new DEL();
     }
+    else if(chance < occs.LOOP) {
+        return new LOOP();
+    }
+    else if(chance < occs.NOP) {
+        return new NOP();
+    }
+    else if(chance < occs.SWAP) {
+        return new SWAP(RNG::rand_int(1, pass_length-1));
+    }
+
+    Error::warning("INTERNAL ERROR, please report this. Somehow the instruction occurences don't cover the whole range");
     return new NOP();
 }
 

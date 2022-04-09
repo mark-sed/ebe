@@ -92,7 +92,7 @@ namespace Error {
      * @note When new code is added its string name should be added also to the get_code_name function
      */
     enum ErrorCode {
-        NO_ERROR = 0,  ///< When no error occured but program had to exit (otherwise return code would be for some error 0)
+        NO_ERROR = 0,  ///< When no error occurred but program had to exit (otherwise return code would be for some error 0)
         UNKNOWN,       ///< Unknown error (shouldn't be really used)
         INTERNAL,      ///< Internal compiler error (such as unable to allocate memory)
         FILE_ACCESS,   ///< Problem opening/writing/working with users files (not internal config files)
@@ -112,9 +112,9 @@ namespace Error {
     const char *get_code_name(ErrorCode code);
 
     /**
-     * Function for when fatal error occures
+     * Function for when fatal error occurres
      * Prints error information passed in and exits with passed in code
-     * @param code Code of an error that occured
+     * @param code Code of an error that occurred
      * @param msg Info message to be printed for the user
      * @param exc Exception that might hava accompanied this error or nullptr
      * @param exit If true (default), then after the message is printed program exits with code
@@ -154,9 +154,9 @@ protected:
     /**
      * Prints error to the user and exits
      * @param code Error code to exit with
-     * @param file Name of the file in which this error occured
-     * @param line Line at which the error occured
-     * @param column Column at which the error occured
+     * @param file Name of the file in which this error occurred
+     * @param line Line at which the error occurred
+     * @param column Column at which the error occurred
      * @param msg Message to be printed to the user
      * @param exc Exception that might hava accompanied this error or nullptr
      * @param exit If true (default), then after the message is printed program exits with code

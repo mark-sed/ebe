@@ -200,7 +200,7 @@ namespace IR {
     /**
      * Pass types
      */
-    enum PassType {
+    enum PassType : int {
         EXPRESSION_PASS,
         WORDS_PASS,
         LINES_PASS,

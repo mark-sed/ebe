@@ -23,6 +23,7 @@
 #include "interpreter.hpp"
 #include "engine_jenn.hpp"
 #include "engine_miRANDa.hpp"
+#include "engine_taylor.hpp"
 #include "rng.hpp"
 #include "logging.hpp"
 #include "arg_parser.hpp"
@@ -68,6 +69,9 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
             break;
             case EngineUtils::EngineID::JENN:
                 engine = new EngineJenn(ir_in, ir_out);
+            break;
+            case EngineUtils::EngineID::TAYLOR:
+                engine = new EngineTaylor(ir_in, ir_out);
             break;
             default:
                 Error::error(Error::ErrorCode::INTERNAL, "Attempt to use engine unknown by the compile process");

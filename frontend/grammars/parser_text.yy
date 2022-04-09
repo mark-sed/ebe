@@ -98,7 +98,6 @@
 %type <Expr::Expression> varexpr
 %type <int> expr_int
 %type <float> expr_float
-%type <Node> expr
 
 %locations
 
@@ -144,28 +143,41 @@ word      : TEXT         { scanner->add_text($1);      }
 varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()); }
           | MINUS VAR %prec NEG { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::string("-1")), std::vector<Expression>{}), Expression(Node(Type::VAR, $2), std::vector<Expression>())}); }
           | LPAR varexpr RPAR { $$ = $2; }
-          | expr POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
-          | expr MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
-          | expr IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
-          | expr IDIV varexpr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
-          | expr MINUS varexpr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
-          | expr PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{Expression($1, std::vector<Expression>{}), $3}); }
-          | varexpr POW expr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
-          | varexpr MOD expr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
-          | varexpr IMUL expr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
-          | varexpr IDIV expr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
-          | varexpr MINUS expr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
-          | varexpr PLUS expr { $$ = Expression(Node(Type::ADD, "+"),  std::vector<Expression>{$1, Expression($3, std::vector<Expression>{})}); }
+          
+          | expr_int POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_int MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_int IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_int IDIV varexpr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_int MINUS varexpr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_int PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{Expression(Node(Type::NUMBER, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          
+          | varexpr POW expr_int { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr MOD expr_int { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr IMUL expr_int { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr IDIV expr_int { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr MINUS expr_int { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr PLUS expr_int { $$ = Expression(Node(Type::ADD, "+"),  std::vector<Expression>{$1, Expression(Node(Type::NUMBER, std::to_string($3)), std::vector<Expression>{})}); }
+          
+          | expr_float POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{Expression(Node(Type::FLOAT, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_float MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{Expression(Node(Type::FLOAT, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_float IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{Expression(Node(Type::FLOAT, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_float IDIV varexpr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{Expression(Node(Type::FLOAT, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_float MINUS varexpr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{Expression(Node(Type::FLOAT, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          | expr_float PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{Expression(Node(Type::FLOAT, std::to_string($1)), std::vector<Expression>{}), $3}); }
+          
+          | varexpr POW expr_float { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{$1, Expression(Node(Type::FLOAT, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr MOD expr_float { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, Expression(Node(Type::FLOAT, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr IMUL expr_float { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, Expression(Node(Type::FLOAT, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr IDIV expr_float { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{$1, Expression(Node(Type::FLOAT, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr MINUS expr_float { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, Expression(Node(Type::FLOAT, std::to_string($3)), std::vector<Expression>{})}); }
+          | varexpr PLUS expr_float { $$ = Expression(Node(Type::ADD, "+"),  std::vector<Expression>{$1, Expression(Node(Type::FLOAT, std::to_string($3)), std::vector<Expression>{})}); }
+          
           | varexpr POW varexpr { $$ = Expression(Node(Type::POW, "^"), std::vector<Expression>{$1, $3}); }
           | varexpr MOD varexpr { $$ = Expression(Node(Type::MOD, "%"), std::vector<Expression>{$1, $3}); }
           | varexpr IMUL varexpr { $$ = Expression(Node(Type::IMUL, "*"), std::vector<Expression>{$1, $3}); }
           | varexpr IDIV varexpr { $$ = Expression(Node(Type::IDIV, "/"), std::vector<Expression>{$1, $3}); }
           | varexpr MINUS varexpr { $$ = Expression(Node(Type::SUB, "-"), std::vector<Expression>{$1, $3}); }
           | varexpr PLUS varexpr { $$ = Expression(Node(Type::ADD, "+"), std::vector<Expression>{$1, $3}); }
-          ;
-
-expr      : expr_float { $$ = Node(Type::FLOAT, std::to_string($1)); scanner->deducted_expr_type(IR::Type::FLOAT); }
-          | expr_int   { $$ = Node(Type::NUMBER, std::to_string($1)); scanner->deducted_expr_type(IR::Type::NUMBER); }
           ;
 
 expr_float: FLOAT { $$ = std::stof($1.c_str()); /* Atoi is safe to use because syntactical analysis was done */ }
