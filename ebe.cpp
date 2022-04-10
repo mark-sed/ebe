@@ -52,16 +52,15 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
     IR::EbelNode *best_program = nullptr;
     // TODO: Call initializer when implemented to set the correct number of evolutions when not set
     size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
-    //Engine *engine = nullptr;
     for(size_t e = 1; e <= evolutions || Args::arg_opts.precision != 0 || Args::arg_opts.timeout != 0; ++e){
         if(best_program != nullptr) { 
             // Before deletion, best program has to be copied to not be lost
             auto best_program_copy = new IR::EbelNode(*best_program);
             best_program = best_program_copy;
-            if(engine != nullptr) {
+            /*if(engine != nullptr) {
                 delete engine;
-            }
-            engine = nullptr;
+            }*/
+            //engine = nullptr;
         }
         switch(engine_id){
             case EngineUtils::EngineID::MIRANDA:

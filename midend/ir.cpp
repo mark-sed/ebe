@@ -345,7 +345,7 @@ void PassWords::process(IR::Node *text) {
         return;
     }
     LOG4("Words pass processing:\n" << *text);
-    LOG5("Processing over: " << *this);
+    //LOG5("Processing over: " << *this);
     // Reset optimization variables
     this->last_executed_index = -1;
     // Reset environment
@@ -360,7 +360,6 @@ void PassWords::process(IR::Node *text) {
         auto word = (*line)->begin();
         auto prev = word;
         while(word != (*line)->end()) {
-            //LOGMAX("Processing word '" << (*word)->text << "'");
             // Break when not looping and there are no more instructions for the line
             if(!this->env.loop_inst && column >= this->pipeline->size()){
                 break;

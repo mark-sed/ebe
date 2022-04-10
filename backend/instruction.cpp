@@ -104,7 +104,7 @@ Instruction *Inst::rand_instruction(IR::PassType, int pass_length, const Instruc
         return new SWAP(RNG::rand_int(1, pass_length-1));
     }
 
-    Error::warning("INTERNAL ERROR, please report this. Somehow the instruction occurences don't cover the whole range");
+    // Covers the case where the values don't add up to 1.0f or might not because of floating error.
     return new NOP();
 }
 

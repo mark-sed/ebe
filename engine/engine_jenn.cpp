@@ -80,6 +80,7 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                 // Preappend user defined expressions
                 perfect_pheno->program->nodes->push_front(expr_pass);
             }
+
             // Reinterpret to optimize
             auto interpreter = new Interpreter(perfect_pheno->program);
             auto text_in_copy = *text_in;
