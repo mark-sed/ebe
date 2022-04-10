@@ -30,6 +30,10 @@ using namespace EngineUtils;
 
 std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
     out << "GPEngineParams:" << std::endl
+        << TAB1"word_occs: " << std::endl
+        << param.words_occs
+        << TAB1"lines_occs: " << std::endl
+        << param.lines_occs
         << TAB1"population_size = " << param.population_size << std::endl
         << TAB1"min_words_pass_size = " << param.min_words_pass_size << std::endl
         << TAB1"max_words_pass_size = " << param.max_words_pass_size << std::endl
@@ -45,11 +49,44 @@ std::ostream& operator<< (std::ostream &out, const GPEngineParams& param) {
         << TAB1"crossover_switch_chance = " << param.crossover_switch_chance << std::endl
         << TAB1"no_crossover_when_mutated = " << param.no_crossover_when_mutated << std::endl
         << TAB1"elitism = " << param.elitism << std::endl
-        << TAB1"iterations= " << Args::arg_opts.iterations << std::endl;
+        << TAB1"iterations= " << Args::arg_opts.iterations << std::endl
+        ;
     return out;
 }
 
-GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : population_size{50},
+std::ostream& operator<< (std::ostream &out, const InstructionOccurrences& occs) {
+    out << TAB2"CONCAT = " << occs.CONCAT << std::endl
+        << TAB2"DEL = " << occs.DEL << std::endl
+        << TAB2"LOOP = " << occs.LOOP << std::endl
+        << TAB2"NOP = " << occs.NOP << std::endl
+        << TAB2"SWAP = " << occs.SWAP << std::endl
+        ;
+    return out;
+}
+
+InstructionOccurrences::InstructionOccurrences(IR::PassType pass) {
+    if(pass == IR::PassType::WORDS_PASS) {
+        CONCAT =          0.0000f;
+        DEL    = CONCAT + 0.3125f;
+        LOOP   = DEL    + 0.1250f;
+        NOP    = LOOP   + 0.4375f;
+        SWAP   = NOP    + 0.1250f;
+    }
+    else if(pass == IR::PassType::LINES_PASS) {
+        CONCAT =          0.1250f;
+        DEL    = CONCAT + 0.2500f;
+        LOOP   = DEL    + 0.1250f;
+        NOP    = LOOP   + 0.3750f;
+        SWAP   = NOP    + 0.1250f;
+    }
+    else {
+        Error::error(Error::ErrorCode::UNIMPLEMENTED, "Requested instruction occurrences for unimplemented pass");
+    }
+}
+
+GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : words_occs{IR::PassType::WORDS_PASS},
+                                                                  lines_occs{IR::PassType::LINES_PASS},
+                                                                  population_size{50},
                                                                   min_words_pass_size{1},
                                                                   max_words_pass_size{5},
                                                                   min_lines_pass_size{1},
@@ -133,7 +170,8 @@ GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : population_siz
 namespace EngineUtils {
     const TEngineInfo ENGINE_NAMES = TEngineInfo{
         std::pair<EngineID, const char *>(EngineID::JENN, "Jenn"),
-        std::pair<EngineID, const char *>(EngineID::MIRANDA, "MiRANDa")
+        std::pair<EngineID, const char *>(EngineID::MIRANDA, "MiRANDa"),
+        std::pair<EngineID, const char *>(EngineID::TAYLOR, "Taylor")
     };
 }
 
@@ -192,8 +230,11 @@ void GPEngine::mutate(GP::Phenotype *pheno) {
     auto pass_size = this->text_in->get_max_words_count();
     if((*rand_pass)->type == IR::PassType::LINES_PASS) {
         pass_size = this->text_in->get_lines_count();
+        *rand_inst = Inst::rand_instruction(IR::PassType::LINES_PASS, pass_size, params->lines_occs);
     }
-    *rand_inst = Inst::rand_instruction((*rand_pass)->type, pass_size);
+    else {
+        *rand_inst = Inst::rand_instruction(IR::PassType::WORDS_PASS, pass_size, params->words_occs);
+    }
 }
 
 void GPEngine::crossover_insert(GP::Phenotype *pheno) {

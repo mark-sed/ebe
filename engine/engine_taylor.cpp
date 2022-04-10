@@ -1,71 +1,78 @@
 /**
- * @file engine_jenn.cpp
+ * @file engine_taylor.cpp
  * @author Marek Sedlacek
- * @date August 2021
- * @copyright Copyright 2021 Marek Sedlacek. All rights reserved.
+ * @date April 2022
+ * @copyright Copyright 2022 Marek Sedlacek. All rights reserved.
  * 
- * @brief Jenn GP engine
+ * @brief Taylor GP engine
  * 
- * Jenn [gen] engine using ~~jennetic~~ genetic programming for ebel generation
+ * Taylor [NOP tail] engine uses genetic programming for ebel generation, 
+ * but only in the form of mutations. Phenotypes start as NOP tails
+ * and are mutated into desired program.
  */
 
-#include "engine_jenn.hpp"
-#include "ir.hpp"
-#include "engine.hpp"
-#include "gp.hpp"
+#include "engine_taylor.hpp"
 #include "arg_parser.hpp"
-#include "rng.hpp"
 #include "logging.hpp"
 #include "interpreter.hpp"
+#include "rng.hpp"
 
-#include <iostream>
-
-EngineJenn::EngineJenn(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, 
-                                                                Args::arg_opts.iterations, 
-                                                                EngineUtils::EngineID::JENN) {
+EngineTaylor::EngineTaylor(IR::Node *text_in, IR::Node *text_out) : GPEngine(text_in, text_out, 
+                                                                    Args::arg_opts.iterations, 
+                                                                    EngineUtils::EngineID::TAYLOR) {
     // Create params
     auto params = new GPEngineParams(text_in, text_out);
+    params->crossover_chance = 0.0f;
+    params->mutation_chance = 0.4f;
+    params->crossover_insert_chance = 0.0f;
+    params->crossover_switch_chance = 0.0f;
+
+    params->min_words_pass_size = 1;
+    params->max_words_pass_size = text_in->get_max_words_count();
+
+    params->words_occs.CONCAT = 0.0f;
+    params->words_occs.DEL    = 0.0f;
+    params->words_occs.LOOP   = 0.0f;
+    params->words_occs.NOP    = 1.0f;
+    params->words_occs.SWAP   = 0.0f;
+
+    params->lines_occs.CONCAT = 0.0f;
+    params->lines_occs.DEL    = 0.0f;
+    params->lines_occs.LOOP   = 0.0f;
+    params->lines_occs.NOP    = 1.0f;
+    params->lines_occs.SWAP   = 0.0f;
+
     set_params(params);
-    LOG1("Engine Jenn params:\n" << *params << TAB1 << "iterations = " << iterations);
+    LOG1("Engine Taylor params:\n" << *params << TAB1 << "iterations = " << iterations);
     // Creates and initializes a new population
     this->population = new GP::Population(params, text_in);
+
+    // Reset occurrences back
+    params->words_occs = InstructionOccurrences(IR::PassType::WORDS_PASS);
+    params->lines_occs = InstructionOccurrences(IR::PassType::LINES_PASS);
 }
 
-EngineJenn::~EngineJenn() {
-    // Params and population is deleted in GPEngine destructor
+EngineTaylor::~EngineTaylor() {
+
 }
 
 /**
+ * The process is identical to EngineJenn, but uses only mutations. 
+ * 
  * The working principle is as follows:
  *   1. Generate population
  *   2. Evaluate population
  *   3. If perfect phenotype (100 % precision), then end the program
  *   4. Sort the population based on fitness (to make following steps easier)
  *   5. If elitism is set, then leave the first phenotype untouched
- *   6. Do rolls (rng) for mutation and crossover
- *   7. Based on set chances and rolled values for mutations and crossovers do them
+ *   6. Do rolls (rng) for mutation
+ *   7. Perform mutations on rolled phenotypes
  *   8. If not all iterations have been done, then repeat from step 2
  *   9. Otherwise set precision (fitness) of best phenotype and return this phenotype
  */
-IR::EbelNode *EngineJenn::generate(float *precision) {
-    // Iterations in an evolution
-    size_t cnt_insert_cross = 0;
-    size_t cnt_switch_cross = 0;
-    size_t cnt_mutation = 0;
+IR::EbelNode *EngineTaylor::generate(float *precision) {
     for(size_t iter = 0; iter < iterations; ++iter){
         LOG3(iter << ". iteration started");
-        // Prune
-        for(auto p: *this->population->candidates) {
-            for(auto pass: *p->program->nodes) {
-                if(pass->pipeline->size() > 2*this->text_in->nodes->front()->size()) {
-                    // Free instructions
-                    for(size_t i = pass->pipeline->size()/2; i < pass->pipeline->size(); ++i){
-                        delete (*pass->pipeline)[i];
-                    }
-                    pass->pipeline->resize(pass->pipeline->size()/2);
-                }
-            }
-        }
         // Eval population
         auto perfect_pheno = this->evaluate(false);
         if(perfect_pheno){
@@ -74,13 +81,10 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                 *precision = perfect_pheno->fitness; 
             }
             LOG1("Perfect phenotype found in iteration " << iter << " - ending evolution");
-            LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iter << "\n" TAB1 "Mutations: " << cnt_mutation 
-                 << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
             if(expr_pass != nullptr) {
                 // Preappend user defined expressions
                 perfect_pheno->program->nodes->push_front(expr_pass);
             }
-
             // Reinterpret to optimize
             auto interpreter = new Interpreter(perfect_pheno->program);
             auto text_in_copy = *text_in;
@@ -92,8 +96,8 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
         // Sort population based on fitness
         this->sort_population();
         // Log best fitness
-        STAT_LOG(Analytics::UnitNames::JENN_FITNESS, std::to_string(iter), std::to_string(this->population->candidates->front()->fitness));
-        // Mutate and crossover
+        STAT_LOG(Analytics::UnitNames::TAYLOR_FITNESS, std::to_string(iter), std::to_string(this->population->candidates->front()->fitness));
+        // Mutate
         size_t pheno_number = 0;
         for(auto *pheno: *this->population->candidates){
             if(pheno == *this->population->candidates->begin() && params->elitism){
@@ -106,8 +110,6 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                     *precision = pheno->fitness; 
                 }
                 LOG1("Timeout or phenotype with minimum precision found in iteration " << iter << " - ending evolution");
-                LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iter << "\n" TAB1 "Mutations: " << cnt_mutation 
-                    << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
                 if(expr_pass != nullptr) {
                     // Preappend user defined expressions
                     pheno->program->nodes->push_front(expr_pass);
@@ -121,23 +123,8 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
                 return pheno->program;
             }
             // Try mutate the phenotype
-            auto mutate_roll = RNG::roll(params->mutation_chance);
-            auto crossover_roll = RNG::roll(params->crossover_chance); // This might be used, depending on params
-            if(mutate_roll){
-                cnt_mutation++;
+            if(RNG::roll(params->mutation_chance)){
                 mutate(pheno);
-            }
-            // Crossover
-            if((mutate_roll && !params->no_crossover_when_mutated && crossover_roll)
-              || (!mutate_roll && crossover_roll)) {
-                if(RNG::roll(params->crossover_insert_chance)){
-                    cnt_insert_cross++;
-                    crossover_insert(pheno);
-                }
-                else if(RNG::roll(params->crossover_switch_chance)){
-                    cnt_switch_cross++;
-                    crossover_switch(pheno);
-                }
             }
             pheno_number++;
         }
@@ -151,10 +138,8 @@ IR::EbelNode *EngineJenn::generate(float *precision) {
         // Set precision if pointer is valid
         *precision = this->population->candidates->front()->fitness; 
     }
-    LOG1("Jenn engine evolution finished with best fitness " << this->population->candidates->front()->fitness
+    LOG1("Taylor engine evolution finished with best fitness " << this->population->candidates->front()->fitness
          << " on phenotype:\n" << *this->population->candidates->front()->program);
-    LOG1("Evolution statistics:\n" << TAB1 "Iterations: " << iterations << "\n" TAB1 "Mutations: " << cnt_mutation 
-         << "\n" TAB1 "Insert crossovers: " << cnt_insert_cross << "\n" TAB1 "Switch crossovers: " << cnt_switch_cross);
     auto best = this->population->candidates->front()->program;
     if(expr_pass != nullptr) {
         // Preappend user defined expressions

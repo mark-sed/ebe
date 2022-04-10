@@ -668,14 +668,11 @@ namespace  TextFile  {
       // varexpr
       char dummy1[sizeof (Expr::Expression)];
 
-      // expr
-      char dummy2[sizeof (Node)];
-
       // expr_float
-      char dummy3[sizeof (float)];
+      char dummy2[sizeof (float)];
 
       // expr_int
-      char dummy4[sizeof (int)];
+      char dummy3[sizeof (int)];
 
       // TEXT
       // NUMBER
@@ -691,7 +688,7 @@ namespace  TextFile  {
       // "/"
       // "%"
       // "^"
-      char dummy5[sizeof (std::string)];
+      char dummy4[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -810,9 +807,8 @@ namespace  TextFile  {
         S_sentence = 25,                         // sentence
         S_word = 26,                             // word
         S_varexpr = 27,                          // varexpr
-        S_expr = 28,                             // expr
-        S_expr_float = 29,                       // expr_float
-        S_expr_int = 30                          // expr_int
+        S_expr_float = 28,                       // expr_float
+        S_expr_int = 29                          // expr_int
       };
     };
 
@@ -851,10 +847,6 @@ namespace  TextFile  {
     {
       case symbol_kind::S_varexpr: // varexpr
         value.move< Expr::Expression > (std::move (that.value));
-        break;
-
-      case symbol_kind::S_expr: // expr
-        value.move< Node > (std::move (that.value));
         break;
 
       case symbol_kind::S_expr_float: // expr_float
@@ -913,20 +905,6 @@ namespace  TextFile  {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const Expr::Expression& v, const location_type& l)
-        : Base (t)
-        , value (v)
-        , location (l)
-      {}
-#endif
-
-#if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, Node&& v, location_type&& l)
-        : Base (t)
-        , value (std::move (v))
-        , location (std::move (l))
-      {}
-#else
-      basic_symbol (typename Base::kind_type t, const Node& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -1001,10 +979,6 @@ switch (yykind)
     {
       case symbol_kind::S_varexpr: // varexpr
         value.template destroy< Expr::Expression > ();
-        break;
-
-      case symbol_kind::S_expr: // expr
-        value.template destroy< Node > ();
         break;
 
       case symbol_kind::S_expr_float: // expr_float
@@ -1569,7 +1543,7 @@ switch (yykind)
 
 
     /// Stored state numbers (used for stacks).
-    typedef signed char state_type;
+    typedef unsigned char state_type;
 
     /// The arguments of the error message.
     int yy_syntax_error_arguments_ (const context& yyctx,
@@ -1617,7 +1591,7 @@ switch (yykind)
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const short yypgoto_[];
+    static const signed char yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const signed char yydefgoto_[];
@@ -1625,9 +1599,9 @@ switch (yykind)
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
     // number is the opposite.  If YYTABLE_NINF, syntax error.
-    static const signed char yytable_[];
+    static const unsigned char yytable_[];
 
-    static const signed char yycheck_[];
+    static const short yycheck_[];
 
     // YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
     // state STATE-NUM.
@@ -1869,9 +1843,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 208,     ///< Last index in yytable_.
-      yynnts_ = 8,  ///< Number of nonterminal symbols.
-      yyfinal_ = 34 ///< Termination state number.
+      yylast_ = 258,     ///< Last index in yytable_.
+      yynnts_ = 7,  ///< Number of nonterminal symbols.
+      yyfinal_ = 33 ///< Termination state number.
     };
 
 
@@ -1883,7 +1857,7 @@ switch (yykind)
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1887 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 1861 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
 

@@ -345,7 +345,7 @@ void PassWords::process(IR::Node *text) {
         return;
     }
     LOG4("Words pass processing:\n" << *text);
-    LOG5("Processing over: " << *this);
+    //LOG5("Processing over: " << *this);
     // Reset optimization variables
     this->last_executed_index = -1;
     // Reset environment
@@ -360,7 +360,6 @@ void PassWords::process(IR::Node *text) {
         auto word = (*line)->begin();
         auto prev = word;
         while(word != (*line)->end()) {
-            //LOGMAX("Processing word '" << (*word)->text << "'");
             // Break when not looping and there are no more instructions for the line
             if(!this->env.loop_inst && column >= this->pipeline->size()){
                 break;
@@ -534,11 +533,13 @@ EbelNode::EbelNode(GPEngineParams *params, IR::Node *text_in) {
     // Generate passes and its instructions
     for(int i = 0; i < pass_amount; ++i) {
         IR::Pass *pass = nullptr;
+        InstructionOccurrences &occs = params->words_occs;
         if(RNG::roll(words_pass_chance)) {
             pass = new PassWords();
         }
         else {
             pass = new PassLines();
+            occs = params->lines_occs;
         }
         int instrs = 0;
         if(pass->type == IR::PassType::WORDS_PASS) {
@@ -549,11 +550,11 @@ EbelNode::EbelNode(GPEngineParams *params, IR::Node *text_in) {
         }
         for(size_t i = 0; i < static_cast<size_t>(instrs); i++){
             auto size = pass->type == IR::PassType::WORDS_PASS ? text_in->get_max_words_count() : text_in->get_lines_count();
-            auto inst = Inst::rand_instruction(pass->type, size);
+            auto inst = Inst::rand_instruction(pass->type, size, occs);
             // Make sure the program does not start with loop
             while(i == 0 && inst->get_name() == Inst::LOOP::NAME){
                 delete inst;
-                inst = Inst::rand_instruction(pass->type, size);
+                inst = Inst::rand_instruction(pass->type, size, occs);
             }
             pass->push_back(inst);
         }

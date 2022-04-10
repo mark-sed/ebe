@@ -21,7 +21,9 @@
 
 EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(text_in, text_out, 
                                                                       Args::arg_opts.iterations, 
-                                                                      EngineUtils::EngineID::MIRANDA) {
+                                                                      EngineUtils::EngineID::MIRANDA),
+                                                                      lines_occs{IR::PassType::LINES_PASS},
+                                                                      words_occs{IR::PassType::WORDS_PASS} {
     if(Args::arg_opts.iterations == 0){
         // TODO: Call initialized when implemented and set iterations in case its not set 
         // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
@@ -31,6 +33,18 @@ EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(tex
         // TODO: This should be printed only once
         Error::warning("MiRANDa does not support expressions");
     }
+    lines_occs.CONCAT =                     0.20f;
+    lines_occs.DEL    = lines_occs.CONCAT + 0.20f;
+    lines_occs.LOOP   = lines_occs.DEL    + 0.20f;
+    lines_occs.NOP    = lines_occs.LOOP   + 0.20f;
+    lines_occs.SWAP   = lines_occs.NOP    + 0.20f;
+
+    words_occs.CONCAT =                     0.00f;
+    words_occs.DEL    = words_occs.CONCAT + 0.25f;
+    words_occs.LOOP   = words_occs.DEL    + 0.25f;
+    words_occs.NOP    = words_occs.LOOP   + 0.25f;
+    words_occs.SWAP   = words_occs.NOP    + 0.25f;
+
     // TODO: Set params with initializer when implemented
     this->min_program_size = 0;
     this->max_program_size = 30;
@@ -43,11 +57,16 @@ EngineMiRANDa::~EngineMiRANDa() {
 
 }
 
-static void fill_pass(IR::Pass *pass, int size, size_t arg_max) {
+void EngineMiRANDa::fill_pass(IR::Pass *pass, int size, size_t arg_max) {
     // Get random amount of instructions to generate
     for(int i = 0; i < size; ++i) {
         // Add random instructions
-        pass->push_back(Inst::rand_instruction(pass->type, arg_max));
+        if(pass->type == IR::PassType::WORDS_PASS) {
+            pass->push_back(Inst::rand_instruction(IR::PassType::WORDS_PASS, arg_max, words_occs));
+        }
+        else {
+            pass->push_back(Inst::rand_instruction(IR::PassType::LINES_PASS, arg_max, lines_occs));
+        }
     }
 } 
 

@@ -20,6 +20,7 @@
 // Unit names definitions
 const std::string Analytics::UnitNames::JENN_FITNESS = "jenn_fitness";
 const std::string Analytics::UnitNames::MIRANDA_FITNESS = "miRANDa_fitness";
+const std::string Analytics::UnitNames::TAYLOR_FITNESS = "taylor_fitness";
 
 BaseLogger::BaseLogger() : disable(false), log_everything(false), logging_level{0} {
 

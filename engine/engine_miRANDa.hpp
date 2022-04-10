@@ -24,11 +24,21 @@ private:
     size_t min_passes;
     size_t max_passes;
 
+    InstructionOccurrences lines_occs;
+    InstructionOccurrences words_occs;
+
     /**
      * Generates random program based on engine params
      * @return Valid ebel program which is random
      */ 
     IR::EbelNode *random_program();
+    /**
+     * @brief Fills pass with instructions
+     * @param pass Pass type
+     * @param size Size of the pass
+     * @param arg_max Maximum argument value
+     */
+    void fill_pass(IR::Pass *pass, int size, size_t arg_max);
 public:
     /**
      * Constructor
