@@ -191,7 +191,7 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
                 }
             }
             else if(arg == "-o" || arg == "--interpret-output") {
-                if(this->ebel_out != nullptr) {
+                if(this->interpret_out != nullptr) {
                     Error::error(Error::ErrorCode::ARGUMENTS,
                                  "Only one -o (--interpret-output) file can be specified");
                 }

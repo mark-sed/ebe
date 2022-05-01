@@ -86,7 +86,7 @@ InstructionOccurrences::InstructionOccurrences(IR::PassType pass) {
 
 GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : words_occs{IR::PassType::WORDS_PASS},
                                                                   lines_occs{IR::PassType::LINES_PASS},
-                                                                  population_size{50},
+                                                                  population_size{250},
                                                                   min_words_pass_size{1},
                                                                   max_words_pass_size{5},
                                                                   min_lines_pass_size{1},
@@ -149,16 +149,16 @@ GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : words_occs{IR:
     // Iterations
     if(Args::arg_opts.iterations == 0){
         if(similarity > 0.8) {
-            Args::arg_opts.iterations = 300;
-        }
-        else if(similarity > 0.7) {
-            Args::arg_opts.iterations = 400;
-        }
-        else if(similarity > 0.5) {
             Args::arg_opts.iterations = 600;
         }
-        else {
+        else if(similarity > 0.7) {
             Args::arg_opts.iterations = 1000;
+        }
+        else if(similarity > 0.5) {
+            Args::arg_opts.iterations = 1800;
+        }
+        else {
+            Args::arg_opts.iterations = 3000;
         }
     }
     // Set population size

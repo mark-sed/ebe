@@ -137,6 +137,8 @@ void CONCAT::exec(std::list<std::list<IR::Word *> *>::iterator &line,
     std::advance(src, this->arg1);
     (*line)->insert((*line)->end(), (*src)->begin(), (*src)->end());
     doc->erase(src);
+    // Reprocess needed to work with the correct line next
+    env.reprocess_obj = true;
 }
 
 void DEL::exec(std::list<IR::Word *>::iterator &word, std::list<IR::Word *> *line, IR::PassEnvironment &env){
