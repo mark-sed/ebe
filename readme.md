@@ -316,11 +316,17 @@ Other information can be found in Ebe's [GitHub wiki](https://github.com/mark-se
 
 Tools for advanced work and analysis of Ebe can be found in its own [repository](https://github.com/mark-sed/ebe-tools).
 
+# Bee language
+
+There is also another project, which uses Ebe. It's the Bee language and its compiler. The language is designed for file editing, compiles down to Ebel and aims to allow for quick file edits done by one line scripts.
+
+Bee-hs compiler can be previewed in its own [GitHub repository](https://github.com/mark-sed/bee-hs).
+
 # Contributing
 
-Contributions are not open until version 1.0.
+Contributions to the code base are/will be available from August 2022.
 
-Any bug reports or feature requests are more than welcome, for this please use the [issues](https://github.com/mark-sed/ebe/issues) section on GitHub.
+Also any bug reports or feature requests are more than welcome, for this please use the [issues](https://github.com/mark-sed/ebe/issues) section on GitHub.
 
 # Feedback
 

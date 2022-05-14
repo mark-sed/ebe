@@ -17,9 +17,9 @@
 /** Macro to convert INT macro value into string value */
 #define MACRO_TO_STR(x) MACRO_TO_STR_HELPER(x)
 
-#define EBE_VERSION_MAJOR 0  ///< Compiler's major version
-#define EBE_VERSION_MINOR 3  ///< Compiler's minor version
-#define EBE_VERSION_PATCH 1  ///< Compiler's patch
+#define EBE_VERSION_MAJOR 1  ///< Compiler's major version
+#define EBE_VERSION_MINOR 0  ///< Compiler's minor version
+#define EBE_VERSION_PATCH 0  ///< Compiler's patch
 
 /** Ebe version as a string */
 #define EBE_VERSION MACRO_TO_STR(EBE_VERSION_MAJOR) "." MACRO_TO_STR(EBE_VERSION_MINOR) "." MACRO_TO_STR(EBE_VERSION_PATCH)
