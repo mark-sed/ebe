@@ -14,6 +14,7 @@
 #include "scanner_ebel.hpp"
 #include <istream>
 #include <string>
+#include <cstring>
 #include "parser_ebel.hpp"
 #include "instruction.hpp"
 #include "scanner.hpp"
@@ -126,6 +127,13 @@ void ScannerEbel::add_nop() {
     this->current_pass->push_back(new Inst::NOP());
 }
 
+void ScannerEbel::remove_quotes(char **str) {
+    // Remove first quote
+    *str = &(*str)[1];
+    // Remove last quote
+    (*str)[std::strlen(*str)-1] = '\0';
+}
+
 void ScannerEbel::add_pass_expression(IR::Type type, std::string match) {
     this->touch_pass();
     if(this->current_pass == nullptr 
@@ -151,14 +159,12 @@ void ScannerEbel::add_pass_expression(IR::Type type, std::string match) {
         this->current_pass = new IR::PassExpression(type);
     }
     else{
-        // Remove quote marks at the start and end
-        match.erase(0, 1);
-        match.pop_back();
         if(match.empty()) {
             LOG1("Empty match pass string exchanged for Pass EMPTY Expression");
             this->current_pass = new IR::PassExpression(IR::Type::EMPTY);
         }
         else {
+            std::cout << "M<ATCH: " << match << std::endl;
             this->current_pass = new IR::PassExpression(type, match);
         }
     }

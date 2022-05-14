@@ -19,12 +19,11 @@
 
 #include <iostream>
 
-Preprocessor::Preprocessor(char delim) : Compiler("Preprocessor"), delim{delim} {
+Preprocessor::Preprocessor() : Compiler("Preprocessor") {
 
 }
 
 std::istream *Preprocessor::process(const char *file_name){
-    // FIXME: delim is not used
     if(file_name){
         auto f = new std::ifstream(file_name);
         if(f->fail()){

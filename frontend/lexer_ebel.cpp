@@ -1029,13 +1029,14 @@ case 34:
 YY_RULE_SETUP
 #line 103 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   
-                                    yylval->build<std::string>(yytext); 
+                                    remove_quotes(&yytext);
+                                    yylval->build<std::string>(yytext);
                                     return token::STRING;     
                                 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 108 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
+#line 109 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   
                                     yylval->build<std::string>(&yytext[8]);
                                     return token::PRAGMA;     
@@ -1044,7 +1045,7 @@ YY_RULE_SETUP
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 113 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
+#line 114 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {
                                     loc->lines();
                                     return token::NEWLINE;
@@ -1052,7 +1053,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 117 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
+#line 118 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Error because of unknown instruction, but don't exit yet */
                                     sub_error(Error::ErrorCode::SYNTACTIC, std::string("Unknown instruction '")
                                                 +std::string(yytext) +std::string("'"));
@@ -1060,7 +1061,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 121 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
+#line 122 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 {   /* Error because of unknwon symbol, but don't exit yet */
                                     sub_error(Error::ErrorCode::SYNTACTIC, std::string("Unknown symbol '")
                                                 +std::string(yytext)+std::string("'"));
@@ -1068,10 +1069,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 126 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
+#line 127 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1075 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
+#line 1076 "/home/marek/Desktop/Skola/dp/ebe/frontend/lexer_ebel.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2043,5 +2044,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 126 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
+#line 127 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/lexer_ebel.ll"
 

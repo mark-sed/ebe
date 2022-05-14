@@ -36,7 +36,6 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
     float precision = -0.01f;
     float best_precision = -0.01f;
     // Get the engine ID
-    // TODO: Use heuristic to decide what engine to use here
     EngineUtils::EngineID engine_id = EngineUtils::EngineID::JENN;
     if(Args::arg_opts.engine != nullptr){
         engine_id = EngineUtils::get_engine_id(Args::arg_opts.engine);
@@ -50,8 +49,7 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
         }
     }
     IR::EbelNode *best_program = nullptr;
-    // TODO: Call initializer when implemented to set the correct number of evolutions when not set
-    size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 10;
+    size_t evolutions = (Args::arg_opts.evolutions > 0) ? Args::arg_opts.evolutions : 3;
     for(size_t e = 1; e <= evolutions || Args::arg_opts.precision != 0 || Args::arg_opts.timeout != 0; ++e){
         if(best_program != nullptr) { 
             // Before deletion, best program has to be copied to not be lost
@@ -123,7 +121,7 @@ std::pair<IR::EbelNode *, float> compile_core(IR::Node *ir_in, IR::Node *ir_out,
 void compile(const char *f_in, const char *f_out) {
     LOGMAX("Compilation started");
     // Preprocessing
-    auto preproc = new Preprocessor(Args::arg_opts.line_delim);
+    auto preproc = new Preprocessor();
     LOGMAX("Text preprocessor started");
     auto in_text = preproc->process(f_in);
     auto out_text = preproc->process(f_out);
@@ -276,7 +274,7 @@ void interpret(const char *ebel_f, std::vector<const char *> input_files){
 void compile_and_interpret(const char *f_in, const char *f_out, std::vector<const char *> input_files) {
     LOGMAX("Compilation and interpretation started");
     // Preprocessing
-    auto preproc = new Preprocessor(Args::arg_opts.line_delim);
+    auto preproc = new Preprocessor();
     LOGMAX("Text preprocessor started");
     auto in_text = preproc->process(f_in);
     auto out_text = preproc->process(f_out);

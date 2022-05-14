@@ -37,6 +37,7 @@ private:
     TextFile::ParserText::semantic_type *yylval = nullptr;
     bool inside_expression = false;
     bool multiple_expr_types = false;
+    bool inside_string = false;
     const char *current_file_name;
 
     IR::Node *current_parse;              ///< Holds node that is currently being parsed during process method
@@ -54,6 +55,11 @@ private:
      * Used by lexer to denote that an expression ends
      */ 
     void expr_end();
+
+    /** 
+     * Used by lexer to determine when string in expression is being parsed 
+     */
+    void quote_parsed();
 
     /**
      * Parses abstract syntax tree into an expression pass
@@ -114,6 +120,12 @@ public:
      * @return true if currently it's inside of an expression
      */ 
     bool is_in_expr();
+
+    /**
+     * Used by the lexer and parser to tell it if it is currently inside of a string in an expression
+     * @return true if currently it's inside of a string in an expression
+     */ 
+    bool is_in_str();
 
     IR::Node *process(std::istream *text, const char *file_name) override;
 };

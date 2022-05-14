@@ -149,16 +149,16 @@ GPEngineParams::GPEngineParams(IR::Node *f_in, IR::Node *f_out) : words_occs{IR:
     // Iterations
     if(Args::arg_opts.iterations == 0){
         if(similarity > 0.8) {
-            Args::arg_opts.iterations = 600;
+            Args::arg_opts.iterations = 6000;
         }
         else if(similarity > 0.7) {
-            Args::arg_opts.iterations = 1000;
+            Args::arg_opts.iterations = 10000;
         }
         else if(similarity > 0.5) {
-            Args::arg_opts.iterations = 1800;
+            Args::arg_opts.iterations = 18000;
         }
         else {
-            Args::arg_opts.iterations = 3000;
+            Args::arg_opts.iterations = 30000;
         }
     }
     // Set population size
@@ -307,7 +307,6 @@ void GPEngine::crossover_switch(GP::Phenotype *pheno) {
         }
     }
     else {
-        // TODO: Add logs for crossing
         for(int i = 0; i < amount; ++i){
             // Create copy of instruction
             std::swap(*rand_pos, *rand_pos_og);
@@ -325,7 +324,7 @@ GPEngine::GPEngine(IR::Node *text_in, IR::Node *text_out, size_t iterations, Eng
         auto w_pass = new IR::PassWords();
         auto line1 = (text_out->nodes)->begin();
         // Check only first line
-        // FIXME: When line subpasses are implemented check more than just first line
+        // TODO: When line subpasses are implemented check more than just first line
         if(line1 != (text_out->nodes)->end()){
             int index = 0;
             for(auto word: **line1) {

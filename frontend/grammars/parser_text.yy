@@ -86,6 +86,8 @@
 %token <std::string> MOD "%"
 %token <std::string> POW "^"
 
+%token <std::string> QUOTE "\""
+
 %left PLUS MINUS
 %left IMUL IDIV MOD
 %right POW
@@ -98,6 +100,8 @@
 %type <Expr::Expression> varexpr
 %type <int> expr_int
 %type <float> expr_float
+%type <std::string> string_v
+%type <std::string> operator
 
 %locations
 
@@ -122,22 +126,42 @@ word      : TEXT         { scanner->add_text($1);      }
           | DELIMITER    { scanner->add_delimiter($1); }
           | SYMBOL       { scanner->add_symbol($1);    }
           | NEWLINE      { scanner->add_newline();     }
-          | VAR          { scanner->add_symbol($1);    }
-          | PLUS         { scanner->add_symbol($1);    }
-          | IMUL         { scanner->add_symbol($1);    }
-          | MINUS        { scanner->add_symbol($1);    }
-          | IDIV         { scanner->add_symbol($1);    }
-          | MOD          { scanner->add_symbol($1);    }
-          | POW          { scanner->add_symbol($1);    }
-          | LPAR         { scanner->add_symbol("(");   }
-          | RPAR         { scanner->add_symbol(")");   }
+          | operator     { scanner->add_symbol($1);    }
+          | QUOTE        { scanner->add_symbol("\"");  }
           | FALSE_EXPR_BEGIN { scanner->add_symbol("{"); scanner->add_symbol("!"); }
           | FALSE_EXPR_END   { scanner->add_symbol("!"); scanner->add_symbol("}"); }
+          | EXPR_BEGIN QUOTE string_v QUOTE EXPR_END {auto e = Expression(Node(Type::TEXT, $3), std::vector<Expression>{});
+                                       scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::DERIVED);}
           | EXPR_BEGIN varexpr EXPR_END { scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), $2}), scanner->expr_type); }
           | EXPR_BEGIN expr_int EXPR_END { auto e = Expression(Node(Type::NUMBER, std::to_string($2)), std::vector<Expression>{});
                                        scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::NUMBER);}
           | EXPR_BEGIN expr_float EXPR_END { auto e = Expression(Node(Type::FLOAT, std::to_string($2)), std::vector<Expression>{});
                                        scanner->add_expr(new Expression(Node(Type::ASSIGN, "="), std::vector<Expression>{Expression(Node(Type::VAR, "$"), std::vector<Expression>()), e}), IR::Type::FLOAT);}
+          ;
+
+operator  : VAR   { $$ = $1; }
+          | PLUS  { $$ = $1; }
+          | IMUL  { $$ = $1; }
+          | MINUS { $$ = $1; }
+          | IDIV  { $$ = $1; }
+          | MOD   { $$ = $1; }
+          | POW   { $$ = $1; }
+          | LPAR  { $$ = $1; }
+          | RPAR  { $$ = $1; }
+          ;
+
+string_v  : TEXT               { $$ = $1; }
+          | SYMBOL             { $$ = $1; }
+          | DELIMITER          { $$ = $1; }
+          | NUMBER             { $$ = $1; }
+          | FLOAT              { $$ = $1; }
+          | operator           { $$ = $1; }
+          | string_v TEXT      { $$ = $1 + $2; }
+          | string_v SYMBOL    { $$ = $1 + $2; }
+          | string_v DELIMITER { $$ = $1 + $2; }
+          | string_v NUMBER    { $$ = std::string($1) + $2; }
+          | string_v FLOAT     { $$ = std::string($1) + $2; }
+          | string_v operator  { $$ = $1 + $2; }
           ;
 
 varexpr   : VAR { $$ = Expression(Node(Type::VAR, $1), std::vector<Expression>()); }

@@ -25,13 +25,7 @@ EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(tex
                                                                       lines_occs{IR::PassType::LINES_PASS},
                                                                       words_occs{IR::PassType::WORDS_PASS} {
     if(Args::arg_opts.iterations == 0){
-        // TODO: Call initialized when implemented and set iterations in case its not set 
-        // FIXME: DO NOT HAVE A CONSTANT LIKE THIS use the TODO solution
-        iterations = 100;
-    }
-    if(Args::arg_opts.expr){
-        // TODO: This should be printed only once
-        Error::warning("MiRANDa does not support expressions");
+        iterations = 1000;
     }
     lines_occs.CONCAT =                     0.20f;
     lines_occs.DEL    = lines_occs.CONCAT + 0.20f;
@@ -45,7 +39,6 @@ EngineMiRANDa::EngineMiRANDa(IR::Node *text_in, IR::Node *text_out) : Engine(tex
     words_occs.NOP    = words_occs.LOOP   + 0.25f;
     words_occs.SWAP   = words_occs.NOP    + 0.25f;
 
-    // TODO: Set params with initializer when implemented
     this->min_program_size = 0;
     this->max_program_size = 30;
     this->min_passes = 1;

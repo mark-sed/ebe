@@ -100,7 +100,8 @@ SPACE   [ \t]
 "DERIVED"{SPACE}+               {   return token::DERIVED;    }
 
 \".*\"                          {   
-                                    yylval->build<std::string>(yytext); 
+                                    remove_quotes(&yytext);
+                                    yylval->build<std::string>(yytext);
                                     return token::STRING;     
                                 }
 

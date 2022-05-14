@@ -60,17 +60,18 @@ ALPHANUM  [a-zA-Z0-9\_\x80-\xf3]
                             return token::EXPR_END;
                         return token::FALSE_EXPR_END;
                     }
-"+"                 {   yylval->build<std::string>(yytext); return token::PLUS; }
-"^"                 {   yylval->build<std::string>(yytext); return token::POW; }
-"%"                 {   yylval->build<std::string>(yytext); return token::MOD; }
-"*"                 {   yylval->build<std::string>(yytext); return token::IMUL; }
+"+"                 {   yylval->build<std::string>(yytext); return token::PLUS;  }
+"^"                 {   yylval->build<std::string>(yytext); return token::POW;   }
+"%"                 {   yylval->build<std::string>(yytext); return token::MOD;   }
+"*"                 {   yylval->build<std::string>(yytext); return token::IMUL;  }
 "-"                 {   yylval->build<std::string>(yytext); return token::MINUS; }
-"/"                 {   yylval->build<std::string>(yytext); return token::IDIV; }
-"$"                 {   yylval->build<std::string>(yytext); return token::VAR; }
-"("                 {   yylval->build<std::string>(yytext); return token::LPAR; }
-")"                 {   yylval->build<std::string>(yytext); return token::RPAR; }
+"/"                 {   yylval->build<std::string>(yytext); return token::IDIV;  }
+"$"                 {   yylval->build<std::string>(yytext); return token::VAR;   }
+"("                 {   yylval->build<std::string>(yytext); return token::LPAR;  }
+")"                 {   yylval->build<std::string>(yytext); return token::RPAR;  }
+"\""                {   quote_parsed(); yylval->build<std::string>(yytext); return token::QUOTE; }
 [ \t]               {   // Whitespace is supposed to be ignored in expression
-                        if(!is_in_expr()){
+                        if(!is_in_expr() || is_in_str()){
                             yylval->build<std::string>(yytext);
                             return token::DELIMITER;
                         }

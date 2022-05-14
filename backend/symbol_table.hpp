@@ -118,7 +118,7 @@ namespace Vars {
 
         std::string get_text() override { return value; }
 
-        void format_value(std::ostream &out) override { out << value; };
+        void format_value(std::ostream &out) override { out << "\"" << value << "\""; };
     };
 
     /**

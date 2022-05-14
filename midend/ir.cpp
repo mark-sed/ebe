@@ -55,9 +55,12 @@ Word::Word(std::string text,
 }
 
 Word::Word(const Word &other){
-    // FIXME: Copy the expression as well?
     this->text = other.text;
     this->type = other.type;
+    // TODO: Consider copying the expression as well
+    this->expr = nullptr;
+    this->code = nullptr;
+    this->return_inst = nullptr;
 }
 
 Word::~Word() {
@@ -75,7 +78,6 @@ Word& Word::operator=(const Word &other){
 }
 
 bool Word::operator==(const Word &other) const {
-    // FIXME: This might not work when expr is set (differently written expr, but same value)
     return this->type == other.type && this->text == other.text;
 }
 
@@ -340,7 +342,6 @@ void PassWords::push_subpass(Pass *subpass) {
 
 void PassWords::process(IR::Node *text) {
     // TODO: Consider having similarities in one function
-    // FIXME: just LOOP program should not loop infin.
     if(this->pipeline->empty()){
         return;
     }
@@ -399,7 +400,7 @@ void PassWords::process(IR::Node *text) {
                 if(subpass->expr_type == (*word)->type 
                     || subpass->expr_type == IR::Type::DERIVED
                     || (subpass->expr_type == IR::Type::MATCH && (*word)->text == subpass->match)) {
-                    // FIXME: Column isn't letter column, but word number
+                    // TODO: Calculate actual character column. Column here isn't letter column, but word number
                     subpass->process(*word, line_number, column);
                     // Execute return instruction (column was incemented before this)
                     inst = (*this->pipeline)[column];

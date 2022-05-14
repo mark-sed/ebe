@@ -136,6 +136,8 @@ public:
     void sub_error(Error::ErrorCode code, const std::string &err_message);
 
     IR::EbelNode *process(std::istream *text, const char *file_name);
+
+    void remove_quotes(char **str);
 };
 
 }

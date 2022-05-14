@@ -26,9 +26,8 @@ private:
 public:
     /**
      * Constructor
-     * @param delim Symbol determining the end of a line
      */
-    Preprocessor(char delim='\n');
+    Preprocessor();
 
     /**
      * @brief Preprocessing for file.

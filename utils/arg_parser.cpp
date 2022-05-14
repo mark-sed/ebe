@@ -46,13 +46,11 @@ const char *HELP_TEXT =
 "  -f --fitness <name>          Fitness function to be used for compilation\n"
 "  -p --precision <1-100>       Minimal compilation precision, if omitted then 100.\n"
 "  -t --timeout <s>             Compilation timeout (in seconds).\n"
-//"  -alpha-num                  Group text with numbers if they're not separated.\n"
-//"  -alpha-sym                  Group text with symbols if they're not separated.\n"
-//"  -group-delim                Multiple delimiters after each other will be parsed as one.\n"
-//"  -group-sym                  Multiple symbols after each other will be parsed as one.\n"
-//"  --float-delim <character>   Character used in your locale as a floating point dot (by default this is `.`).\n"
 "  --version                    Prints compiler's version.\n"
 "  --help -h                    Prints this text.\n"
+"\n"
+"Positional arguments:\n"
+"  Files to edit.\n"
 "\n"
 "Ebe " EBE_VERSION ", Copyright (c) 2022, Marek Sedlacek\n"
 "For more information visit official GitHub repository: https://github.com/mark-sed/ebe.\n"
@@ -263,6 +261,10 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
                 // Check if engine name is correct in advance so that user does not wait till parsing is done
                 if(EngineUtils::get_engine_id(this->engine) == EngineUtils::EngineID::UNKNOWN){
                     Error::error(Error::ErrorCode::ARGUMENTS, "Incorrect engine name");
+                }
+                // If MiRANDa is picked and expressions are set, then print warning
+                if(EngineUtils::get_engine_id(this->engine) == EngineUtils::EngineID::MIRANDA) {
+                    Error::warning("MiRANDa does not support expressions");
                 }
             }
             else if(arg == "-f" || arg == "--fitness") {
@@ -650,6 +652,7 @@ void Args::ArgOpts::parse(int argc, char *argv[]) {
             this->precision = 100;
         }
     }
+
 
     // Check if interpret input file exist, to not get error after interpretation
     for(auto f: this->int_files) {

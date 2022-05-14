@@ -101,6 +101,17 @@ bool ScannerText::is_in_expr() {
     return this->inside_expression;
 }
 
+void ScannerText::quote_parsed() {
+    if(this->inside_expression) {
+        // There are always 2 quotes for a string
+        this->inside_string = !this->inside_string;
+    }
+}
+
+bool ScannerText::is_in_str() {
+    return this->inside_string;
+}
+
 void ScannerText::add_text(const std::string &v) {
     this->touch_line();
     current_line->push_back(new IR::Word(v, IR::Type::TEXT));
@@ -273,15 +284,24 @@ IR::PassExpression *ScannerText::expr2pass(Expr::Expression *expr, IR::Type type
 }
 
 void ScannerText::add_expr(Expr::Expression *e, IR::Type type) {
-    // FIXME: When return instruction in defined in the syntax return it rather than just NOP
     this->touch_line();
     // Parse expression to string
     std::stringstream ss;
     ss << '(' << IR::get_type_name(type) << ')';
     expr2strs(ss, e);
     // Parse expression to ebel code
-    auto expr_pass = expr2pass(e, type);
-    LOG1("Expression code generated:\n" << *expr_pass);
+    IR::PassExpression *expr_pass;
+    if(e->children.size() > 1 && e->children[1].value.type == Expr::Type::TEXT) {
+        // This is a solution until string instructions are added
+        expr_pass = new IR::PassExpression(IR::Type::DERIVED);
+        expr_pass->push_back(new Inst::MOVE(0, new Vars::TextVar(e->children[1].value.text)));
+        LOG1("Expression string move code generated:\n" << *expr_pass);
+    }
+    else {
+        // Parse expression to ebel code
+        expr_pass = expr2pass(e, type);
+        LOG1("Expression code generated:\n" << *expr_pass);
+    }
     current_line->push_back(new IR::Word(ss.str(), IR::Type::EXPRESSION, e, expr_pass, new Inst::NOP()));
     // Expression was parsed, so notify that expression is no longer being parsed
     this->expr_end();

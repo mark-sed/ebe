@@ -688,6 +688,9 @@ namespace  TextFile  {
       // "/"
       // "%"
       // "^"
+      // "\""
+      // operator
+      // string_v
       char dummy4[sizeof (std::string)];
     };
 
@@ -760,7 +763,8 @@ namespace  TextFile  {
     IDIV = 274,                    // "/"
     MOD = 275,                     // "%"
     POW = 276,                     // "^"
-    NEG = 277                      // NEG
+    QUOTE = 277,                   // "\""
+    NEG = 278                      // NEG
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -777,7 +781,7 @@ namespace  TextFile  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 23, ///< Number of tokens.
+        YYNTOKENS = 24, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "EOF"
         S_YYerror = 1,                           // error
@@ -801,14 +805,17 @@ namespace  TextFile  {
         S_IDIV = 19,                             // "/"
         S_MOD = 20,                              // "%"
         S_POW = 21,                              // "^"
-        S_NEG = 22,                              // NEG
-        S_YYACCEPT = 23,                         // $accept
-        S_text_file = 24,                        // text_file
-        S_sentence = 25,                         // sentence
-        S_word = 26,                             // word
-        S_varexpr = 27,                          // varexpr
-        S_expr_float = 28,                       // expr_float
-        S_expr_int = 29                          // expr_int
+        S_QUOTE = 22,                            // "\""
+        S_NEG = 23,                              // NEG
+        S_YYACCEPT = 24,                         // $accept
+        S_text_file = 25,                        // text_file
+        S_sentence = 26,                         // sentence
+        S_word = 27,                             // word
+        S_operator = 28,                         // operator
+        S_string_v = 29,                         // string_v
+        S_varexpr = 30,                          // varexpr
+        S_expr_float = 31,                       // expr_float
+        S_expr_int = 32                          // expr_int
       };
     };
 
@@ -871,6 +878,9 @@ namespace  TextFile  {
       case symbol_kind::S_IDIV: // "/"
       case symbol_kind::S_MOD: // "%"
       case symbol_kind::S_POW: // "^"
+      case symbol_kind::S_QUOTE: // "\""
+      case symbol_kind::S_operator: // operator
+      case symbol_kind::S_string_v: // string_v
         value.move< std::string > (std::move (that.value));
         break;
 
@@ -1003,6 +1013,9 @@ switch (yykind)
       case symbol_kind::S_IDIV: // "/"
       case symbol_kind::S_MOD: // "%"
       case symbol_kind::S_POW: // "^"
+      case symbol_kind::S_QUOTE: // "\""
+      case symbol_kind::S_operator: // operator
+      case symbol_kind::S_string_v: // string_v
         value.template destroy< std::string > ();
         break;
 
@@ -1117,7 +1130,7 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::TEXT <= tok && tok <= token::POW));
+        YY_ASSERT ((token::TEXT <= tok && tok <= token::QUOTE));
 #endif
       }
     };
@@ -1501,6 +1514,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_QUOTE (std::string v, location_type l)
+      {
+        return symbol_type (token::QUOTE, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_QUOTE (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::QUOTE, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_NEG (location_type l)
       {
         return symbol_type (token::NEG, std::move (l));
@@ -1594,7 +1622,7 @@ switch (yykind)
     static const signed char yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
-    static const signed char yydefgoto_[];
+    static const unsigned char yydefgoto_[];
 
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
@@ -1843,9 +1871,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 258,     ///< Last index in yytable_.
-      yynnts_ = 7,  ///< Number of nonterminal symbols.
-      yyfinal_ = 33 ///< Termination state number.
+      yylast_ = 310,     ///< Last index in yytable_.
+      yynnts_ = 9,  ///< Number of nonterminal symbols.
+      yyfinal_ = 36 ///< Termination state number.
     };
 
 
@@ -1857,7 +1885,7 @@ switch (yykind)
 
 #line 19 "/home/marek/Desktop/Skola/dp/ebe/frontend/grammars/parser_text.yy"
 } //  TextFile 
-#line 1861 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
+#line 1889 "/home/marek/Desktop/Skola/dp/ebe/frontend/parser_text.hpp"
 
 
 

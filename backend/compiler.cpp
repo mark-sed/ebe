@@ -87,18 +87,25 @@ void Compiler::error(Error::ErrorCode code, const char *file,
                                   long line, long column, const char *msg,
                                   Exception::EbeException *exc, bool exit){
     if(!Args::arg_opts.no_error_print) {
-        if(file)
+        if(file) {
             // Dont print name if it is nullptr
             std::cerr << file;
+            if(line < 0) {
+                std::cerr << ":";
+            }
+        }
         if(line >= 0){
             std::cerr << ":" << line;
             if(column >= 0) {
                 std::cerr << ":" << column;
             }
+            std::cerr << ":";
         }
-        // FIXME: unit_name probably should not be printed to users
-        std::cerr << ":[" << unit_name << "]: " << Error::Colors::colorize(Error::Colors::RED) << "ERROR " 
-                << Error::Colors::reset() << "(" << Error::get_code_name(code);
+#ifdef DEVELOPER
+        std::cerr << "[" << unit_name << "]: ";
+#endif
+        std::cerr << Error::Colors::colorize(Error::Colors::RED) << "ERROR " 
+                  << Error::Colors::reset() << "(" << Error::get_code_name(code);
         if(exc == nullptr) {
             std::cerr << "): " << msg << "." << std::endl;
         }
